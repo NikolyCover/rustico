@@ -1,4 +1,5 @@
 PARSER_BEGIN(Lexer)
+package unioeste.compiladores.lex;
 
 import java.io.InputStream;public class Lexer {}
 
@@ -6,11 +7,6 @@ PARSER_END(Lexer)
 
 SKIP: {
     " " | "\t" | "\n" | "\r"
-}
-
-TOKEN: {
-    < IDENTIFIER: (["a"-"z", "A"-"Z"]) (["a"-"z", "A"-"Z", "0"-"9", "_"])* > |
-    < NUMBER: (["0"-"9"])+ >
 }
 
 // keywords
@@ -71,6 +67,22 @@ TOKEN: {
          | < KW_TRY: "try" >
 }
 
+// strings
+TOKEN: {
+      < SINGLE_QUOTE_STRING: "\'" (~["\'"])* "\'" >
+    | < DOUBLE_QUOTE_STRING: ("\"" (~["\""])* "\"") >
+    | < STRING: <SINGLE_QUOTE_STRING> | <DOUBLE_QUOTE_STRING> >
+    | < IDENTIFIER: (["a"-"z", "A"-"Z"]) (["a"-"z", "A"-"Z", "0"-"9", "_"])* >
+}
+
+// numbers
+TOKEN: {
+      < DIGIT: ["0"-"9"] >
+    | < DIGITS: (<DIGIT>)+ >
+    | < INTEGER: ("-" | "+")? <DIGITS> >
+    | < REAL: ("-" | "+")? (<DIGIT>)* "." <DIGITS> >
+}
+
 // punctuation
 TOKEN : {
       < PLUS : "+" >
@@ -124,10 +136,16 @@ TOKEN : {
 
 // Delimiters
 TOKEN: {
-    < LBRACE: "{" > |
-    < RBRACE: "}" > |
-    < LBRACKET: "[" > |
-    < RBRACKET: "]" > |
-    < LPAREN: "(" > |
-    < RPAREN: ")" >
+      < LBRACE: "{" >
+    | < RBRACE: "}" >
+    | < LBRACKET: "[" >
+    | < RBRACKET: "]" >
+    | < LPAREN: "(" >
+    | < RPAREN: ")" >
+}
+
+TOKEN: {
+      < LINE_COMMENT: "//" (~["\n", "\r"])* ["\n", "\r"] >
+    //| < BLOCK_COMMENT_CONTENT: "" >
+    //| < BLOCK_COMMENTS: "/*" <BLOCK_COMMENT_CONTENT> "*/" >
 }
