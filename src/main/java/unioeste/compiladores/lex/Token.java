@@ -97,7 +97,7 @@ public class Token implements java.io.Serializable {
    */
   public String toString()
   {
-    return "{ type: " + kind + ", string: \"" + image + "\" }";
+    return "{ \ntype: " + kind + ",\nstring: \"" + image + "\"\n }";
   }
 
   /**

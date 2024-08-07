@@ -3,6 +3,7 @@ package unioeste.compiladores;
 import unioeste.compiladores.lex.Lexer;
 import unioeste.compiladores.lex.LexerConstants;
 import unioeste.compiladores.lex.Token;
+import unioeste.compiladores.lex.TokenMgrError;
 import unioeste.compiladores.symbols.SymbolTable;
 import unioeste.compiladores.symbols.SymbolTableHandler;
 
@@ -12,7 +13,7 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Digite o nome do arquivo a ser analisado:");
+        System.out.print("Digite o nome do arquivo a ser analisado: ");
         String fileName = scanner.nextLine();
 
         SymbolTable symbolTable = new SymbolTable();
@@ -23,14 +24,16 @@ public class Main {
 
         Lexer lexer = new Lexer(file);
 
-        Token token = lexer.getNextToken();
+        try{
+            Token token = lexer.getNextToken();
 
-        while (token.kind != LexerConstants.EOF) {
-            System.out.println(token);
+            while (token.kind != LexerConstants.EOF) {
+                SymbolTableHandler.handleSymbolTable(token, reservedSymbolTable, symbolTable);
 
-            SymbolTableHandler.handleSymbolTable(token, reservedSymbolTable, symbolTable);
-
-            token = lexer.getNextToken();
+                token = lexer.getNextToken();
+            }
+        }catch (TokenMgrError error){
+            System.out.println("Erro: " + error.getMessage());
         }
 
         reservedSymbolTable.show("Tabela de palavras reservadas");
