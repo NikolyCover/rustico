@@ -19,7 +19,7 @@ public class LexicalException extends Exception{
                 builder.append("Identificador inválido encontrado: ").append(token.image).append(location);
             }
             case LexerConstants.PUNCTUATION_ERROR_INVALID -> {
-                builder.append("Simbolo invalido encontrado: ").append(token.image).append(location);
+                builder.append("Operador invalido encontrado: ").append(token.image).append(location);
             }
             case LexerConstants.REAL_NUMBER_ERROR_MALFORMED -> {
                 builder.append("Número real inválido encontrado: ").append(token.image).append(location);
