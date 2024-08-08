@@ -144,7 +144,7 @@ TOKEN: {
 // comments
 TOKEN: {
       < LINE_COMMENT: "//" (~["\n", "\r"])* ["\n", "\r"] >
-    | < BLOCK_COMMENTS: "/*" ("[^*]" | ("\\*[^/]" | "\\*[\\r\\n]*"))* "*/" >
+     | < BLOCK_COMMENTS: "/*" (("*")* (~["/"])* | (~["*"])* ("/")*)* "*/" >
 }
 
 // identifiers

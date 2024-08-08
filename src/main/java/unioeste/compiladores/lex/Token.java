@@ -99,7 +99,7 @@ public class Token implements java.io.Serializable {
    */
   public String toString()
   {
-    return "{ tipo: " + kind + ", image: " + image + " }";
+    return image;
   }
 
   /**
