@@ -69,10 +69,7 @@ TOKEN: {
 
 // strings
 TOKEN: {
-      < SINGLE_QUOTE_STRING: "\'" (~["\'"])* "\'" >
-    | < DOUBLE_QUOTE_STRING: ("\"" (~["\""])* "\"") >
-    | < STRING: <SINGLE_QUOTE_STRING> | <DOUBLE_QUOTE_STRING> >
-    | < IDENTIFIER: (["a"-"z", "A"-"Z"]) (["a"-"z", "A"-"Z", "0"-"9", "_"])* >
+    < STRING: "\'" (~["\'"])* "\'" | ("\"" (~["\""])* "\"") >
 }
 
 // numbers
@@ -148,4 +145,12 @@ TOKEN: {
       < LINE_COMMENT: "//" (~["\n", "\r"])* ["\n", "\r"] >
     //| < BLOCK_COMMENT_CONTENT: "" >
     //| < BLOCK_COMMENTS: "/*" <BLOCK_COMMENT_CONTENT> "*/" >
+}
+
+TOKEN : {
+    < IDENTIFIER: (["a"-"z", "A"-"Z"]) (["a"-"z", "A"-"Z", "0"-"9", "_"])* >
+}
+
+TOKEN : {
+    <IDENTIFIER_ERROR: (<DIGIT> | "_")<IDENTIFIER> >
 }

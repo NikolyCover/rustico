@@ -1,5 +1,6 @@
 package unioeste.compiladores;
 
+import unioeste.compiladores.exception.LexicalException;
 import unioeste.compiladores.lex.Lexer;
 import unioeste.compiladores.lex.LexerConstants;
 import unioeste.compiladores.lex.Token;
@@ -32,8 +33,10 @@ public class Main {
 
                 token = lexer.getNextToken();
             }
-        }catch (TokenMgrError error){
-            System.out.println("Erro: " + error.getMessage());
+        }
+        catch (TokenMgrError | LexicalException error){
+            System.err.println(error.getMessage());
+            System.exit(1);
         }
 
         reservedSymbolTable.show("Tabela de palavras reservadas");

@@ -113,129 +113,127 @@ public interface LexerConstants {
   /** RegularExpression Id. */
   int KW_TRY = 55;
   /** RegularExpression Id. */
-  int SINGLE_QUOTE_STRING = 56;
+  int STRING = 56;
   /** RegularExpression Id. */
-  int DOUBLE_QUOTE_STRING = 57;
+  int DIGIT = 57;
   /** RegularExpression Id. */
-  int STRING = 58;
+  int DIGITS = 58;
   /** RegularExpression Id. */
-  int IDENTIFIER = 59;
+  int INTEGER = 59;
   /** RegularExpression Id. */
-  int DIGIT = 60;
+  int REAL = 60;
   /** RegularExpression Id. */
-  int DIGITS = 61;
+  int PLUS = 61;
   /** RegularExpression Id. */
-  int INTEGER = 62;
+  int MINUS = 62;
   /** RegularExpression Id. */
-  int REAL = 63;
+  int STAR = 63;
   /** RegularExpression Id. */
-  int PLUS = 64;
+  int SLASH = 64;
   /** RegularExpression Id. */
-  int MINUS = 65;
+  int PERCENT = 65;
   /** RegularExpression Id. */
-  int STAR = 66;
+  int CARET = 66;
   /** RegularExpression Id. */
-  int SLASH = 67;
+  int NOT = 67;
   /** RegularExpression Id. */
-  int PERCENT = 68;
+  int AND = 68;
   /** RegularExpression Id. */
-  int CARET = 69;
+  int OR = 69;
   /** RegularExpression Id. */
-  int NOT = 70;
+  int ANDAND = 70;
   /** RegularExpression Id. */
-  int AND = 71;
+  int OROR = 71;
   /** RegularExpression Id. */
-  int OR = 72;
+  int SHL = 72;
   /** RegularExpression Id. */
-  int ANDAND = 73;
+  int SHR = 73;
   /** RegularExpression Id. */
-  int OROR = 74;
+  int PLUSEQ = 74;
   /** RegularExpression Id. */
-  int SHL = 75;
+  int MINUSEQ = 75;
   /** RegularExpression Id. */
-  int SHR = 76;
+  int STAREQ = 76;
   /** RegularExpression Id. */
-  int PLUSEQ = 77;
+  int SLASHEQ = 77;
   /** RegularExpression Id. */
-  int MINUSEQ = 78;
+  int PERCENTEQ = 78;
   /** RegularExpression Id. */
-  int STAREQ = 79;
+  int CARETEQ = 79;
   /** RegularExpression Id. */
-  int SLASHEQ = 80;
+  int ANDEQ = 80;
   /** RegularExpression Id. */
-  int PERCENTEQ = 81;
+  int OREQ = 81;
   /** RegularExpression Id. */
-  int CARETEQ = 82;
+  int SHLEQ = 82;
   /** RegularExpression Id. */
-  int ANDEQ = 83;
+  int SHREQ = 83;
   /** RegularExpression Id. */
-  int OREQ = 84;
+  int EQ = 84;
   /** RegularExpression Id. */
-  int SHLEQ = 85;
+  int EQEQ = 85;
   /** RegularExpression Id. */
-  int SHREQ = 86;
+  int NE = 86;
   /** RegularExpression Id. */
-  int EQ = 87;
+  int GT = 87;
   /** RegularExpression Id. */
-  int EQEQ = 88;
+  int LT = 88;
   /** RegularExpression Id. */
-  int NE = 89;
+  int GE = 89;
   /** RegularExpression Id. */
-  int GT = 90;
+  int LE = 90;
   /** RegularExpression Id. */
-  int LT = 91;
+  int AT = 91;
   /** RegularExpression Id. */
-  int GE = 92;
+  int UNDERSCORE = 92;
   /** RegularExpression Id. */
-  int LE = 93;
+  int DOT = 93;
   /** RegularExpression Id. */
-  int AT = 94;
+  int DOTDOT = 94;
   /** RegularExpression Id. */
-  int UNDERSCORE = 95;
+  int DOTDOTDOT = 95;
   /** RegularExpression Id. */
-  int DOT = 96;
+  int DOTDOTEQ = 96;
   /** RegularExpression Id. */
-  int DOTDOT = 97;
+  int COMMA = 97;
   /** RegularExpression Id. */
-  int DOTDOTDOT = 98;
+  int SEMI = 98;
   /** RegularExpression Id. */
-  int DOTDOTEQ = 99;
+  int COLON = 99;
   /** RegularExpression Id. */
-  int COMMA = 100;
+  int PATHSEP = 100;
   /** RegularExpression Id. */
-  int SEMI = 101;
+  int RARROW = 101;
   /** RegularExpression Id. */
-  int COLON = 102;
+  int FATARROW = 102;
   /** RegularExpression Id. */
-  int PATHSEP = 103;
+  int LARROW = 103;
   /** RegularExpression Id. */
-  int RARROW = 104;
+  int POUND = 104;
   /** RegularExpression Id. */
-  int FATARROW = 105;
+  int DOLLAR = 105;
   /** RegularExpression Id. */
-  int LARROW = 106;
+  int QUESTION = 106;
   /** RegularExpression Id. */
-  int POUND = 107;
+  int TILDE = 107;
   /** RegularExpression Id. */
-  int DOLLAR = 108;
+  int LBRACE = 108;
   /** RegularExpression Id. */
-  int QUESTION = 109;
+  int RBRACE = 109;
   /** RegularExpression Id. */
-  int TILDE = 110;
+  int LBRACKET = 110;
   /** RegularExpression Id. */
-  int LBRACE = 111;
+  int RBRACKET = 111;
   /** RegularExpression Id. */
-  int RBRACE = 112;
+  int LPAREN = 112;
   /** RegularExpression Id. */
-  int LBRACKET = 113;
+  int RPAREN = 113;
   /** RegularExpression Id. */
-  int RBRACKET = 114;
+  int LINE_COMMENT = 114;
   /** RegularExpression Id. */
-  int LPAREN = 115;
+  int IDENTIFIER = 115;
   /** RegularExpression Id. */
-  int RPAREN = 116;
-  /** RegularExpression Id. */
-  int LINE_COMMENT = 117;
+  int IDENTIFIER_ERROR = 116;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -298,10 +296,7 @@ public interface LexerConstants {
     "\"virtual\"",
     "\"yield\"",
     "\"try\"",
-    "<SINGLE_QUOTE_STRING>",
-    "<DOUBLE_QUOTE_STRING>",
     "<STRING>",
-    "<IDENTIFIER>",
     "<DIGIT>",
     "<DIGITS>",
     "<INTEGER>",
@@ -360,6 +355,8 @@ public interface LexerConstants {
     "\"(\"",
     "\")\"",
     "<LINE_COMMENT>",
+    "<IDENTIFIER>",
+    "<IDENTIFIER_ERROR>",
   };
 
 }

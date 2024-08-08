@@ -13,13 +13,13 @@ public class SymbolTable {
     private final Hashtable<String, Token> hashTable = new Hashtable<>();
 
     public void add(String identifier, Token symbol) {
-        if(symbol.kind >= LexerConstants.DIGIT && symbol.kind <= LexerConstants.REAL){
-            if(!hashTable.containsKey(identifier)) {
-                hashTable.put(identifier, symbol);
-            }
-
-            return;
-        }
+//        if(symbol.kind >= LexerConstants.DIGIT && symbol.kind <= LexerConstants.REAL){
+//            if(!hashTable.containsKey(identifier)) {
+//                hashTable.put(identifier, symbol);
+//            }
+//
+//            return;
+//        }
 
         hashTable.put(identifier, symbol);
     }
