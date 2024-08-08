@@ -149,12 +149,12 @@ TOKEN: {
 
 // identifiers
 TOKEN : {
-    < IDENTIFIER: (["a"-"z", "A"-"Z"]) (["a"-"z", "A"-"Z", "0"-"9", "_"])* >
+    < IDENTIFIER: (["a"-"z", "A"-"Z", "_"]) (["a"-"z", "A"-"Z", "0"-"9", "_"])* >
 }
 
 // errors
 TOKEN : {
-      < IDENTIFIER_ERROR_START: <DIGIT> <IDENTIFIER> >
+      < IDENTIFIER_ERROR_START: (~["a"-"z", "A"-"Z", "_"]) (["a"-"z", "A"-"Z", "0"-"9", "_"])* >
     | < REAL_NUMBER_ERROR_MALFORMED: ("-" | "+")? (<DIGIT>)* "." <DIGITS> "." <DIGITS> >
     | < STRING_ERROR_UNTERMINATED: ("\"" (~["\""])* ) | ("\'" (~["\'"])* ) >
     | < PUNCTUATION_ERROR_INVALID: ("++" | "--" ) >
