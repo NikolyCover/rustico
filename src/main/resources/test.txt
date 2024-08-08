@@ -1,4 +1,9 @@
 fn main() {
-    _a;
+    //_a;
     println!("Hello World!");
+}
+
+fn buceta() {
+    println!("Hello World!");
+    1
 }

@@ -41,5 +41,6 @@ public class Main {
 
         reservedSymbolTable.show("Tabela de palavras reservadas");
         symbolTable.show("Tabela de símbolos");
+
     }
 }
