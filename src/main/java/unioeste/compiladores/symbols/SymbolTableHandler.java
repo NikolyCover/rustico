@@ -15,16 +15,6 @@ public class SymbolTableHandler {
             return;
         }
 
-        if(token.kind >= LexerConstants.PLUS && token.kind <= LexerConstants.TILDE){
-            reservedKeysTable.add(token.image, token);
-            return;
-        }
-
-        if(token.kind >= LexerConstants.LBRACE && token.kind <= LexerConstants.RPAREN){
-            reservedKeysTable.add(token.image, token);
-            return;
-        }
-
         if(token.kind == LexerConstants.IDENTIFIER_ERROR){
             throw new LexicalException(token);
         }

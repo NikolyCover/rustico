@@ -12,7 +12,9 @@ public class SymbolTable {
     private final Hashtable<String, Token> hashTable = new Hashtable<>();
 
     public void add(String identifier, Token symbol) {
-        hashTable.put(identifier, symbol);
+        if(!hashTable.containsKey(identifier)) {
+            hashTable.put(identifier, symbol);
+        }
     }
 
     public Token getSymbol(String identifier) {
