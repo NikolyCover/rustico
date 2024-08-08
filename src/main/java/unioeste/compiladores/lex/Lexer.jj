@@ -144,7 +144,7 @@ TOKEN: {
 // comments
 TOKEN: {
       < LINE_COMMENT: "//" (~["\n", "\r"])* ["\n", "\r"] >
-    | < BLOCK_COMMENTS: "/*" ("[^*]" | ("\\*[^/]" | "\\*[\\r\\n]*"))* "*/" >
+     | < BLOCK_COMMENTS: "/*" (("*")* (~["/"])* | (~["*"])* ("/")*)* "*/" >
 }
 
 // identifiers
@@ -154,7 +154,7 @@ TOKEN : {
 
 // errors
 TOKEN : {
-      < IDENTIFIER_ERROR_START: (~["a"-"z", "A"-"Z", "_"]) (["a"-"z", "A"-"Z", "0"-"9", "_"])* >
+      < IDENTIFIER_ERROR_START: (~["a"-"z", "A"-"Z", "_"])  (["a"-"z", "A"-"Z", "0"-"9", "_"])* >
     | < REAL_NUMBER_ERROR_MALFORMED: ("-" | "+")? (<DIGIT>)* "." <DIGITS> "." <DIGITS> >
     | < STRING_ERROR_UNTERMINATED: ("\"" (~["\""])* ) | ("\'" (~["\'"])* ) >
     | < PUNCTUATION_ERROR_INVALID: ("++" | "--" ) >
