@@ -15,7 +15,7 @@ public class SymbolTableHandler {
             return;
         }
 
-        if(token.kind == LexerConstants.IDENTIFIER_ERROR){
+        if(token.kind >= LexerConstants.IDENTIFIER_ERROR_START && token.kind <= LexerConstants.PUNCTUATION_ERROR_INVALID){
             throw new LexicalException(token);
         }
 

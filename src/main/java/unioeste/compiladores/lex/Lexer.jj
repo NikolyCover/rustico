@@ -131,7 +131,7 @@ TOKEN : {
     | < TILDE : "~" >
 }
 
-// Delimiters
+// delimiters
 TOKEN: {
       < LBRACE: "{" >
     | < RBRACE: "}" >
@@ -141,16 +141,21 @@ TOKEN: {
     | < RPAREN: ")" >
 }
 
+// comments
 TOKEN: {
       < LINE_COMMENT: "//" (~["\n", "\r"])* ["\n", "\r"] >
-    //| < BLOCK_COMMENT_CONTENT: "" >
-    //| < BLOCK_COMMENTS: "/*" <BLOCK_COMMENT_CONTENT> "*/" >
+    | < BLOCK_COMMENTS: "/*" ("[^*]" | ("\\*[^/]" | "\\*[\\r\\n]*"))* "*/" >
 }
 
+// identifiers
 TOKEN : {
     < IDENTIFIER: (["a"-"z", "A"-"Z"]) (["a"-"z", "A"-"Z", "0"-"9", "_"])* >
 }
 
+// errors
 TOKEN : {
-    <IDENTIFIER_ERROR: (<DIGIT> | "_")<IDENTIFIER> >
+      < IDENTIFIER_ERROR_START: <DIGIT> <IDENTIFIER> >
+    | < REAL_NUMBER_ERROR_MALFORMED: ("-" | "+")? (<DIGIT>)* "." <DIGITS> "." <DIGITS> >
+    | < STRING_ERROR_UNTERMINATED: ("\"" (~["\""])* ) | ("\'" (~["\'"])* ) >
+    | < PUNCTUATION_ERROR_INVALID: ("++" | "--" ) >
 }
