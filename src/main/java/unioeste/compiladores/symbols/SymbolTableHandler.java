@@ -19,7 +19,6 @@ public class SymbolTableHandler {
             throw new LexicalException(token);
         }
 
-        System.out.println(token);
         symbolTable.add(token.image, token);
     }
 }

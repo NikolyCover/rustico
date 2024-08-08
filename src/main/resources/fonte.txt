@@ -5,5 +5,5 @@ fn main() {
 
 fn buceta() {
     println!("Hello World!");
-    1
+    i++
 }
