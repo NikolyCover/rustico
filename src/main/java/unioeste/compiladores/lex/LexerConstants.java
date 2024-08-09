@@ -233,17 +233,15 @@ public interface LexerConstants {
   /** RegularExpression Id. */
   int BLOCK_COMMENTS = 115;
   /** RegularExpression Id. */
-  int IDENTIFIER_END = 116;
+  int IDENTIFIER = 116;
   /** RegularExpression Id. */
-  int IDENTIFIER = 117;
+  int IDENTIFIER_ERROR_START = 117;
   /** RegularExpression Id. */
-  int IDENTIFIER_ERROR_START = 118;
+  int REAL_NUMBER_ERROR_MALFORMED = 118;
   /** RegularExpression Id. */
-  int REAL_NUMBER_ERROR_MALFORMED = 119;
+  int STRING_ERROR_UNTERMINATED = 119;
   /** RegularExpression Id. */
-  int STRING_ERROR_UNTERMINATED = 120;
-  /** RegularExpression Id. */
-  int PUNCTUATION_ERROR_INVALID = 121;
+  int PUNCTUATION_ERROR_INVALID = 120;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -366,7 +364,6 @@ public interface LexerConstants {
     "\")\"",
     "<LINE_COMMENT>",
     "<BLOCK_COMMENTS>",
-    "<IDENTIFIER_END>",
     "<IDENTIFIER>",
     "<IDENTIFIER_ERROR_START>",
     "<REAL_NUMBER_ERROR_MALFORMED>",
