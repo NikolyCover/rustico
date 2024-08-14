@@ -1,6 +1,6 @@
 package unioeste.compiladores;
 
-import unioeste.compiladores.symbols.LexicalAnalyzer;
+import unioeste.compiladores.analyser.LexicalAnalyzer;
 
 import java.util.Scanner;
 

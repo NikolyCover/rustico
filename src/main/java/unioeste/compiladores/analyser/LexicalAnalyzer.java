@@ -1,4 +1,4 @@
-package unioeste.compiladores.symbols;
+package unioeste.compiladores.analyser;
 
 import unioeste.compiladores.Main;
 import unioeste.compiladores.exception.LexicalException;
@@ -6,6 +6,7 @@ import unioeste.compiladores.lex.Lexer;
 import unioeste.compiladores.lex.LexerConstants;
 import unioeste.compiladores.lex.Token;
 import unioeste.compiladores.lex.TokenMgrError;
+import unioeste.compiladores.symbols.SymbolTable;
 
 import java.io.InputStream;
 

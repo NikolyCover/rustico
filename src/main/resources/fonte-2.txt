@@ -11,6 +11,7 @@ const THREAD_POOL_SIZE: usize = 4;
 fn 1main() {
     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
     let pool = ThreadPool::new(THREAD_POOL_SIZE);
+    pool++;
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();
@@ -19,6 +20,8 @@ fn 1main() {
             handle_connection(stream);
         });
     }
+
+    let 1a = 1.0.0;
 
     println!("Shutting down.");
 }
@@ -36,12 +39,12 @@ fn handle_connection(mut stream: TcpStream) {
         thread::sleep(std::time::Duration::from_secs(5));
         ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
     } else {
-        ("HTTP/1.1 404 NOT FOUND\r\n\r\n", "404.html")
+        ("HTTP/1.1 404 NOT FOUND\r\n\r\n", "404.html)
     };
 
     let contents = fs::read_to_string(filename).unwrap();
     let response = format!("{}{}", status_line, contents);
 
-    /*stream.write(response.as_bytes()).unwrap();
+    /*stream.write(response.as_bytes()).unwrap();*/
     stream.flush().unwrap();
 }
