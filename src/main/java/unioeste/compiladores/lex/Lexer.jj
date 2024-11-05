@@ -1,7 +1,9 @@
 PARSER_BEGIN(Lexer)
 package unioeste.compiladores.lex;
 
-import java.io.InputStream;public class Lexer {}
+import java.io.InputStream;
+
+public class Lexer {}
 
 PARSER_END(Lexer)
 
@@ -141,6 +143,27 @@ TOKEN: {
     | < RPAREN: ")" >
 }
 
+// built in types
+TOKEN: {
+    < TY_BOOL: "bool" >
+  | < TY_CHAR: "char" >
+  | < TY_STR: "str" >
+  | < TY_U8: "u8" >
+  | < TY_U16: "u16" >
+  | < TY_U32: "u32" >
+  | < TY_U64: "u64" >
+  | < TY_U128: "u128" >
+  | < TY_USIZE: "usize" >
+  | < TY_I8: "i8" >
+  | < TY_I16: "i16" >
+  | < TY_I32: "i32" >
+  | < TY_I64: "i64" >
+  | < TY_I128: "i128" >
+  | < TY_ISIZE: "isize" >
+  | < TY_F32: "f32" >
+  | < TY_F64: "f64" >
+}
+
 // comments
 TOKEN: {
       < LINE_COMMENT: "//" (~["\n", "\r"])* ["\n", "\r"] >
@@ -158,4 +181,147 @@ TOKEN : {
     | < REAL_NUMBER_ERROR_MALFORMED: ("-" | "+")? (<DIGIT>)* "." <DIGITS> "." <DIGITS> >
     | < STRING_ERROR_UNTERMINATED: ("\"" (~["\""])* ) | ("\'" (~["\'"])* ) >
     | < PUNCTUATION_ERROR_INVALID: ("++" | "--" ) >
+}
+
+void start(): {}
+{
+    (statement())*
+}
+
+void statement(): {}
+{
+    import_statement()
+    | variable_declaration()
+    | assignment_statement()
+    | conditional_statement()
+    | while_statement()
+    | for_statement()
+    | function_return_statement()
+    | block()
+    | expression()
+}
+
+void variable_declaration(): {}
+{
+    <KW_LET> (<KW_MUT>)? <IDENTIFIER> (<COLON> type_specifier())? (<EQ> expression())? <SEMI>
+}
+
+void expression(): {}
+{
+    logical_or_expression()
+}
+
+void import_statement(): {}
+{
+    <KW_USE> module_path() (<KW_AS> <IDENTIFIER> )? <SEMI>
+}
+
+void module_path(): {}
+{
+    <IDENTIFIER> ( <PATHSEP> <IDENTIFIER> )*
+}
+
+void assignment_statement(): {}
+{
+    <IDENTIFIER> assignment_operators() expression() <SEMI>
+}
+
+void assignment_operators(): {}
+{
+    <EQ> | <PLUSEQ> | <MINUSEQ> | <STAREQ> | <SLASHEQ> | <PERCENTEQ> | <CARETEQ>  | <ANDEQ> | <OREQ> | <SHLEQ> | <SHREQ>
+}
+
+void logical_or_expression(): {}
+{
+    logical_and_expression() ( <OROR> logical_and_expression())*
+}
+
+void logical_and_expression(): {}
+{
+     equality_expression() ( <ANDAND> equality_expression() )*
+}
+
+void equality_expression(): {}
+{
+    relational_expression() (( <EQEQ> | <NE> ) relational_expression())*
+}
+
+void relational_expression(): {}
+{
+     additive_expression() ( ( <LT> | <GT> | <LE> | <GE> ) additive_expression() )*
+}
+
+void additive_expression(): {}
+{
+    multiplicative_expression() ( ( <PLUS> | <MINUS> ) multiplicative_expression() )*
+}
+
+void multiplicative_expression(): {}
+{
+    unary_expression() ( ( <STAR> | <SLASH> | <PERCENT> ) unary_expression() )*
+}
+
+void unary_expression(): {}
+{
+    ( <PLUS> | <MINUS> | <NOT> )? primary_expression()
+}
+
+void primary_expression(): {}
+{
+    <INTEGER>
+    | <REAL>
+    | <DIGITS>
+    | <DIGIT>
+    | <STRING>
+    | <IDENTIFIER>
+    | <KW_TRUE>
+    | <KW_FALSE>
+    | "(" expression() ")"
+}
+
+void conditional_statement(): {}
+{
+    <KW_IF> <LPAREN> expression() <RPAREN> block() (<KW_ELSE> block())?
+}
+
+void block(): {}
+{
+    <LBRACE> (statement())* <RBRACE>
+}
+
+void while_statement(): {}
+{
+    <KW_WHILE> <LPAREN> expression() <RPAREN> block()
+}
+
+void for_statement(): {}
+{
+    <KW_FOR> <LBRACE> (variable_declaration() | assignment_statement()) <SEMI> expression() <SEMI> expression() <RPAREN> block()
+}
+
+void function_return_statement(): {}
+{
+    (<KW_RETURN> (expression())? <SEMI>) | expression()
+}
+
+void type_specifier(): {}
+{
+    <TY_BOOL>
+  | <TY_CHAR>
+  | <TY_STR>
+  | <TY_U8>
+  | <TY_U16>
+  | <TY_U32>
+  | <TY_U64>
+  | <TY_U128>
+  | <TY_USIZE>
+  | <TY_I8>
+  | <TY_I16>
+  | <TY_I32>
+  | <TY_I64>
+  | <TY_I128>
+  | <TY_ISIZE>
+  | <TY_F32>
+  | <TY_F64>
+  | <IDENTIFIER>
 }

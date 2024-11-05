@@ -229,19 +229,53 @@ public interface LexerConstants {
   /** RegularExpression Id. */
   int RPAREN = 113;
   /** RegularExpression Id. */
-  int LINE_COMMENT = 114;
+  int TY_BOOL = 114;
   /** RegularExpression Id. */
-  int BLOCK_COMMENTS = 115;
+  int TY_CHAR = 115;
   /** RegularExpression Id. */
-  int IDENTIFIER = 116;
+  int TY_STR = 116;
   /** RegularExpression Id. */
-  int IDENTIFIER_ERROR_START = 117;
+  int TY_U8 = 117;
   /** RegularExpression Id. */
-  int REAL_NUMBER_ERROR_MALFORMED = 118;
+  int TY_U16 = 118;
   /** RegularExpression Id. */
-  int STRING_ERROR_UNTERMINATED = 119;
+  int TY_U32 = 119;
   /** RegularExpression Id. */
-  int PUNCTUATION_ERROR_INVALID = 120;
+  int TY_U64 = 120;
+  /** RegularExpression Id. */
+  int TY_U128 = 121;
+  /** RegularExpression Id. */
+  int TY_USIZE = 122;
+  /** RegularExpression Id. */
+  int TY_I8 = 123;
+  /** RegularExpression Id. */
+  int TY_I16 = 124;
+  /** RegularExpression Id. */
+  int TY_I32 = 125;
+  /** RegularExpression Id. */
+  int TY_I64 = 126;
+  /** RegularExpression Id. */
+  int TY_I128 = 127;
+  /** RegularExpression Id. */
+  int TY_ISIZE = 128;
+  /** RegularExpression Id. */
+  int TY_F32 = 129;
+  /** RegularExpression Id. */
+  int TY_F64 = 130;
+  /** RegularExpression Id. */
+  int LINE_COMMENT = 131;
+  /** RegularExpression Id. */
+  int BLOCK_COMMENTS = 132;
+  /** RegularExpression Id. */
+  int IDENTIFIER = 133;
+  /** RegularExpression Id. */
+  int IDENTIFIER_ERROR_START = 134;
+  /** RegularExpression Id. */
+  int REAL_NUMBER_ERROR_MALFORMED = 135;
+  /** RegularExpression Id. */
+  int STRING_ERROR_UNTERMINATED = 136;
+  /** RegularExpression Id. */
+  int PUNCTUATION_ERROR_INVALID = 137;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -362,6 +396,23 @@ public interface LexerConstants {
     "\"]\"",
     "\"(\"",
     "\")\"",
+    "\"bool\"",
+    "\"char\"",
+    "\"str\"",
+    "\"u8\"",
+    "\"u16\"",
+    "\"u32\"",
+    "\"u64\"",
+    "\"u128\"",
+    "\"usize\"",
+    "\"i8\"",
+    "\"i16\"",
+    "\"i32\"",
+    "\"i64\"",
+    "\"i128\"",
+    "\"isize\"",
+    "\"f32\"",
+    "\"f64\"",
     "<LINE_COMMENT>",
     "<BLOCK_COMMENTS>",
     "<IDENTIFIER>",
