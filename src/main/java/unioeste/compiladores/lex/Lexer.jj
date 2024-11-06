@@ -1,3 +1,7 @@
+options {
+    STATIC = false;
+}
+
 PARSER_BEGIN(Lexer)
 package unioeste.compiladores.lex;
 
@@ -185,19 +189,23 @@ TOKEN : {
 
 void start(): {}
 {
-    (statement())*
+    ( statement())*
 }
 
 void statement(): {}
 {
-    import_statement()
-    | variable_declaration()
-    | assignment_statement()
+     import_statement()
+    | LOOKAHEAD(2) variable_declaration()
     | conditional_statement()
+    | LOOKAHEAD(2) function_declaration()
+    | LOOKAHEAD(2) assignment_statement()
     | while_statement()
     | for_statement()
-    | function_return_statement()
+    | loop_statement()
+    | match_statement()
     | block()
+    | function_call_statement()
+    | function_return_statement()
     | expression()
 }
 
@@ -213,7 +221,7 @@ void expression(): {}
 
 void import_statement(): {}
 {
-    <KW_USE> module_path() (<KW_AS> <IDENTIFIER> )? <SEMI>
+   <KW_USE> module_path() (<KW_AS> <IDENTIFIER>)? <SEMI>
 }
 
 void module_path(): {}
@@ -228,17 +236,17 @@ void assignment_statement(): {}
 
 void assignment_operators(): {}
 {
-    <EQ> | <PLUSEQ> | <MINUSEQ> | <STAREQ> | <SLASHEQ> | <PERCENTEQ> | <CARETEQ>  | <ANDEQ> | <OREQ> | <SHLEQ> | <SHREQ>
+    <EQ> | <PLUSEQ> | <MINUSEQ> | <STAREQ> | <SLASHEQ> | <PERCENTEQ> | <CARETEQ> | <ANDEQ> | <OREQ> | <SHLEQ> | <SHREQ>
 }
 
 void logical_or_expression(): {}
 {
-    logical_and_expression() ( <OROR> logical_and_expression())*
+     logical_and_expression() ( <OROR> logical_and_expression())*
 }
 
 void logical_and_expression(): {}
 {
-     equality_expression() ( <ANDAND> equality_expression() )*
+    equality_expression() ( <ANDAND> equality_expression() )*
 }
 
 void equality_expression(): {}
@@ -248,7 +256,7 @@ void equality_expression(): {}
 
 void relational_expression(): {}
 {
-     additive_expression() ( ( <LT> | <GT> | <LE> | <GE> ) additive_expression() )*
+    additive_expression() ( ( <LT> | <GT> | <LE> | <GE> ) additive_expression() )*
 }
 
 void additive_expression(): {}
@@ -281,47 +289,107 @@ void primary_expression(): {}
 
 void conditional_statement(): {}
 {
-    <KW_IF> <LPAREN> expression() <RPAREN> block() (<KW_ELSE> block())?
+     <KW_IF> conditional_expression() block() (<KW_ELSE> block())?
+}
+
+void conditional_expression():{}
+{
+    (<LPAREN> expression() <RPAREN>) | expression()
 }
 
 void block(): {}
 {
-    <LBRACE> (statement())* <RBRACE>
+    <LBRACE> ( statement())* <RBRACE>
 }
 
 void while_statement(): {}
 {
-    <KW_WHILE> <LPAREN> expression() <RPAREN> block()
+     <KW_WHILE> <LPAREN> expression() <RPAREN> block()
 }
 
 void for_statement(): {}
 {
-    <KW_FOR> <LBRACE> (variable_declaration() | assignment_statement()) <SEMI> expression() <SEMI> expression() <RPAREN> block()
+     <KW_FOR> <LPAREN> (variable_declaration() | assignment_statement()) <SEMI> expression() <SEMI> expression() <RPAREN> block()
+}
+
+void loop_statement(): {}
+{
+     <KW_LOOP> block()
 }
 
 void function_return_statement(): {}
 {
-    (<KW_RETURN> (expression())? <SEMI>) | expression()
+    <KW_RETURN> (expression())? <SEMI>
+}
+
+void function_declaration(): {}
+{
+     <KW_FN> <IDENTIFIER> <LPAREN> function_params() <RPAREN> (<RARROW> type_specifier())? block()
+}
+
+void function_params(): {}
+{
+    (parameter() ( <COMMA> parameter() )* )?
+}
+
+void parameter(): {}
+{
+    <IDENTIFIER> <COLON> type_specifier()
+}
+
+void function_call_statement(): {}
+{
+    <IDENTIFIER> (<NOT>)? <LPAREN> function_arguments() <RPAREN> <SEMI>
+}
+
+void function_arguments(): {}
+{
+    (expression() (<COMMA> expression())*)?
+}
+
+void match_statement(): {}
+{
+     <KW_MATCH> match_expression() <LBRACE> match_block() <RBRACE>
+}
+
+void match_block(): {}
+{
+    (match_arm() ("," match_arm())* (",")?)?
+}
+
+void match_arm(): {}
+{
+    pattern() <RARROW> (expression() | block())
+}
+
+void pattern(): {}
+{
+    <INTEGER> | <STRING> | <IDENTIFIER> | "_"
+}
+
+void match_expression(): {}
+{
+    (<LPAREN> expression() <RPAREN>) | expression()
 }
 
 void type_specifier(): {}
 {
     <TY_BOOL>
-  | <TY_CHAR>
-  | <TY_STR>
-  | <TY_U8>
-  | <TY_U16>
-  | <TY_U32>
-  | <TY_U64>
-  | <TY_U128>
-  | <TY_USIZE>
-  | <TY_I8>
-  | <TY_I16>
-  | <TY_I32>
-  | <TY_I64>
-  | <TY_I128>
-  | <TY_ISIZE>
-  | <TY_F32>
-  | <TY_F64>
-  | <IDENTIFIER>
+    | <TY_CHAR>
+    | <TY_STR>
+    | <TY_U8>
+    | <TY_U16>
+    | <TY_U32>
+    | <TY_U64>
+    | <TY_U128>
+    | <TY_USIZE>
+    | <TY_I8>
+    | <TY_I16>
+    | <TY_I32>
+    | <TY_I64>
+    | <TY_I128>
+    | <TY_ISIZE>
+    | <TY_F32>
+    | <TY_F64>
+    | <IDENTIFIER>
 }
