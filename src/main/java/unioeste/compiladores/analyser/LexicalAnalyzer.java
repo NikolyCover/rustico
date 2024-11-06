@@ -1,28 +1,21 @@
 package unioeste.compiladores.analyser;
 
-import unioeste.compiladores.Main;
 import unioeste.compiladores.exception.LexicalException;
 import unioeste.compiladores.lex.Lexer;
 import unioeste.compiladores.lex.LexerConstants;
 import unioeste.compiladores.lex.Token;
 import unioeste.compiladores.lex.TokenMgrError;
 import unioeste.compiladores.symbols.SymbolTable;
-
-import java.io.InputStream;
+import unioeste.compiladores.utils.LexerUtilities;
 
 public class LexicalAnalyzer {
-    private final String sourceFilename;
     private final Lexer lexer;
 
     private final SymbolTable reservedKeysTable;
     private final SymbolTable symbolTable;
 
-    public LexicalAnalyzer(String sourceFilename) {
-        InputStream sourceFile = readFile(sourceFilename);
-
-        this.sourceFilename = sourceFilename;
-        this.lexer = new Lexer(sourceFile);
-
+    public LexicalAnalyzer(Lexer lexer) {
+        this.lexer = lexer;
         this.reservedKeysTable = new SymbolTable();
         this.symbolTable = new SymbolTable();
     }
@@ -42,11 +35,11 @@ public class LexicalAnalyzer {
         }
     }
 
-    private static InputStream readFile(String filename) {
-        ClassLoader classLoader = Main.class.getClassLoader();
-
-        return classLoader.getResourceAsStream(filename);
+    public Lexer getLexer(){
+        return lexer;
     }
+
+
 
     private void handleSymbolTable(Token token) throws LexicalException {
         if(token.kind == LexerConstants.LINE_COMMENT || token.kind == LexerConstants.BLOCK_COMMENTS){
@@ -63,10 +56,6 @@ public class LexicalAnalyzer {
         }
 
         symbolTable.add(token.image, token);
-    }
-
-    public String getSourceFilename() {
-        return sourceFilename;
     }
 
     public SymbolTable getSymbolTable() {
