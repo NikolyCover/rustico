@@ -6,8 +6,9 @@ main();
 
 if x > 5 {
     number = 10;
+    //number++++;
 } else {
-print!("OIII";
+print!("OIII");
     return 1 + 2;
 }
 

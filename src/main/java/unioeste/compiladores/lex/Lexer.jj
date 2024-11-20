@@ -7,7 +7,7 @@ package unioeste.compiladores.lex;
 
 import java.io.InputStream;
 
-public class Lexer {}
+ public class Lexer {}
 
 PARSER_END(Lexer)
 
@@ -184,7 +184,7 @@ TOKEN : {
       < IDENTIFIER_ERROR_START: <AT> (["a"-"z", "A"-"Z", "0"-"9", "_"])*  | <DIGIT> (["a"-"z", "A"-"Z", "0"-"9", "_"])*  | <UNDERSCORE> >
     | < REAL_NUMBER_ERROR_MALFORMED: ("-" | "+")? (<DIGIT>)* "." <DIGITS> "." <DIGITS> >
     | < STRING_ERROR_UNTERMINATED: ("\"" (~["\""])* ) | ("\'" (~["\'"])* ) >
-    | < PUNCTUATION_ERROR_INVALID: ("++" | "--" ) >
+    | < PUNCTUATION_ERROR_INVALID: (("+") ("+")+ | ("-") ("-")+ ) >
 }
 
 void start(): {}

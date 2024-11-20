@@ -8,10 +8,10 @@ use threadpool::ThreadPool;
 
 const THREAD_POOL_SIZE: usize = 4;
 
-fn 1main() {
+fn main() {
     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
     let pool = ThreadPool::new(THREAD_POOL_SIZE);
-    pool++;
+    pool + = 0;
 
     for stream in listener.incoming() {
         let stream = stream.unwrap();

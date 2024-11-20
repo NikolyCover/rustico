@@ -3,7 +3,7 @@ package unioeste.compiladores.lex;
 
 import java.io.InputStream;
 
-public class Lexer implements LexerConstants {
+ public class Lexer implements LexerConstants {
 
   final public void start() throws ParseException {
     label_1:
@@ -1282,4 +1282,4 @@ public class Lexer implements LexerConstants {
     JJCalls next;
   }
 
-                    }
+                     }
