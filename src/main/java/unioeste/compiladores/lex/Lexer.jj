@@ -6,6 +6,7 @@ PARSER_BEGIN(Lexer)
 package unioeste.compiladores.lex;
 
 import java.io.InputStream;
+import unioeste.compiladores.symbols.TreeNode;
 
  public class Lexer {}
 
@@ -187,14 +188,18 @@ TOKEN : {
     | < PUNCTUATION_ERROR_INVALID: (("+") ("+")+ | ("-") ("-")+ ) >
 }
 
-void start(): {}
+void start(TreeNode parent): {}
 {
-    ( statement())*
+    ( statement(parent))*
 }
 
-void statement(): {}
+void statement(TreeNode parent):
 {
-     import_statement()
+    TreeNode statementNode = new TreeNode("statement");
+    parent.addChild(statementNode);
+}
+{
+     import_statement(statementNode)
     | LOOKAHEAD(2) variable_declaration()
     | conditional_statement()
     | LOOKAHEAD(2) function_declaration()
@@ -204,9 +209,9 @@ void statement(): {}
     | loop_statement()
     | match_statement()
     | block()
-    | function_call_statement()
+    | LOOKAHEAD(2) function_call_statement()
     | function_return_statement()
-    | expression()
+    | LOOKAHEAD(2) expression()
 }
 
 void variable_declaration(): {}
@@ -219,14 +224,26 @@ void expression(): {}
     logical_or_expression()
 }
 
-void import_statement(): {}
+void import_statement(TreeNode parent):
 {
-   <KW_USE> module_path() (<KW_AS> <IDENTIFIER>)? <SEMI>
+    TreeNode importNode = new TreeNode("import_statement");
+    parent.addChild(importNode);
+}
+{
+    <KW_USE> {  importNode.addChild(new TreeNode("KW_USE")); }
+    module_path(importNode)
+    (<KW_AS> { importNode.addChild(new TreeNode("KW_AS")); } <IDENTIFIER> { importNode.addChild(new TreeNode("IDENTIFIER")); })?
+    <SEMI> { importNode.addChild(new TreeNode("SEMI")); }
 }
 
-void module_path(): {}
+void module_path(TreeNode parent):
 {
-    <IDENTIFIER> ( <PATHSEP> <IDENTIFIER> )*
+    TreeNode modulePathNode = new TreeNode("module_path");
+    parent.addChild(modulePathNode);
+}
+{
+    <IDENTIFIER> { modulePathNode.addChild(new TreeNode("IDENTIFIER")); }
+     ( <PATHSEP> { modulePathNode.addChild(new TreeNode("PATHSEP")); } <IDENTIFIER> { modulePathNode.addChild(new TreeNode("IDENTIFIER")); } )*
 }
 
 void assignment_statement(): {}
@@ -261,7 +278,7 @@ void relational_expression(): {}
 
 void additive_expression(): {}
 {
-    multiplicative_expression() ( ( <PLUS> | <MINUS> ) multiplicative_expression() )*
+    multiplicative_expression() ( LOOKAHEAD(2) ( <PLUS> | <MINUS> ) multiplicative_expression() )*
 }
 
 void multiplicative_expression(): {}
@@ -294,12 +311,14 @@ void conditional_statement(): {}
 
 void conditional_expression():{}
 {
-    (<LPAREN> expression() <RPAREN>) | expression()
+    LOOKAHEAD(2) <LPAREN> expression() <RPAREN> | expression()
 }
 
-void block(): {}
+void block(): {
+         TreeNode temporaryNode = new TreeNode("TEMPORARY");
+     }
 {
-    <LBRACE> ( statement())* <RBRACE>
+    <LBRACE> ( statement(temporaryNode))* <RBRACE>
 }
 
 void while_statement(): {}
@@ -354,7 +373,7 @@ void match_statement(): {}
 
 void match_block(): {}
 {
-    (match_arm() ("," match_arm())* (",")?)?
+    (match_arm() (LOOKAHEAD(2) "," match_arm())* (",")?)?
 }
 
 void match_arm(): {}
@@ -369,7 +388,7 @@ void pattern(): {}
 
 void match_expression(): {}
 {
-    (<LPAREN> expression() <RPAREN>) | expression()
+    LOOKAHEAD(2) <LPAREN> expression() <RPAREN> | expression()
 }
 
 void type_specifier(): {}

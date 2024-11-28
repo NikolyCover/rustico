@@ -28,9 +28,8 @@ public class Main {
 
         SyntacticAnalyser syntacticAnalyser = new SyntacticAnalyser(lexer);
 
-        System.out.println("\nIniciando análise sintática...");
         syntacticAnalyser.startAnalysis();
 
-        System.out.println("Análise sintática concluída com sucesso.");
+        System.out.println("\n\nAnálise léxica e sintática concluídas com sucesso!.");
     }
 }

@@ -3,6 +3,7 @@ package unioeste.compiladores.analyser;
 import unioeste.compiladores.exception.SyntacticException;
 import unioeste.compiladores.lex.Lexer;
 import unioeste.compiladores.lex.ParseException;
+import unioeste.compiladores.symbols.TreeNode;
 
 public class SyntacticAnalyser {
     private final Lexer lexer;
@@ -21,9 +22,13 @@ public class SyntacticAnalyser {
     }
 
     private void parseStart() throws SyntacticException {
+        TreeNode treeNode = new TreeNode("start");
+
         try{
-            lexer.start();
-            System.out.println("Parsing completed successfully.");
+            lexer.start(treeNode);
+
+            System.out.println("\n\nÁrvore de análise sintática:\n");
+            treeNode.print(0);
         }
         catch (ParseException e){
             throw new SyntacticException(e.currentToken, e.expectedTokenSequences, e.tokenImage);
