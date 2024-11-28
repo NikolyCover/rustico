@@ -195,220 +195,437 @@ void start(TreeNode parent): {}
 
 void statement(TreeNode parent):
 {
-    TreeNode statementNode = new TreeNode("statement");
-    parent.addChild(statementNode);
+    TreeNode node = new TreeNode("statement");
+    parent.addChild(node);
 }
 {
-     import_statement(statementNode)
-    | LOOKAHEAD(2) variable_declaration()
-    | conditional_statement()
-    | LOOKAHEAD(2) function_declaration()
-    | LOOKAHEAD(2) assignment_statement()
-    | while_statement()
-    | for_statement()
-    | loop_statement()
-    | match_statement()
-    | block()
-    | LOOKAHEAD(2) function_call_statement()
-    | function_return_statement()
-    | LOOKAHEAD(2) expression()
-}
-
-void variable_declaration(): {}
-{
-    <KW_LET> (<KW_MUT>)? <IDENTIFIER> (<COLON> type_specifier())? (<EQ> expression())? <SEMI>
+     import_statement(node)
+    | LOOKAHEAD(2) variable_declaration(node)
+    | conditional_statement(node)
+    | LOOKAHEAD(2) function_declaration(node)
+    | LOOKAHEAD(2) assignment_statement(node)
+    | while_statement(node)
+    | for_statement(node)
+    | loop_statement(node)
+    | match_statement(node)
+    | block(node)
+    | LOOKAHEAD(2) function_call_statement(node)
+    | function_return_statement(node)
+    | LOOKAHEAD(2) expression(node)
 }
 
-void expression(): {}
+void variable_declaration(TreeNode parent):
 {
-    logical_or_expression()
+    TreeNode node = new TreeNode("variable_declaration");
+    parent.addChild(node);
+}
+{
+    <KW_LET> {  node.addChild(new TreeNode("KW_LET")); }
+    (<KW_MUT> {  node.addChild(new TreeNode("KW_MUT")); })?
+    <IDENTIFIER> {  node.addChild(new TreeNode("IDENTIFIER")); }
+    (<COLON> {  node.addChild(new TreeNode("COLON")); } type_specifier(node))?
+    (<EQ> {  node.addChild(new TreeNode("EQ")); } expression(node))?
+    <SEMI> {  node.addChild(new TreeNode("SEMI")); }
+}
+
+void expression(TreeNode parent):
+{
+    TreeNode node = new TreeNode("expression");
+    parent.addChild(node);
+}
+{
+    logical_or_expression(node)
 }
 
 void import_statement(TreeNode parent):
 {
-    TreeNode importNode = new TreeNode("import_statement");
-    parent.addChild(importNode);
+    TreeNode node = new TreeNode("import_statement");
+    parent.addChild(node);
 }
 {
-    <KW_USE> {  importNode.addChild(new TreeNode("KW_USE")); }
-    module_path(importNode)
-    (<KW_AS> { importNode.addChild(new TreeNode("KW_AS")); } <IDENTIFIER> { importNode.addChild(new TreeNode("IDENTIFIER")); })?
-    <SEMI> { importNode.addChild(new TreeNode("SEMI")); }
+    <KW_USE> {  node.addChild(new TreeNode("KW_USE")); }
+    module_path(node)
+    (<KW_AS> { node.addChild(new TreeNode("KW_AS")); } <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); })?
+    <SEMI> { node.addChild(new TreeNode("SEMI")); }
 }
 
 void module_path(TreeNode parent):
 {
-    TreeNode modulePathNode = new TreeNode("module_path");
-    parent.addChild(modulePathNode);
+    TreeNode node = new TreeNode("module_path");
+    parent.addChild(node);
 }
 {
-    <IDENTIFIER> { modulePathNode.addChild(new TreeNode("IDENTIFIER")); }
-     ( <PATHSEP> { modulePathNode.addChild(new TreeNode("PATHSEP")); } <IDENTIFIER> { modulePathNode.addChild(new TreeNode("IDENTIFIER")); } )*
-}
-
-void assignment_statement(): {}
-{
-    <IDENTIFIER> assignment_operators() expression() <SEMI>
+    <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
+     ( <PATHSEP> { node.addChild(new TreeNode("PATHSEP")); } <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); } )*
 }
 
-void assignment_operators(): {}
+void assignment_statement(TreeNode parent):
 {
-    <EQ> | <PLUSEQ> | <MINUSEQ> | <STAREQ> | <SLASHEQ> | <PERCENTEQ> | <CARETEQ> | <ANDEQ> | <OREQ> | <SHLEQ> | <SHREQ>
+    TreeNode node = new TreeNode("assignment_statement");
+    parent.addChild(node);
+}
+{
+    <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
+    assignment_operators(node)
+    expression(node)
+    <SEMI> { node.addChild(new TreeNode("SEMI")); }
 }
 
-void logical_or_expression(): {}
+void assignment_operators(TreeNode parent):
 {
-     logical_and_expression() ( <OROR> logical_and_expression())*
+    TreeNode node = new TreeNode("assignment_operators");
+    parent.addChild(node);
+}
+{
+      <EQ> { node.addChild(new TreeNode("EQ")); }
+    | <PLUSEQ> { node.addChild(new TreeNode("PLUSEQ")); }
+    | <MINUSEQ> { node.addChild(new TreeNode("MINUSEQ")); }
+    | <STAREQ> { node.addChild(new TreeNode("STAREQ")); }
+    | <SLASHEQ> { node.addChild(new TreeNode("SLASHEQ")); }
+    | <PERCENTEQ> { node.addChild(new TreeNode("PERCENTEQ")); }
+    | <CARETEQ> { node.addChild(new TreeNode("CARETEQ")); }
+    | <ANDEQ> { node.addChild(new TreeNode("ANDEQ")); }
+    | <OREQ> { node.addChild(new TreeNode("OREQ")); }
+    | <SHLEQ> { node.addChild(new TreeNode("SHLEQ")); }
+    | <SHREQ> { node.addChild(new TreeNode("SHREQ")); }
 }
 
-void logical_and_expression(): {}
+void logical_or_expression(TreeNode parent):
 {
-    equality_expression() ( <ANDAND> equality_expression() )*
+    TreeNode node = new TreeNode("logical_or_expression");
+    parent.addChild(node);
+}
+{
+     logical_and_expression(node)
+     ( <OROR>   logical_and_expression(node))*
 }
 
-void equality_expression(): {}
+void logical_and_expression(TreeNode parent):
 {
-    relational_expression() (( <EQEQ> | <NE> ) relational_expression())*
+    TreeNode node = new TreeNode("logical_and_expression");
+    parent.addChild(node);
+}
+{
+    equality_expression(node)
+    ( <ANDAND> { node.addChild(new TreeNode("ANDAND")); } equality_expression(node) )*
 }
 
-void relational_expression(): {}
+void equality_expression(TreeNode parent):
 {
-    additive_expression() ( ( <LT> | <GT> | <LE> | <GE> ) additive_expression() )*
+    TreeNode node = new TreeNode("equality_expression");
+    parent.addChild(node);
+}
+{
+    relational_expression(node)
+    (
+        ( <EQEQ> { node.addChild(new TreeNode("EQEQ")); } | <NE> { node.addChild(new TreeNode("NE")); } )
+        relational_expression(node)
+    )*
 }
 
-void additive_expression(): {}
+void relational_expression(TreeNode parent):
 {
-    multiplicative_expression() ( LOOKAHEAD(2) ( <PLUS> | <MINUS> ) multiplicative_expression() )*
+    TreeNode node = new TreeNode("relational_expression");
+    parent.addChild(node);
+}
+{
+    additive_expression(node)
+    (
+        (
+              <LT> { node.addChild(new TreeNode("LT")); }
+            | <GT> { node.addChild(new TreeNode("GT")); }
+            | <LE> { node.addChild(new TreeNode("LE")); }
+            | <GE> { node.addChild(new TreeNode("GE")); }
+        )
+        additive_expression(node)
+    )*
 }
 
-void multiplicative_expression(): {}
+void additive_expression(TreeNode parent):
 {
-    unary_expression() ( ( <STAR> | <SLASH> | <PERCENT> ) unary_expression() )*
+    TreeNode node = new TreeNode("additive_expression");
+    parent.addChild(node);
+}
+{
+    multiplicative_expression(node)
+    (
+        LOOKAHEAD(2)
+        ( <PLUS> { node.addChild(new TreeNode("PLUS")); } | <MINUS> { node.addChild(new TreeNode("MINUS")); } )
+        multiplicative_expression(node)
+    )*
 }
 
-void unary_expression(): {}
+void multiplicative_expression(TreeNode parent):
 {
-    ( <PLUS> | <MINUS> | <NOT> )? primary_expression()
+    TreeNode node = new TreeNode("multiplicative_expression");
+    parent.addChild(node);
+}
+{
+    unary_expression(node)
+    (
+        (
+              <STAR> { node.addChild(new TreeNode("STAR")); }
+            | <SLASH> { node.addChild(new TreeNode("SLASH")); }
+            | <PERCENT> { node.addChild(new TreeNode("PERCENT")); }
+        )
+        unary_expression(node)
+    )*
 }
 
-void primary_expression(): {}
+void unary_expression(TreeNode parent):
 {
-    <INTEGER>
-    | <REAL>
-    | <DIGITS>
-    | <DIGIT>
-    | <STRING>
-    | <IDENTIFIER>
-    | <KW_TRUE>
-    | <KW_FALSE>
-    | "(" expression() ")"
+    TreeNode node = new TreeNode("unary_expression");
+    parent.addChild(node);
+}
+{
+    (
+          <PLUS> { node.addChild(new TreeNode("PLUS")); }
+        | <MINUS> { node.addChild(new TreeNode("MINUS")); }
+        | <NOT> { node.addChild(new TreeNode("NOT")); }
+    )?
+    primary_expression(node)
 }
 
-void conditional_statement(): {}
+void primary_expression(TreeNode parent):
 {
-     <KW_IF> conditional_expression() block() (<KW_ELSE> block())?
+    TreeNode node = new TreeNode("primary_expression");
+    parent.addChild(node);
+}
+{
+      <INTEGER> { node.addChild(new TreeNode("INTEGER")); }
+    | <REAL> { node.addChild(new TreeNode("REAL")); }
+    | <DIGITS> { node.addChild(new TreeNode("DIGITS")); }
+    | <DIGIT> { node.addChild(new TreeNode("DIGIT")); }
+    | <STRING> { node.addChild(new TreeNode("STRING")); }
+    | <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
+    | <KW_TRUE> { node.addChild(new TreeNode("KW_TRUE")); }
+    | <KW_FALSE> { node.addChild(new TreeNode("KW_FALSE")); }
+    | "(" expression(node) ")"
 }
 
-void conditional_expression():{}
+void conditional_statement(TreeNode parent):
 {
-    LOOKAHEAD(2) <LPAREN> expression() <RPAREN> | expression()
+    TreeNode node = new TreeNode("conditional_statement");
+    parent.addChild(node);
+}
+{
+     <KW_IF> { node.addChild(new TreeNode("KW_IF")); }
+     conditional_expression(node)
+     block(node)
+     (<KW_ELSE> { node.addChild(new TreeNode("KW_ELSE")); } block(node))?
 }
 
-void block(): {
-         TreeNode temporaryNode = new TreeNode("TEMPORARY");
-     }
+void conditional_expression(TreeNode parent):
 {
-    <LBRACE> ( statement(temporaryNode))* <RBRACE>
+    TreeNode node = new TreeNode("conditional_expression");
+    parent.addChild(node);
+}
+{
+    LOOKAHEAD(2)
+      <LPAREN> { node.addChild(new TreeNode("LPAREN")); } expression(node) <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
+    | expression(node)
 }
 
-void while_statement(): {}
+void block(TreeNode parent):
 {
-     <KW_WHILE> <LPAREN> expression() <RPAREN> block()
+    TreeNode node = new TreeNode("block");
+    parent.addChild(node);
+}
+{
+    <LBRACE> { node.addChild(new TreeNode("LBRACE")); }
+    ( statement(node))*
+    <RBRACE> { node.addChild(new TreeNode("RBRACE")); }
 }
 
-void for_statement(): {}
+void while_statement(TreeNode parent):
 {
-     <KW_FOR> <LPAREN> (variable_declaration() | assignment_statement()) <SEMI> expression() <SEMI> expression() <RPAREN> block()
+    TreeNode node = new TreeNode("while_statement");
+    parent.addChild(node);
+}
+{
+     <KW_WHILE> { node.addChild(new TreeNode("KW_WHILE")); }
+     <LPAREN> { node.addChild(new TreeNode("LPAREN")); }
+     expression(node)
+     <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
+     block(node)
 }
 
-void loop_statement(): {}
+void for_statement(TreeNode parent):
 {
-     <KW_LOOP> block()
+    TreeNode node = new TreeNode("for_statement");
+    parent.addChild(node);
+}
+{
+     <KW_FOR>  { node.addChild(new TreeNode("KW_FOR")); }
+     <LPAREN> { node.addChild(new TreeNode("LPAREN")); }
+     (variable_declaration(node) | assignment_statement(node))
+     <SEMI> { node.addChild(new TreeNode("SEMI")); }
+     expression(node)
+     <SEMI> { node.addChild(new TreeNode("SEMI")); }
+     expression(node)
+     <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
+     block(node)
 }
 
-void function_return_statement(): {}
+void loop_statement(TreeNode parent):
 {
-    <KW_RETURN> (expression())? <SEMI>
+    TreeNode node = new TreeNode("loop_statement");
+    parent.addChild(node);
+}
+{
+     <KW_LOOP> { node.addChild(new TreeNode("KW_LOOP")); } block(node)
 }
 
-void function_declaration(): {}
+void function_return_statement(TreeNode parent):
 {
-     <KW_FN> <IDENTIFIER> <LPAREN> function_params() <RPAREN> (<RARROW> type_specifier())? block()
+    TreeNode node = new TreeNode("function_return_statement");
+    parent.addChild(node);
+}
+{
+    <KW_RETURN> { node.addChild(new TreeNode("KW_RETURN")); }
+    (expression(node))?
+    <SEMI> { node.addChild(new TreeNode("SEMI")); }
 }
 
-void function_params(): {}
+void function_declaration(TreeNode parent):
 {
-    (parameter() ( <COMMA> parameter() )* )?
+    TreeNode node = new TreeNode("function_declaration");
+    parent.addChild(node);
+}
+{
+     <KW_FN> { node.addChild(new TreeNode("KW_FN")); }
+     <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
+     <LPAREN> { node.addChild(new TreeNode("LPAREN")); }
+     function_params(node)
+     <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
+     (<RARROW> { node.addChild(new TreeNode("RARROW")); } type_specifier(node))?
+     block(node)
 }
 
-void parameter(): {}
+void function_params(TreeNode parent):
 {
-    <IDENTIFIER> <COLON> type_specifier()
+    TreeNode node = new TreeNode("function_params");
+    parent.addChild(node);
+}
+{
+    (parameter(node) ( <COMMA> { node.addChild(new TreeNode("COMMA")); } parameter(node) )* )?
 }
 
-void function_call_statement(): {}
+void parameter(TreeNode parent):
 {
-    <IDENTIFIER> (<NOT>)? <LPAREN> function_arguments() <RPAREN> <SEMI>
+    TreeNode node = new TreeNode("parameter");
+    parent.addChild(node);
+}
+{
+    <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
+    <COLON> { node.addChild(new TreeNode("COLON")); }
+    type_specifier(node)
 }
 
-void function_arguments(): {}
+void function_call_statement(TreeNode parent):
 {
-    (expression() (<COMMA> expression())*)?
+    TreeNode node = new TreeNode("function_call_statement");
+    parent.addChild(node);
+}
+{
+    <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
+    (<NOT> { node.addChild(new TreeNode("NOT")); } )?
+    <LPAREN> { node.addChild(new TreeNode("LPAREN")); }
+    function_arguments(node)
+    <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
+    <SEMI> { node.addChild(new TreeNode("SEMI")); }
 }
 
-void match_statement(): {}
+void function_arguments(TreeNode parent):
 {
-     <KW_MATCH> match_expression() <LBRACE> match_block() <RBRACE>
+    TreeNode node = new TreeNode("function_arguments");
+    parent.addChild(node);
+}
+{
+    (expression(node) (<COMMA> { node.addChild(new TreeNode("COMMA")); } expression(node))*)?
 }
 
-void match_block(): {}
+void match_statement(TreeNode parent):
 {
-    (match_arm() (LOOKAHEAD(2) "," match_arm())* (",")?)?
+    TreeNode node = new TreeNode("match_statement");
+    parent.addChild(node);
+}
+{
+     <KW_MATCH> { node.addChild(new TreeNode("KW_MATCH")); }
+     match_expression(node)
+     <LBRACE> { node.addChild(new TreeNode("LBRACE")); }
+     match_block(node)
+     <RBRACE> { node.addChild(new TreeNode("RBRACE")); }
 }
 
-void match_arm(): {}
+void match_block(TreeNode parent):
 {
-    pattern() <RARROW> (expression() | block())
+    TreeNode node = new TreeNode("match_block");
+    parent.addChild(node);
+}
+{
+    (
+        match_arm(node)
+        (LOOKAHEAD(2) "," { node.addChild(new TreeNode(",")); } match_arm(node))* ("," { node.addChild(new TreeNode(",")); })?
+    )?
 }
 
-void pattern(): {}
+void match_arm(TreeNode parent):
 {
-    <INTEGER> | <STRING> | <IDENTIFIER> | "_"
+    TreeNode node = new TreeNode("match_arm");
+    parent.addChild(node);
+}
+{
+    pattern(node) <RARROW> { node.addChild(new TreeNode("RARROW")); } (expression(node) | block(node))
 }
 
-void match_expression(): {}
+void pattern(TreeNode parent):
 {
-    LOOKAHEAD(2) <LPAREN> expression() <RPAREN> | expression()
+    TreeNode node = new TreeNode("pattern");
+    parent.addChild(node);
+}
+{
+    <INTEGER> { node.addChild(new TreeNode("INTEGER")); }
+    | <STRING> { node.addChild(new TreeNode("STRING")); }
+    | <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
+    | "_" { node.addChild(new TreeNode("_")); }
 }
 
-void type_specifier(): {}
+void match_expression(TreeNode parent):
 {
-    <TY_BOOL>
-    | <TY_CHAR>
-    | <TY_STR>
-    | <TY_U8>
-    | <TY_U16>
-    | <TY_U32>
-    | <TY_U64>
-    | <TY_U128>
-    | <TY_USIZE>
-    | <TY_I8>
-    | <TY_I16>
-    | <TY_I32>
-    | <TY_I64>
-    | <TY_I128>
-    | <TY_ISIZE>
-    | <TY_F32>
-    | <TY_F64>
-    | <IDENTIFIER>
+    TreeNode node = new TreeNode("match_expression");
+    parent.addChild(node);
+}
+{
+    LOOKAHEAD(2)
+    <LPAREN> { node.addChild(new TreeNode("LPAREN")); }
+    expression(node)
+    <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
+    | expression(node)
+}
+
+void type_specifier(TreeNode parent):
+{
+     TreeNode node = new TreeNode("type_specifier");
+     parent.addChild(node);
+}
+{
+    <TY_BOOL> { node.addChild(new TreeNode("TY_BOOL")); }
+    | <TY_CHAR> { node.addChild(new TreeNode("TY_CHAR")); }
+    | <TY_STR> { node.addChild(new TreeNode("TY_STR")); }
+    | <TY_U8>  { node.addChild(new TreeNode("TY_U8")); }
+    | <TY_U16> { node.addChild(new TreeNode("TY_U16")); }
+    | <TY_U32> { node.addChild(new TreeNode("TY_U32")); }
+    | <TY_U64> { node.addChild(new TreeNode("TY_U64")); }
+    | <TY_U128> { node.addChild(new TreeNode("TY_U128")); }
+    | <TY_USIZE> { node.addChild(new TreeNode("TY_USIZE")); }
+    | <TY_I8> { node.addChild(new TreeNode("TY_I8")); }
+    | <TY_I16> { node.addChild(new TreeNode("TY_I16")); }
+    | <TY_I32> { node.addChild(new TreeNode("TY_I32")); }
+    | <TY_I64> { node.addChild(new TreeNode("TY_I64")); }
+    | <TY_I128> { node.addChild(new TreeNode("TY_I128")); }
+    | <TY_ISIZE> { node.addChild(new TreeNode("TY_ISIZE")); }
+    | <TY_F32> { node.addChild(new TreeNode("TY_F32")); }
+    | <TY_F64> { node.addChild(new TreeNode("TY_F64")); }
+    | <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
 }

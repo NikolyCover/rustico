@@ -43,57 +43,57 @@ import unioeste.compiladores.symbols.TreeNode;
   }
 
   final public void statement(TreeNode parent) throws ParseException {
-    TreeNode statementNode = new TreeNode("statement");
-    parent.addChild(statementNode);
+    TreeNode node = new TreeNode("statement");
+    parent.addChild(node);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case KW_USE:
-      import_statement(statementNode);
+      import_statement(node);
       break;
     default:
       jj_la1[1] = jj_gen;
       if (jj_2_1(2)) {
-        variable_declaration();
+        variable_declaration(node);
       } else {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
         case KW_IF:
-          conditional_statement();
+          conditional_statement(node);
           break;
         default:
           jj_la1[2] = jj_gen;
           if (jj_2_2(2)) {
-            function_declaration();
+            function_declaration(node);
           } else if (jj_2_3(2)) {
-            assignment_statement();
+            assignment_statement(node);
           } else {
             switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
             case KW_WHILE:
-              while_statement();
+              while_statement(node);
               break;
             case KW_FOR:
-              for_statement();
+              for_statement(node);
               break;
             case KW_LOOP:
-              loop_statement();
+              loop_statement(node);
               break;
             case KW_MATCH:
-              match_statement();
+              match_statement(node);
               break;
             case LBRACE:
-              block();
+              block(node);
               break;
             default:
               jj_la1[3] = jj_gen;
               if (jj_2_4(2)) {
-                function_call_statement();
+                function_call_statement(node);
               } else {
                 switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
                 case KW_RETURN:
-                  function_return_statement();
+                  function_return_statement(node);
                   break;
                 default:
                   jj_la1[4] = jj_gen;
                   if (jj_2_5(2)) {
-                    expression();
+                    expression(node);
                   } else {
                     jj_consume_token(-1);
                     throw new ParseException();
@@ -107,21 +107,27 @@ import unioeste.compiladores.symbols.TreeNode;
     }
   }
 
-  final public void variable_declaration() throws ParseException {
+  final public void variable_declaration(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("variable_declaration");
+    parent.addChild(node);
     jj_consume_token(KW_LET);
+                node.addChild(new TreeNode("KW_LET"));
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case KW_MUT:
       jj_consume_token(KW_MUT);
+                 node.addChild(new TreeNode("KW_MUT"));
       break;
     default:
       jj_la1[5] = jj_gen;
       ;
     }
     jj_consume_token(IDENTIFIER);
+                    node.addChild(new TreeNode("IDENTIFIER"));
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case COLON:
       jj_consume_token(COLON);
-      type_specifier();
+                node.addChild(new TreeNode("COLON"));
+      type_specifier(node);
       break;
     default:
       jj_la1[6] = jj_gen;
@@ -130,45 +136,49 @@ import unioeste.compiladores.symbols.TreeNode;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case EQ:
       jj_consume_token(EQ);
-      expression();
+             node.addChild(new TreeNode("EQ"));
+      expression(node);
       break;
     default:
       jj_la1[7] = jj_gen;
       ;
     }
     jj_consume_token(SEMI);
+              node.addChild(new TreeNode("SEMI"));
   }
 
-  final public void expression() throws ParseException {
-    logical_or_expression();
+  final public void expression(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("expression");
+    parent.addChild(node);
+    logical_or_expression(node);
   }
 
   final public void import_statement(TreeNode parent) throws ParseException {
-    TreeNode importNode = new TreeNode("import_statement");
-    parent.addChild(importNode);
+    TreeNode node = new TreeNode("import_statement");
+    parent.addChild(node);
     jj_consume_token(KW_USE);
-                importNode.addChild(new TreeNode("KW_USE"));
-    module_path(importNode);
+                node.addChild(new TreeNode("KW_USE"));
+    module_path(node);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case KW_AS:
       jj_consume_token(KW_AS);
-               importNode.addChild(new TreeNode("KW_AS"));
+               node.addChild(new TreeNode("KW_AS"));
       jj_consume_token(IDENTIFIER);
-                                                                            importNode.addChild(new TreeNode("IDENTIFIER"));
+                                                                      node.addChild(new TreeNode("IDENTIFIER"));
       break;
     default:
       jj_la1[8] = jj_gen;
       ;
     }
     jj_consume_token(SEMI);
-             importNode.addChild(new TreeNode("SEMI"));
+             node.addChild(new TreeNode("SEMI"));
   }
 
   final public void module_path(TreeNode parent) throws ParseException {
-    TreeNode modulePathNode = new TreeNode("module_path");
-    parent.addChild(modulePathNode);
+    TreeNode node = new TreeNode("module_path");
+    parent.addChild(node);
     jj_consume_token(IDENTIFIER);
-                   modulePathNode.addChild(new TreeNode("IDENTIFIER"));
+                   node.addChild(new TreeNode("IDENTIFIER"));
     label_2:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -180,53 +190,70 @@ import unioeste.compiladores.symbols.TreeNode;
         break label_2;
       }
       jj_consume_token(PATHSEP);
-                   modulePathNode.addChild(new TreeNode("PATHSEP"));
+                   node.addChild(new TreeNode("PATHSEP"));
       jj_consume_token(IDENTIFIER);
-                                                                                      modulePathNode.addChild(new TreeNode("IDENTIFIER"));
+                                                                            node.addChild(new TreeNode("IDENTIFIER"));
     }
   }
 
-  final public void assignment_statement() throws ParseException {
+  final public void assignment_statement(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("assignment_statement");
+    parent.addChild(node);
     jj_consume_token(IDENTIFIER);
-    assignment_operators();
-    expression();
+                   node.addChild(new TreeNode("IDENTIFIER"));
+    assignment_operators(node);
+    expression(node);
     jj_consume_token(SEMI);
+             node.addChild(new TreeNode("SEMI"));
   }
 
-  final public void assignment_operators() throws ParseException {
+  final public void assignment_operators(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("assignment_operators");
+    parent.addChild(node);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case EQ:
       jj_consume_token(EQ);
+             node.addChild(new TreeNode("EQ"));
       break;
     case PLUSEQ:
       jj_consume_token(PLUSEQ);
+                 node.addChild(new TreeNode("PLUSEQ"));
       break;
     case MINUSEQ:
       jj_consume_token(MINUSEQ);
+                  node.addChild(new TreeNode("MINUSEQ"));
       break;
     case STAREQ:
       jj_consume_token(STAREQ);
+                 node.addChild(new TreeNode("STAREQ"));
       break;
     case SLASHEQ:
       jj_consume_token(SLASHEQ);
+                  node.addChild(new TreeNode("SLASHEQ"));
       break;
     case PERCENTEQ:
       jj_consume_token(PERCENTEQ);
+                    node.addChild(new TreeNode("PERCENTEQ"));
       break;
     case CARETEQ:
       jj_consume_token(CARETEQ);
+                  node.addChild(new TreeNode("CARETEQ"));
       break;
     case ANDEQ:
       jj_consume_token(ANDEQ);
+                node.addChild(new TreeNode("ANDEQ"));
       break;
     case OREQ:
       jj_consume_token(OREQ);
+               node.addChild(new TreeNode("OREQ"));
       break;
     case SHLEQ:
       jj_consume_token(SHLEQ);
+                node.addChild(new TreeNode("SHLEQ"));
       break;
     case SHREQ:
       jj_consume_token(SHREQ);
+                node.addChild(new TreeNode("SHREQ"));
       break;
     default:
       jj_la1[10] = jj_gen;
@@ -235,8 +262,10 @@ import unioeste.compiladores.symbols.TreeNode;
     }
   }
 
-  final public void logical_or_expression() throws ParseException {
-    logical_and_expression();
+  final public void logical_or_expression(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("logical_or_expression");
+    parent.addChild(node);
+    logical_and_expression(node);
     label_3:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -248,12 +277,14 @@ import unioeste.compiladores.symbols.TreeNode;
         break label_3;
       }
       jj_consume_token(OROR);
-      logical_and_expression();
+      logical_and_expression(node);
     }
   }
 
-  final public void logical_and_expression() throws ParseException {
-    equality_expression();
+  final public void logical_and_expression(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("logical_and_expression");
+    parent.addChild(node);
+    equality_expression(node);
     label_4:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -265,12 +296,15 @@ import unioeste.compiladores.symbols.TreeNode;
         break label_4;
       }
       jj_consume_token(ANDAND);
-      equality_expression();
+                 node.addChild(new TreeNode("ANDAND"));
+      equality_expression(node);
     }
   }
 
-  final public void equality_expression() throws ParseException {
-    relational_expression();
+  final public void equality_expression(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("equality_expression");
+    parent.addChild(node);
+    relational_expression(node);
     label_5:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -285,21 +319,25 @@ import unioeste.compiladores.symbols.TreeNode;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case EQEQ:
         jj_consume_token(EQEQ);
+                   node.addChild(new TreeNode("EQEQ"));
         break;
       case NE:
         jj_consume_token(NE);
+                                                                   node.addChild(new TreeNode("NE"));
         break;
       default:
         jj_la1[14] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-      relational_expression();
+      relational_expression(node);
     }
   }
 
-  final public void relational_expression() throws ParseException {
-    additive_expression();
+  final public void relational_expression(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("relational_expression");
+    parent.addChild(node);
+    additive_expression(node);
     label_6:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -316,27 +354,33 @@ import unioeste.compiladores.symbols.TreeNode;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case LT:
         jj_consume_token(LT);
+                     node.addChild(new TreeNode("LT"));
         break;
       case GT:
         jj_consume_token(GT);
+                     node.addChild(new TreeNode("GT"));
         break;
       case LE:
         jj_consume_token(LE);
+                     node.addChild(new TreeNode("LE"));
         break;
       case GE:
         jj_consume_token(GE);
+                     node.addChild(new TreeNode("GE"));
         break;
       default:
         jj_la1[16] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-      additive_expression();
+      additive_expression(node);
     }
   }
 
-  final public void additive_expression() throws ParseException {
-    multiplicative_expression();
+  final public void additive_expression(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("additive_expression");
+    parent.addChild(node);
+    multiplicative_expression(node);
     label_7:
     while (true) {
       if (jj_2_6(2)) {
@@ -347,21 +391,25 @@ import unioeste.compiladores.symbols.TreeNode;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case PLUS:
         jj_consume_token(PLUS);
+                   node.addChild(new TreeNode("PLUS"));
         break;
       case MINUS:
         jj_consume_token(MINUS);
+                                                                      node.addChild(new TreeNode("MINUS"));
         break;
       default:
         jj_la1[17] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-      multiplicative_expression();
+      multiplicative_expression(node);
     }
   }
 
-  final public void multiplicative_expression() throws ParseException {
-    unary_expression();
+  final public void multiplicative_expression(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("multiplicative_expression");
+    parent.addChild(node);
+    unary_expression(node);
     label_8:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -377,23 +425,28 @@ import unioeste.compiladores.symbols.TreeNode;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case STAR:
         jj_consume_token(STAR);
+                       node.addChild(new TreeNode("STAR"));
         break;
       case SLASH:
         jj_consume_token(SLASH);
+                        node.addChild(new TreeNode("SLASH"));
         break;
       case PERCENT:
         jj_consume_token(PERCENT);
+                          node.addChild(new TreeNode("PERCENT"));
         break;
       default:
         jj_la1[19] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
-      unary_expression();
+      unary_expression(node);
     }
   }
 
-  final public void unary_expression() throws ParseException {
+  final public void unary_expression(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("unary_expression");
+    parent.addChild(node);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case PLUS:
     case MINUS:
@@ -401,12 +454,15 @@ import unioeste.compiladores.symbols.TreeNode;
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case PLUS:
         jj_consume_token(PLUS);
+                   node.addChild(new TreeNode("PLUS"));
         break;
       case MINUS:
         jj_consume_token(MINUS);
+                    node.addChild(new TreeNode("MINUS"));
         break;
       case NOT:
         jj_consume_token(NOT);
+                  node.addChild(new TreeNode("NOT"));
         break;
       default:
         jj_la1[20] = jj_gen;
@@ -418,38 +474,48 @@ import unioeste.compiladores.symbols.TreeNode;
       jj_la1[21] = jj_gen;
       ;
     }
-    primary_expression();
+    primary_expression(node);
   }
 
-  final public void primary_expression() throws ParseException {
+  final public void primary_expression(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("primary_expression");
+    parent.addChild(node);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER:
       jj_consume_token(INTEGER);
+                  node.addChild(new TreeNode("INTEGER"));
       break;
     case REAL:
       jj_consume_token(REAL);
+               node.addChild(new TreeNode("REAL"));
       break;
     case DIGITS:
       jj_consume_token(DIGITS);
+                 node.addChild(new TreeNode("DIGITS"));
       break;
     case DIGIT:
       jj_consume_token(DIGIT);
+                node.addChild(new TreeNode("DIGIT"));
       break;
     case STRING:
       jj_consume_token(STRING);
+                 node.addChild(new TreeNode("STRING"));
       break;
     case IDENTIFIER:
       jj_consume_token(IDENTIFIER);
+                     node.addChild(new TreeNode("IDENTIFIER"));
       break;
     case KW_TRUE:
       jj_consume_token(KW_TRUE);
+                  node.addChild(new TreeNode("KW_TRUE"));
       break;
     case KW_FALSE:
       jj_consume_token(KW_FALSE);
+                   node.addChild(new TreeNode("KW_FALSE"));
       break;
     case LPAREN:
       jj_consume_token(LPAREN);
-      expression();
+      expression(node);
       jj_consume_token(RPAREN);
       break;
     default:
@@ -459,14 +525,18 @@ import unioeste.compiladores.symbols.TreeNode;
     }
   }
 
-  final public void conditional_statement() throws ParseException {
+  final public void conditional_statement(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("conditional_statement");
+    parent.addChild(node);
     jj_consume_token(KW_IF);
-    conditional_expression();
-    block();
+               node.addChild(new TreeNode("KW_IF"));
+    conditional_expression(node);
+    block(node);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case KW_ELSE:
       jj_consume_token(KW_ELSE);
-      block();
+                  node.addChild(new TreeNode("KW_ELSE"));
+      block(node);
       break;
     default:
       jj_la1[23] = jj_gen;
@@ -474,11 +544,15 @@ import unioeste.compiladores.symbols.TreeNode;
     }
   }
 
-  final public void conditional_expression() throws ParseException {
+  final public void conditional_expression(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("conditional_expression");
+    parent.addChild(node);
     if (jj_2_7(2)) {
       jj_consume_token(LPAREN);
-      expression();
+                 node.addChild(new TreeNode("LPAREN"));
+      expression(node);
       jj_consume_token(RPAREN);
+                                                                                      node.addChild(new TreeNode("RPAREN"));
     } else {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case KW_FALSE:
@@ -493,7 +567,7 @@ import unioeste.compiladores.symbols.TreeNode;
       case NOT:
       case LPAREN:
       case IDENTIFIER:
-        expression();
+        expression(node);
         break;
       default:
         jj_la1[24] = jj_gen;
@@ -503,9 +577,11 @@ import unioeste.compiladores.symbols.TreeNode;
     }
   }
 
-  final public void block() throws ParseException {
-         TreeNode temporaryNode = new TreeNode("TEMPORARY");
+  final public void block(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("block");
+    parent.addChild(node);
     jj_consume_token(LBRACE);
+               node.addChild(new TreeNode("LBRACE"));
     label_9:
     while (true) {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -537,28 +613,38 @@ import unioeste.compiladores.symbols.TreeNode;
         jj_la1[25] = jj_gen;
         break label_9;
       }
-      statement(temporaryNode);
+      statement(node);
     }
     jj_consume_token(RBRACE);
+               node.addChild(new TreeNode("RBRACE"));
   }
 
-  final public void while_statement() throws ParseException {
+  final public void while_statement(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("while_statement");
+    parent.addChild(node);
     jj_consume_token(KW_WHILE);
+                  node.addChild(new TreeNode("KW_WHILE"));
     jj_consume_token(LPAREN);
-    expression();
+                node.addChild(new TreeNode("LPAREN"));
+    expression(node);
     jj_consume_token(RPAREN);
-    block();
+                node.addChild(new TreeNode("RPAREN"));
+    block(node);
   }
 
-  final public void for_statement() throws ParseException {
+  final public void for_statement(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("for_statement");
+    parent.addChild(node);
     jj_consume_token(KW_FOR);
+                 node.addChild(new TreeNode("KW_FOR"));
     jj_consume_token(LPAREN);
+                node.addChild(new TreeNode("LPAREN"));
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case KW_LET:
-      variable_declaration();
+      variable_declaration(node);
       break;
     case IDENTIFIER:
-      assignment_statement();
+      assignment_statement(node);
       break;
     default:
       jj_la1[26] = jj_gen;
@@ -566,20 +652,29 @@ import unioeste.compiladores.symbols.TreeNode;
       throw new ParseException();
     }
     jj_consume_token(SEMI);
-    expression();
+              node.addChild(new TreeNode("SEMI"));
+    expression(node);
     jj_consume_token(SEMI);
-    expression();
+              node.addChild(new TreeNode("SEMI"));
+    expression(node);
     jj_consume_token(RPAREN);
-    block();
+                node.addChild(new TreeNode("RPAREN"));
+    block(node);
   }
 
-  final public void loop_statement() throws ParseException {
+  final public void loop_statement(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("loop_statement");
+    parent.addChild(node);
     jj_consume_token(KW_LOOP);
-    block();
+                 node.addChild(new TreeNode("KW_LOOP"));
+    block(node);
   }
 
-  final public void function_return_statement() throws ParseException {
+  final public void function_return_statement(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("function_return_statement");
+    parent.addChild(node);
     jj_consume_token(KW_RETURN);
+                  node.addChild(new TreeNode("KW_RETURN"));
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case KW_FALSE:
     case KW_TRUE:
@@ -593,37 +688,47 @@ import unioeste.compiladores.symbols.TreeNode;
     case NOT:
     case LPAREN:
     case IDENTIFIER:
-      expression();
+      expression(node);
       break;
     default:
       jj_la1[27] = jj_gen;
       ;
     }
     jj_consume_token(SEMI);
+             node.addChild(new TreeNode("SEMI"));
   }
 
-  final public void function_declaration() throws ParseException {
+  final public void function_declaration(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("function_declaration");
+    parent.addChild(node);
     jj_consume_token(KW_FN);
+               node.addChild(new TreeNode("KW_FN"));
     jj_consume_token(IDENTIFIER);
+                    node.addChild(new TreeNode("IDENTIFIER"));
     jj_consume_token(LPAREN);
-    function_params();
+                node.addChild(new TreeNode("LPAREN"));
+    function_params(node);
     jj_consume_token(RPAREN);
+                node.addChild(new TreeNode("RPAREN"));
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case RARROW:
       jj_consume_token(RARROW);
-      type_specifier();
+                 node.addChild(new TreeNode("RARROW"));
+      type_specifier(node);
       break;
     default:
       jj_la1[28] = jj_gen;
       ;
     }
-    block();
+    block(node);
   }
 
-  final public void function_params() throws ParseException {
+  final public void function_params(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("function_params");
+    parent.addChild(node);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case IDENTIFIER:
-      parameter();
+      parameter(node);
       label_10:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -635,7 +740,8 @@ import unioeste.compiladores.symbols.TreeNode;
           break label_10;
         }
         jj_consume_token(COMMA);
-        parameter();
+                                 node.addChild(new TreeNode("COMMA"));
+        parameter(node);
       }
       break;
     default:
@@ -644,29 +750,42 @@ import unioeste.compiladores.symbols.TreeNode;
     }
   }
 
-  final public void parameter() throws ParseException {
+  final public void parameter(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("parameter");
+    parent.addChild(node);
     jj_consume_token(IDENTIFIER);
+                   node.addChild(new TreeNode("IDENTIFIER"));
     jj_consume_token(COLON);
-    type_specifier();
+              node.addChild(new TreeNode("COLON"));
+    type_specifier(node);
   }
 
-  final public void function_call_statement() throws ParseException {
+  final public void function_call_statement(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("function_call_statement");
+    parent.addChild(node);
     jj_consume_token(IDENTIFIER);
+                   node.addChild(new TreeNode("IDENTIFIER"));
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case NOT:
       jj_consume_token(NOT);
+             node.addChild(new TreeNode("NOT"));
       break;
     default:
       jj_la1[31] = jj_gen;
       ;
     }
     jj_consume_token(LPAREN);
-    function_arguments();
+               node.addChild(new TreeNode("LPAREN"));
+    function_arguments(node);
     jj_consume_token(RPAREN);
+               node.addChild(new TreeNode("RPAREN"));
     jj_consume_token(SEMI);
+             node.addChild(new TreeNode("SEMI"));
   }
 
-  final public void function_arguments() throws ParseException {
+  final public void function_arguments(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("function_arguments");
+    parent.addChild(node);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case KW_FALSE:
     case KW_TRUE:
@@ -680,7 +799,7 @@ import unioeste.compiladores.symbols.TreeNode;
     case NOT:
     case LPAREN:
     case IDENTIFIER:
-      expression();
+      expression(node);
       label_11:
       while (true) {
         switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -692,7 +811,8 @@ import unioeste.compiladores.symbols.TreeNode;
           break label_11;
         }
         jj_consume_token(COMMA);
-        expression();
+                                 node.addChild(new TreeNode("COMMA"));
+        expression(node);
       }
       break;
     default:
@@ -701,21 +821,28 @@ import unioeste.compiladores.symbols.TreeNode;
     }
   }
 
-  final public void match_statement() throws ParseException {
+  final public void match_statement(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("match_statement");
+    parent.addChild(node);
     jj_consume_token(KW_MATCH);
-    match_expression();
+                  node.addChild(new TreeNode("KW_MATCH"));
+    match_expression(node);
     jj_consume_token(LBRACE);
-    match_block();
+                node.addChild(new TreeNode("LBRACE"));
+    match_block(node);
     jj_consume_token(RBRACE);
+                node.addChild(new TreeNode("RBRACE"));
   }
 
-  final public void match_block() throws ParseException {
+  final public void match_block(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("match_block");
+    parent.addChild(node);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case STRING:
     case INTEGER:
     case UNDERSCORE:
     case IDENTIFIER:
-      match_arm();
+      match_arm(node);
       label_12:
       while (true) {
         if (jj_2_8(2)) {
@@ -724,11 +851,13 @@ import unioeste.compiladores.symbols.TreeNode;
           break label_12;
         }
         jj_consume_token(COMMA);
-        match_arm();
+                            node.addChild(new TreeNode(","));
+        match_arm(node);
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case COMMA:
         jj_consume_token(COMMA);
+                                                                                         node.addChild(new TreeNode(","));
         break;
       default:
         jj_la1[34] = jj_gen;
@@ -741,9 +870,12 @@ import unioeste.compiladores.symbols.TreeNode;
     }
   }
 
-  final public void match_arm() throws ParseException {
-    pattern();
+  final public void match_arm(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("match_arm");
+    parent.addChild(node);
+    pattern(node);
     jj_consume_token(RARROW);
+                             node.addChild(new TreeNode("RARROW"));
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case KW_FALSE:
     case KW_TRUE:
@@ -757,10 +889,10 @@ import unioeste.compiladores.symbols.TreeNode;
     case NOT:
     case LPAREN:
     case IDENTIFIER:
-      expression();
+      expression(node);
       break;
     case LBRACE:
-      block();
+      block(node);
       break;
     default:
       jj_la1[36] = jj_gen;
@@ -769,19 +901,25 @@ import unioeste.compiladores.symbols.TreeNode;
     }
   }
 
-  final public void pattern() throws ParseException {
+  final public void pattern(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("pattern");
+    parent.addChild(node);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER:
       jj_consume_token(INTEGER);
+                node.addChild(new TreeNode("INTEGER"));
       break;
     case STRING:
       jj_consume_token(STRING);
+                 node.addChild(new TreeNode("STRING"));
       break;
     case IDENTIFIER:
       jj_consume_token(IDENTIFIER);
+                     node.addChild(new TreeNode("IDENTIFIER"));
       break;
     case UNDERSCORE:
       jj_consume_token(UNDERSCORE);
+            node.addChild(new TreeNode("_"));
       break;
     default:
       jj_la1[37] = jj_gen;
@@ -790,11 +928,15 @@ import unioeste.compiladores.symbols.TreeNode;
     }
   }
 
-  final public void match_expression() throws ParseException {
+  final public void match_expression(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("match_expression");
+    parent.addChild(node);
     if (jj_2_9(2)) {
       jj_consume_token(LPAREN);
-      expression();
+               node.addChild(new TreeNode("LPAREN"));
+      expression(node);
       jj_consume_token(RPAREN);
+               node.addChild(new TreeNode("RPAREN"));
     } else {
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case KW_FALSE:
@@ -809,7 +951,7 @@ import unioeste.compiladores.symbols.TreeNode;
       case NOT:
       case LPAREN:
       case IDENTIFIER:
-        expression();
+        expression(node);
         break;
       default:
         jj_la1[38] = jj_gen;
@@ -819,61 +961,81 @@ import unioeste.compiladores.symbols.TreeNode;
     }
   }
 
-  final public void type_specifier() throws ParseException {
+  final public void type_specifier(TreeNode parent) throws ParseException {
+     TreeNode node = new TreeNode("type_specifier");
+     parent.addChild(node);
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case TY_BOOL:
       jj_consume_token(TY_BOOL);
+                node.addChild(new TreeNode("TY_BOOL"));
       break;
     case TY_CHAR:
       jj_consume_token(TY_CHAR);
+                  node.addChild(new TreeNode("TY_CHAR"));
       break;
     case TY_STR:
       jj_consume_token(TY_STR);
+                 node.addChild(new TreeNode("TY_STR"));
       break;
     case TY_U8:
       jj_consume_token(TY_U8);
+                 node.addChild(new TreeNode("TY_U8"));
       break;
     case TY_U16:
       jj_consume_token(TY_U16);
+                 node.addChild(new TreeNode("TY_U16"));
       break;
     case TY_U32:
       jj_consume_token(TY_U32);
+                 node.addChild(new TreeNode("TY_U32"));
       break;
     case TY_U64:
       jj_consume_token(TY_U64);
+                 node.addChild(new TreeNode("TY_U64"));
       break;
     case TY_U128:
       jj_consume_token(TY_U128);
+                  node.addChild(new TreeNode("TY_U128"));
       break;
     case TY_USIZE:
       jj_consume_token(TY_USIZE);
+                   node.addChild(new TreeNode("TY_USIZE"));
       break;
     case TY_I8:
       jj_consume_token(TY_I8);
+                node.addChild(new TreeNode("TY_I8"));
       break;
     case TY_I16:
       jj_consume_token(TY_I16);
+                 node.addChild(new TreeNode("TY_I16"));
       break;
     case TY_I32:
       jj_consume_token(TY_I32);
+                 node.addChild(new TreeNode("TY_I32"));
       break;
     case TY_I64:
       jj_consume_token(TY_I64);
+                 node.addChild(new TreeNode("TY_I64"));
       break;
     case TY_I128:
       jj_consume_token(TY_I128);
+                  node.addChild(new TreeNode("TY_I128"));
       break;
     case TY_ISIZE:
       jj_consume_token(TY_ISIZE);
+                   node.addChild(new TreeNode("TY_ISIZE"));
       break;
     case TY_F32:
       jj_consume_token(TY_F32);
+                 node.addChild(new TreeNode("TY_F32"));
       break;
     case TY_F64:
       jj_consume_token(TY_F64);
+                 node.addChild(new TreeNode("TY_F64"));
       break;
     case IDENTIFIER:
       jj_consume_token(IDENTIFIER);
+                     node.addChild(new TreeNode("IDENTIFIER"));
       break;
     default:
       jj_la1[39] = jj_gen;
@@ -945,33 +1107,83 @@ import unioeste.compiladores.symbols.TreeNode;
     finally { jj_save(8, xla); }
   }
 
-  private boolean jj_3R_31() {
-    if (jj_3R_33()) return true;
+  private boolean jj_3R_71() {
     Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_34()) { jj_scanpos = xsp; break; }
+    xsp = jj_scanpos;
+    if (jj_3R_72()) {
+    jj_scanpos = xsp;
+    if (jj_3R_73()) {
+    jj_scanpos = xsp;
+    if (jj_3R_74()) return true;
+    }
     }
     return false;
   }
 
-  private boolean jj_3R_28() {
-    if (jj_3R_31()) return true;
+  private boolean jj_3R_20() {
+    if (jj_3R_26()) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_32()) { jj_scanpos = xsp; break; }
+      if (jj_3R_71()) { jj_scanpos = xsp; break; }
     }
+    return false;
+  }
+
+  private boolean jj_3R_15() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    if (jj_3R_23()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_18() {
+    if (jj_scan_token(PLUS)) return true;
+    return false;
+  }
+
+  private boolean jj_3_6() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_18()) {
+    jj_scanpos = xsp;
+    if (jj_3R_19()) return true;
+    }
+    if (jj_3R_20()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_63() {
+    if (jj_3R_20()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_6()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_70() {
+    if (jj_scan_token(GE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_69() {
+    if (jj_scan_token(LE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_68() {
+    if (jj_scan_token(GT)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_67() {
+    if (jj_scan_token(LT)) return true;
     return false;
   }
 
   private boolean jj_3R_24() {
-    if (jj_3R_28()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_29()) { jj_scanpos = xsp; break; }
-    }
+    if (jj_scan_token(NOT)) return true;
     return false;
   }
 
@@ -979,81 +1191,39 @@ import unioeste.compiladores.symbols.TreeNode;
     if (jj_scan_token(IDENTIFIER)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(67)) jj_scanpos = xsp;
+    if (jj_3R_24()) jj_scanpos = xsp;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_21() {
-    if (jj_3R_24()) return true;
+  private boolean jj_3R_64() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_67()) {
+    jj_scanpos = xsp;
+    if (jj_3R_68()) {
+    jj_scanpos = xsp;
+    if (jj_3R_69()) {
+    jj_scanpos = xsp;
+    if (jj_3R_70()) return true;
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_61() {
+    if (jj_3R_63()) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_25()) { jj_scanpos = xsp; break; }
+      if (jj_3R_64()) { jj_scanpos = xsp; break; }
     }
-    return false;
-  }
-
-  private boolean jj_3R_20() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(84)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(74)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(75)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(76)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(77)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(78)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(79)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(80)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(81)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(82)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(83)) return true;
-    }
-    }
-    }
-    }
-    }
-    }
-    }
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_14() {
-    if (jj_scan_token(KW_FN)) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_15() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    if (jj_3R_20()) return true;
     return false;
   }
 
   private boolean jj_3R_17() {
-    if (jj_3R_21()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_13() {
-    if (jj_scan_token(KW_LET)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(24)) jj_scanpos = xsp;
-    if (jj_scan_token(IDENTIFIER)) return true;
+    if (jj_3R_25()) return true;
     return false;
   }
 
@@ -1063,19 +1233,84 @@ import unioeste.compiladores.symbols.TreeNode;
     return false;
   }
 
+  private boolean jj_3R_65() {
+    if (jj_scan_token(EQEQ)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_62() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_65()) {
+    jj_scanpos = xsp;
+    if (jj_3R_66()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_22() {
+    if (jj_scan_token(KW_MUT)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_47() {
+    if (jj_3R_61()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_62()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_13() {
+    if (jj_scan_token(KW_LET)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_22()) jj_scanpos = xsp;
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3_9() {
+    if (jj_scan_token(LPAREN)) return true;
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_19() {
+    if (jj_scan_token(MINUS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_48() {
+    if (jj_scan_token(ANDAND)) return true;
+    return false;
+  }
+
   private boolean jj_3_5() {
     if (jj_3R_17()) return true;
     return false;
   }
 
-  private boolean jj_3_6() {
+  private boolean jj_3R_60() {
+    if (jj_scan_token(LPAREN)) return true;
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_59() {
+    if (jj_scan_token(KW_FALSE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_39() {
+    if (jj_3R_47()) return true;
     Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(61)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(62)) return true;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_48()) { jj_scanpos = xsp; break; }
     }
-    if (jj_3R_18()) return true;
     return false;
   }
 
@@ -1084,27 +1319,121 @@ import unioeste.compiladores.symbols.TreeNode;
     return false;
   }
 
-  private boolean jj_3R_35() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(63)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(64)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(65)) return true;
-    }
-    }
+  private boolean jj_3R_58() {
+    if (jj_scan_token(KW_TRUE)) return true;
     return false;
   }
 
-  private boolean jj_3R_30() {
-    if (jj_scan_token(LPAREN)) return true;
-    if (jj_3R_17()) return true;
+  private boolean jj_3R_46() {
+    if (jj_scan_token(UNDERSCORE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_57() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_45() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_14() {
+    if (jj_scan_token(KW_FN)) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_56() {
+    if (jj_scan_token(STRING)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_44() {
+    if (jj_scan_token(STRING)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_55() {
+    if (jj_scan_token(DIGIT)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_54() {
+    if (jj_scan_token(DIGITS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_53() {
+    if (jj_scan_token(REAL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_43() {
+    if (jj_scan_token(INTEGER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_40() {
+    if (jj_scan_token(OROR)) return true;
     return false;
   }
 
   private boolean jj_3_3() {
     if (jj_3R_15()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_27() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_43()) {
+    jj_scanpos = xsp;
+    if (jj_3R_44()) {
+    jj_scanpos = xsp;
+    if (jj_3R_45()) {
+    jj_scanpos = xsp;
+    if (jj_3R_46()) return true;
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_52() {
+    if (jj_scan_token(INTEGER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_42() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_52()) {
+    jj_scanpos = xsp;
+    if (jj_3R_53()) {
+    jj_scanpos = xsp;
+    if (jj_3R_54()) {
+    jj_scanpos = xsp;
+    if (jj_3R_55()) {
+    jj_scanpos = xsp;
+    if (jj_3R_56()) {
+    jj_scanpos = xsp;
+    if (jj_3R_57()) {
+    jj_scanpos = xsp;
+    if (jj_3R_58()) {
+    jj_scanpos = xsp;
+    if (jj_3R_59()) {
+    jj_scanpos = xsp;
+    if (jj_3R_60()) return true;
+    }
+    }
+    }
+    }
+    }
+    }
+    }
+    }
     return false;
   }
 
@@ -1118,144 +1447,172 @@ import unioeste.compiladores.symbols.TreeNode;
     return false;
   }
 
-  private boolean jj_3R_34() {
+  private boolean jj_3R_25() {
+    if (jj_3R_39()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_40()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_51() {
+    if (jj_scan_token(NOT)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_50() {
+    if (jj_scan_token(MINUS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_21() {
+    if (jj_3R_27()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_49() {
+    if (jj_scan_token(PLUS)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_41() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(88)) {
+    if (jj_3R_49()) {
     jj_scanpos = xsp;
-    if (jj_scan_token(87)) {
+    if (jj_3R_50()) {
     jj_scanpos = xsp;
-    if (jj_scan_token(90)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(89)) return true;
-    }
+    if (jj_3R_51()) return true;
     }
     }
     return false;
   }
 
-  private boolean jj_3R_27() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(59)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(60)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(58)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(57)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(56)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(133)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(34)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(13)) {
-    jj_scanpos = xsp;
-    if (jj_3R_30()) return true;
-    }
-    }
-    }
-    }
-    }
-    }
-    }
-    }
+  private boolean jj_3R_38() {
+    if (jj_scan_token(SHREQ)) return true;
     return false;
   }
 
-  private boolean jj_3R_32() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_scan_token(85)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(86)) return true;
-    }
+  private boolean jj_3R_37() {
+    if (jj_scan_token(SHLEQ)) return true;
     return false;
   }
 
-  private boolean jj_3_9() {
-    if (jj_scan_token(LPAREN)) return true;
-    if (jj_3R_17()) return true;
+  private boolean jj_3R_36() {
+    if (jj_scan_token(OREQ)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_35() {
+    if (jj_scan_token(ANDEQ)) return true;
     return false;
   }
 
   private boolean jj_3_8() {
     if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_19()) return true;
+    if (jj_3R_21()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_34() {
+    if (jj_scan_token(CARETEQ)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_33() {
+    if (jj_scan_token(PERCENTEQ)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_32() {
+    if (jj_scan_token(SLASHEQ)) return true;
     return false;
   }
 
   private boolean jj_3R_26() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(61)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(62)) {
-    jj_scanpos = xsp;
-    if (jj_scan_token(67)) return true;
-    }
-    }
+    if (jj_3R_41()) jj_scanpos = xsp;
+    if (jj_3R_42()) return true;
     return false;
   }
 
-  private boolean jj_3R_22() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_26()) jj_scanpos = xsp;
-    if (jj_3R_27()) return true;
+  private boolean jj_3R_31() {
+    if (jj_scan_token(STAREQ)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_74() {
+    if (jj_scan_token(PERCENT)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_30() {
+    if (jj_scan_token(MINUSEQ)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_73() {
+    if (jj_scan_token(SLASH)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_29() {
+    if (jj_scan_token(PLUSEQ)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_72() {
+    if (jj_scan_token(STAR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_66() {
+    if (jj_scan_token(NE)) return true;
     return false;
   }
 
   private boolean jj_3R_23() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_scan_token(59)) {
+    if (jj_3R_28()) {
     jj_scanpos = xsp;
-    if (jj_scan_token(56)) {
+    if (jj_3R_29()) {
     jj_scanpos = xsp;
-    if (jj_scan_token(133)) {
+    if (jj_3R_30()) {
     jj_scanpos = xsp;
-    if (jj_scan_token(92)) return true;
+    if (jj_3R_31()) {
+    jj_scanpos = xsp;
+    if (jj_3R_32()) {
+    jj_scanpos = xsp;
+    if (jj_3R_33()) {
+    jj_scanpos = xsp;
+    if (jj_3R_34()) {
+    jj_scanpos = xsp;
+    if (jj_3R_35()) {
+    jj_scanpos = xsp;
+    if (jj_3R_36()) {
+    jj_scanpos = xsp;
+    if (jj_3R_37()) {
+    jj_scanpos = xsp;
+    if (jj_3R_38()) return true;
+    }
+    }
+    }
+    }
+    }
+    }
+    }
     }
     }
     }
     return false;
   }
 
-  private boolean jj_3R_29() {
-    if (jj_scan_token(ANDAND)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_25() {
-    if (jj_scan_token(OROR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_18() {
-    if (jj_3R_22()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_35()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_19() {
-    if (jj_3R_23()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_33() {
-    if (jj_3R_18()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_6()) { jj_scanpos = xsp; break; }
-    }
+  private boolean jj_3R_28() {
+    if (jj_scan_token(EQ)) return true;
     return false;
   }
 
