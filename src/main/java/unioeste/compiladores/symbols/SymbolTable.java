@@ -2,7 +2,7 @@ package unioeste.compiladores.symbols;
 
 import de.vandermeer.asciitable.AsciiTable;
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
-import unioeste.compiladores.lex.Token;
+import unioeste.compiladores.rustico.Token;
 
 import java.util.Hashtable;
 import java.util.LinkedList;

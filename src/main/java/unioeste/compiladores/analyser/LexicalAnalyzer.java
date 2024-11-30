@@ -1,32 +1,31 @@
 package unioeste.compiladores.analyser;
 
 import unioeste.compiladores.exception.LexicalException;
-import unioeste.compiladores.lex.Lexer;
-import unioeste.compiladores.lex.LexerConstants;
-import unioeste.compiladores.lex.Token;
-import unioeste.compiladores.lex.TokenMgrError;
+import unioeste.compiladores.rustico.Rustico;
+import unioeste.compiladores.rustico.RusticoConstants;
+import unioeste.compiladores.rustico.Token;
+import unioeste.compiladores.rustico.TokenMgrError;
 import unioeste.compiladores.symbols.SymbolTable;
-import unioeste.compiladores.utils.LexerUtilities;
 
 public class LexicalAnalyzer {
-    private final Lexer lexer;
+    private final Rustico rustico;
 
     private final SymbolTable reservedKeysTable;
     private final SymbolTable symbolTable;
 
-    public LexicalAnalyzer(Lexer lexer) {
-        this.lexer = lexer;
+    public LexicalAnalyzer(Rustico rustico) {
+        this.rustico = rustico;
         this.reservedKeysTable = new SymbolTable();
         this.symbolTable = new SymbolTable();
     }
 
     public void startAnalysis() {
         try{
-            Token token = lexer.getNextToken();
+            Token token = rustico.getNextToken();
 
-            while (token.kind != LexerConstants.EOF) {
+            while (token.kind != RusticoConstants.EOF) {
                 handleSymbolTable(token);
-                token = lexer.getNextToken();
+                token = rustico.getNextToken();
             }
         }
         catch (TokenMgrError | LexicalException error){
@@ -35,21 +34,21 @@ public class LexicalAnalyzer {
         }
     }
 
-    public Lexer getLexer(){
-        return lexer;
+    public Rustico getRustico(){
+        return rustico;
     }
 
     private void handleSymbolTable(Token token) throws LexicalException {
-        if(token.kind == LexerConstants.LINE_COMMENT || token.kind == LexerConstants.BLOCK_COMMENTS){
+        if(token.kind == RusticoConstants.LINE_COMMENT || token.kind == RusticoConstants.BLOCK_COMMENT){
             return;
         }
         
-        if(token.kind >= LexerConstants.KW_AS && token.kind <= LexerConstants.KW_TRY){
+        if(token.kind >= RusticoConstants.KW_AS && token.kind <= RusticoConstants.KW_TRY){
             reservedKeysTable.add(token.image, token);
             return;
         }
 
-        if(token.kind >= LexerConstants.IDENTIFIER_ERROR_START && token.kind <= LexerConstants.PUNCTUATION_ERROR_INVALID){
+        if(token.kind >= RusticoConstants.IDENTIFIER_ERROR_START && token.kind <= RusticoConstants.PUNCTUATION_ERROR_INVALID){
             throw new LexicalException(token);
         }
 

@@ -2,15 +2,15 @@ options {
     STATIC = false;
 }
 
-PARSER_BEGIN(Lexer)
-package unioeste.compiladores.lex;
+PARSER_BEGIN(Rustico)
+package unioeste.compiladores.rustico;
 
-import java.io.InputStream;
 import unioeste.compiladores.symbols.TreeNode;
+import unioeste.compiladores.utils.RusticoUtilities;
 
- public class Lexer {}
+ public class Rustico {}
 
-PARSER_END(Lexer)
+PARSER_END(Rustico)
 
 SKIP: {
     " " | "\t" | "\n" | "\r"
@@ -172,7 +172,7 @@ TOKEN: {
 // comments
 TOKEN: {
       < LINE_COMMENT: "//" (~["\n", "\r"])* ["\n", "\r"] >
-     | < BLOCK_COMMENTS: "/*" (("*")* (~["/"])* | (~["*"])* ("/")*)* "*/" >
+     | < BLOCK_COMMENT: "/*" (("*")* (~["/"])* | (~["*"])* ("/")*)* "*/" >
 }
 
 // identifiers
@@ -199,7 +199,8 @@ void statement(TreeNode parent):
     parent.addChild(node);
 }
 {
-     import_statement(node)
+      comment(node)
+    | import_statement(node)
     | LOOKAHEAD(2) variable_declaration(node)
     | conditional_statement(node)
     | LOOKAHEAD(2) function_declaration(node)
@@ -212,6 +213,16 @@ void statement(TreeNode parent):
     | LOOKAHEAD(2) function_call_statement(node)
     | function_return_statement(node)
     | LOOKAHEAD(2) expression(node)
+}
+
+void comment(TreeNode parent):
+{
+    TreeNode node = new TreeNode("comment");
+    parent.addChild(node);
+}
+{
+      <LINE_COMMENT> {  node.addChild(new TreeNode("LINE_COMMENT")); }
+    | <BLOCK_COMMENT> {  node.addChild(new TreeNode("BLOCK_COMMENT")); }
 }
 
 void variable_declaration(TreeNode parent):
@@ -412,7 +423,7 @@ void conditional_statement(TreeNode parent):
      <KW_IF> { node.addChild(new TreeNode("KW_IF")); }
      conditional_expression(node)
      block(node)
-     (<KW_ELSE> { node.addChild(new TreeNode("KW_ELSE")); } block(node))?
+     (LOOKAHEAD(2)  <KW_ELSE> { node.addChild(new TreeNode("KW_ELSE")); } block(node))?
 }
 
 void conditional_expression(TreeNode parent):
@@ -433,8 +444,14 @@ void block(TreeNode parent):
 }
 {
     <LBRACE> { node.addChild(new TreeNode("LBRACE")); }
-    ( statement(node))*
-    <RBRACE> { node.addChild(new TreeNode("RBRACE")); }
+    ( LOOKAHEAD(2) statement(node))*
+    (
+          <RBRACE> { node.addChild(new TreeNode("RBRACE")); }
+        | {
+                Token currentToken = jj_consume_token(RBRACE);
+                throw new ParseException(RusticoUtilities.getErrorMessage(currentToken, "Bloco não fechado!"));
+           }
+    )
 }
 
 void while_statement(TreeNode parent):

@@ -2,8 +2,8 @@ package unioeste.compiladores;
 
 import unioeste.compiladores.analyser.LexicalAnalyzer;
 import unioeste.compiladores.analyser.SyntacticAnalyser;
-import unioeste.compiladores.lex.Lexer;
-import unioeste.compiladores.utils.LexerUtilities;
+import unioeste.compiladores.rustico.Rustico;
+import unioeste.compiladores.utils.RusticoUtilities;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -14,9 +14,9 @@ public class Main {
         System.out.print("Digite o nome do arquivo a ser analisado: ");
         String filename = scanner.nextLine();
 
-        Lexer lexer = LexerUtilities.createLexer(filename);
+        Rustico rustico = RusticoUtilities.createRustico(filename);
 
-        LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(lexer);
+        LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(rustico);
 
         lexicalAnalyzer.startAnalysis();
 
@@ -25,9 +25,9 @@ public class Main {
         lexicalAnalyzer.getReservedKeysTable().show("Tabela de palavras reservadas");
         lexicalAnalyzer.getSymbolTable().show("Tabela de símbolos");
 
-        lexer = LexerUtilities.createLexer(filename);
+        rustico = RusticoUtilities.createRustico(filename);
 
-        SyntacticAnalyser syntacticAnalyser = new SyntacticAnalyser(lexer);
+        SyntacticAnalyser syntacticAnalyser = new SyntacticAnalyser(rustico);
 
         syntacticAnalyser.startAnalysis();
 

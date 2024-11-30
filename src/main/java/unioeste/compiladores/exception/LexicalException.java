@@ -1,7 +1,7 @@
 package unioeste.compiladores.exception;
 
-import unioeste.compiladores.lex.LexerConstants;
-import unioeste.compiladores.lex.Token;
+import unioeste.compiladores.rustico.RusticoConstants;
+import unioeste.compiladores.rustico.Token;
 
 public class LexicalException extends Exception{
     public LexicalException(Token token) {
@@ -15,16 +15,16 @@ public class LexicalException extends Exception{
         builder.append("Erro léxico: ");
 
         switch (token.kind) {
-            case LexerConstants.IDENTIFIER_ERROR_START -> {
+            case RusticoConstants.IDENTIFIER_ERROR_START -> {
                 builder.append("Identificador inválido encontrado: ").append(token.image).append(location);
             }
-            case LexerConstants.PUNCTUATION_ERROR_INVALID -> {
+            case RusticoConstants.PUNCTUATION_ERROR_INVALID -> {
                 builder.append("Operador invalido encontrado: ").append(token.image).append(location);
             }
-            case LexerConstants.REAL_NUMBER_ERROR_MALFORMED -> {
+            case RusticoConstants.REAL_NUMBER_ERROR_MALFORMED -> {
                 builder.append("Número real inválido encontrado: ").append(token.image).append(location);
             }
-            case LexerConstants.STRING_ERROR_UNTERMINATED -> {
+            case RusticoConstants.STRING_ERROR_UNTERMINATED -> {
                 builder.append("String sem término encontrada: ").append(token.image).append(location);
             }
             default -> {
