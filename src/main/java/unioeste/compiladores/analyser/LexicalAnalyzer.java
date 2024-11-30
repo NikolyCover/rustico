@@ -39,8 +39,6 @@ public class LexicalAnalyzer {
         return lexer;
     }
 
-
-
     private void handleSymbolTable(Token token) throws LexicalException {
         if(token.kind == LexerConstants.LINE_COMMENT || token.kind == LexerConstants.BLOCK_COMMENTS){
             return;

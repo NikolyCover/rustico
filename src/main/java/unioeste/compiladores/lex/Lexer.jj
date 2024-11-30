@@ -400,7 +400,7 @@ void primary_expression(TreeNode parent):
     | <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
     | <KW_TRUE> { node.addChild(new TreeNode("KW_TRUE")); }
     | <KW_FALSE> { node.addChild(new TreeNode("KW_FALSE")); }
-    | "(" expression(node) ")"
+    | <LPAREN> { node.addChild(new TreeNode("LPAREN")); } expression(node) <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
 }
 
 void conditional_statement(TreeNode parent):
@@ -566,7 +566,7 @@ void match_block(TreeNode parent):
 {
     (
         match_arm(node)
-        (LOOKAHEAD(2) "," { node.addChild(new TreeNode(",")); } match_arm(node))* ("," { node.addChild(new TreeNode(",")); })?
+        (LOOKAHEAD(2) <COMMA> { node.addChild(new TreeNode("COMMA")); } match_arm(node))* (<COMMA> { node.addChild(new TreeNode("COMMA")); })?
     )?
 }
 

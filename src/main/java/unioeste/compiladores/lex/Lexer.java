@@ -515,8 +515,10 @@ import unioeste.compiladores.symbols.TreeNode;
       break;
     case LPAREN:
       jj_consume_token(LPAREN);
+                 node.addChild(new TreeNode("LPAREN"));
       expression(node);
       jj_consume_token(RPAREN);
+                                                                                      node.addChild(new TreeNode("RPAREN"));
       break;
     default:
       jj_la1[22] = jj_gen;
@@ -851,13 +853,13 @@ import unioeste.compiladores.symbols.TreeNode;
           break label_12;
         }
         jj_consume_token(COMMA);
-                            node.addChild(new TreeNode(","));
+                                node.addChild(new TreeNode("COMMA"));
         match_arm(node);
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
       case COMMA:
         jj_consume_token(COMMA);
-                                                                                         node.addChild(new TreeNode(","));
+                                                                                                     node.addChild(new TreeNode("COMMA"));
         break;
       default:
         jj_la1[34] = jj_gen;

@@ -5,10 +5,11 @@ import unioeste.compiladores.analyser.SyntacticAnalyser;
 import unioeste.compiladores.lex.Lexer;
 import unioeste.compiladores.utils.LexerUtilities;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Digite o nome do arquivo a ser analisado: ");
         String filename = scanner.nextLine();
@@ -30,6 +31,10 @@ public class Main {
 
         syntacticAnalyser.startAnalysis();
 
-        System.out.println("\n\nAnálise léxica e sintática concluídas com sucesso!.");
+        syntacticAnalyser.getTree().print();
+        String outputFilename = "arvore_" + filename;
+        syntacticAnalyser.getTree().writeToFile(outputFilename);
+
+        System.out.println("\n\nAnálise léxica e sintática concluídas com sucesso!. Arvore sintática escrita no arquivo: '" + outputFilename + "'.");
     }
 }
