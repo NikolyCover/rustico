@@ -5,6 +5,13 @@ import unioeste.compiladores.symbols.TreeNode;
 import unioeste.compiladores.utils.RusticoUtilities;
 
  public class Rustico implements RusticoConstants {
+     final public void throwSyntacticError(String message) throws ParseException  {
+          Token currentToken = getToken(1);
+
+          if (currentToken.kind != RBRACE) {
+              throw new ParseException(RusticoUtilities.getErrorMessage(currentToken, message));
+          }
+      }
 
   final public void start(TreeNode parent) throws ParseException {
     label_1:
@@ -622,12 +629,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
       break;
     default:
       jj_la1[25] = jj_gen;
-                Token currentToken = getToken(1); // Peek at the next token
-
-                System.out.println(currentToken);
-                if (currentToken.kind != RBRACE) {
-                    {if (true) throw new ParseException(RusticoUtilities.getErrorMessage(currentToken, "Bloco n\u00e3o fechado!"));}
-                }
+            throwSyntacticError("Bloco n\u00e3o fechado!");
     }
   }
 
@@ -1133,21 +1135,6 @@ import unioeste.compiladores.utils.RusticoUtilities;
     finally { jj_save(10, xla); }
   }
 
-  private boolean jj_3R_20() {
-    if (jj_3R_28()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_100()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_18() {
-    if (jj_scan_token(PLUS)) return true;
-    return false;
-  }
-
   private boolean jj_3_6() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1159,11 +1146,6 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3R_26() {
-    if (jj_scan_token(NOT)) return true;
-    return false;
-  }
-
   private boolean jj_3R_92() {
     if (jj_3R_20()) return true;
     Token xsp;
@@ -1171,15 +1153,6 @@ import unioeste.compiladores.utils.RusticoUtilities;
       xsp = jj_scanpos;
       if (jj_3_6()) { jj_scanpos = xsp; break; }
     }
-    return false;
-  }
-
-  private boolean jj_3R_16() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_26()) jj_scanpos = xsp;
-    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
@@ -1200,6 +1173,20 @@ import unioeste.compiladores.utils.RusticoUtilities;
 
   private boolean jj_3R_96() {
     if (jj_scan_token(LT)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_26() {
+    if (jj_scan_token(NOT)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_16() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_26()) jj_scanpos = xsp;
+    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
@@ -1254,12 +1241,6 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3R_14() {
-    if (jj_scan_token(KW_FN)) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
   private boolean jj_3R_67() {
     if (jj_scan_token(ANDAND)) return true;
     return false;
@@ -1275,17 +1256,9 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3R_87() {
-    if (jj_3R_17()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_61() {
-    if (jj_scan_token(KW_RETURN)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_87()) jj_scanpos = xsp;
-    if (jj_scan_token(SEMI)) return true;
+  private boolean jj_3R_14() {
+    if (jj_scan_token(KW_FN)) return true;
+    if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
@@ -1304,9 +1277,17 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3R_59() {
-    if (jj_scan_token(KW_LOOP)) return true;
-    if (jj_3R_21()) return true;
+  private boolean jj_3R_87() {
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_61() {
+    if (jj_scan_token(KW_RETURN)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_87()) jj_scanpos = xsp;
+    if (jj_scan_token(SEMI)) return true;
     return false;
   }
 
@@ -1327,6 +1308,12 @@ import unioeste.compiladores.utils.RusticoUtilities;
 
   private boolean jj_3R_46() {
     if (jj_scan_token(ANDEQ)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_59() {
+    if (jj_scan_token(KW_LOOP)) return true;
+    if (jj_3R_21()) return true;
     return false;
   }
 
@@ -1470,11 +1457,6 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3R_91() {
-    if (jj_3R_17()) return true;
-    return false;
-  }
-
   private boolean jj_3R_83() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1491,18 +1473,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3R_84() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_11()) {
-    jj_scanpos = xsp;
-    if (jj_3R_91()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3_11() {
-    if (jj_scan_token(LPAREN)) return true;
+  private boolean jj_3R_91() {
     if (jj_3R_17()) return true;
     return false;
   }
@@ -1533,18 +1504,19 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3R_65() {
-    if (jj_scan_token(UNDERSCORE)) return true;
+  private boolean jj_3R_84() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_11()) {
+    jj_scanpos = xsp;
+    if (jj_3R_91()) return true;
+    }
     return false;
   }
 
-  private boolean jj_3R_64() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_63() {
-    if (jj_scan_token(STRING)) return true;
+  private boolean jj_3_11() {
+    if (jj_scan_token(LPAREN)) return true;
+    if (jj_3R_17()) return true;
     return false;
   }
 
@@ -1555,27 +1527,6 @@ import unioeste.compiladores.utils.RusticoUtilities;
 
   private boolean jj_3R_81() {
     if (jj_scan_token(BLOCK_COMMENT)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_38() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_62()) {
-    jj_scanpos = xsp;
-    if (jj_3R_63()) {
-    jj_scanpos = xsp;
-    if (jj_3R_64()) {
-    jj_scanpos = xsp;
-    if (jj_3R_65()) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_62() {
-    if (jj_scan_token(INTEGER)) return true;
     return false;
   }
 
@@ -1600,13 +1551,28 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
+  private boolean jj_3R_65() {
+    if (jj_scan_token(UNDERSCORE)) return true;
+    return false;
+  }
+
   private boolean jj_3R_78() {
     if (jj_scan_token(KW_FALSE)) return true;
     return false;
   }
 
+  private boolean jj_3R_64() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
   private boolean jj_3R_77() {
     if (jj_scan_token(KW_TRUE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_63() {
+    if (jj_scan_token(STRING)) return true;
     return false;
   }
 
@@ -1625,6 +1591,27 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
+  private boolean jj_3R_38() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_62()) {
+    jj_scanpos = xsp;
+    if (jj_3R_63()) {
+    jj_scanpos = xsp;
+    if (jj_3R_64()) {
+    jj_scanpos = xsp;
+    if (jj_3R_65()) return true;
+    }
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_62() {
+    if (jj_scan_token(INTEGER)) return true;
+    return false;
+  }
+
   private boolean jj_3R_73() {
     if (jj_scan_token(DIGITS)) return true;
     return false;
@@ -1632,11 +1619,6 @@ import unioeste.compiladores.utils.RusticoUtilities;
 
   private boolean jj_3R_72() {
     if (jj_scan_token(REAL)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_23() {
-    if (jj_3R_38()) return true;
     return false;
   }
 
@@ -1701,12 +1683,6 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3_10() {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_23()) return true;
-    return false;
-  }
-
   private boolean jj_3R_34() {
     if (jj_3R_59()) return true;
     return false;
@@ -1714,6 +1690,11 @@ import unioeste.compiladores.utils.RusticoUtilities;
 
   private boolean jj_3R_33() {
     if (jj_3R_58()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_23() {
+    if (jj_3R_38()) return true;
     return false;
   }
 
@@ -1767,6 +1748,12 @@ import unioeste.compiladores.utils.RusticoUtilities;
 
   private boolean jj_3_1() {
     if (jj_3R_13()) return true;
+    return false;
+  }
+
+  private boolean jj_3_10() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_23()) return true;
     return false;
   }
 
@@ -1854,12 +1841,6 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3R_60() {
-    if (jj_scan_token(KW_MATCH)) return true;
-    if (jj_3R_84()) return true;
-    return false;
-  }
-
   private boolean jj_3R_100() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1870,6 +1851,27 @@ import unioeste.compiladores.utils.RusticoUtilities;
     if (jj_3R_103()) return true;
     }
     }
+    return false;
+  }
+
+  private boolean jj_3R_60() {
+    if (jj_scan_token(KW_MATCH)) return true;
+    if (jj_3R_84()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_20() {
+    if (jj_3R_28()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_100()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_18() {
+    if (jj_scan_token(PLUS)) return true;
     return false;
   }
 
@@ -2195,4 +2197,4 @@ import unioeste.compiladores.utils.RusticoUtilities;
     JJCalls next;
   }
 
-                       }
+ }

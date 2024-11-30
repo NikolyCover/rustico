@@ -8,7 +8,15 @@ package unioeste.compiladores.rustico;
 import unioeste.compiladores.symbols.TreeNode;
 import unioeste.compiladores.utils.RusticoUtilities;
 
- public class Rustico {}
+ public class Rustico {
+     final public void throwSyntacticError(String message) throws ParseException  {
+          Token currentToken = getToken(1);
+
+          if (currentToken.kind != RBRACE) {
+              throw new ParseException(RusticoUtilities.getErrorMessage(currentToken, message));
+          }
+      }
+ }
 
 PARSER_END(Rustico)
 
@@ -447,14 +455,7 @@ void block(TreeNode parent):
     ( LOOKAHEAD(2) statement(node))*
     (
           <RBRACE> { node.addChild(new TreeNode("RBRACE")); }
-        | {
-                Token currentToken = getToken(1); // Peek at the next token
-
-                System.out.println(currentToken);
-                if (currentToken.kind != RBRACE) {
-                    throw new ParseException(RusticoUtilities.getErrorMessage(currentToken, "Bloco não fechado!"));
-                }
-           }
+        | { throwSyntacticError("Bloco não fechado!"); }
     )
 }
 
