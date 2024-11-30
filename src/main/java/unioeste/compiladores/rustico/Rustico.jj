@@ -448,8 +448,12 @@ void block(TreeNode parent):
     (
           <RBRACE> { node.addChild(new TreeNode("RBRACE")); }
         | {
-                Token currentToken = jj_consume_token(RBRACE);
-                throw new ParseException(RusticoUtilities.getErrorMessage(currentToken, "Bloco não fechado!"));
+                Token currentToken = getToken(1); // Peek at the next token
+
+                System.out.println(currentToken);
+                if (currentToken.kind != RBRACE) {
+                    throw new ParseException(RusticoUtilities.getErrorMessage(currentToken, "Bloco não fechado!"));
+                }
            }
     )
 }
