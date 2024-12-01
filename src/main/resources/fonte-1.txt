@@ -11,6 +11,6 @@ print!("OIII");
     return 1 + 2;
 }
 
-fn main(){
+fn main (){
     return 1;
 }

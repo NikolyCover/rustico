@@ -10,7 +10,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
 
  public class Rustico {
      final public void throwSyntacticError(String message) throws ParseException  {
-          Token currentToken = getToken(1);
+          Token currentToken = getToken(0);
 
           if (currentToken.kind != RBRACE) {
               throw new ParseException(RusticoUtilities.getErrorMessage(currentToken, message));
@@ -223,6 +223,16 @@ void statement(TreeNode parent):
     | LOOKAHEAD(2) expression(node)
 }
 
+void end_of_statement(TreeNode parent):
+{
+    TreeNode node = new TreeNode("end_of_statement");
+    parent.addChild(node);
+}
+{
+      <SEMI> { node.addChild(new TreeNode("SEMI")); }
+    | { throwSyntacticError("Instrução sem ponto e vírgula!"); }
+}
+
 void comment(TreeNode parent):
 {
     TreeNode node = new TreeNode("comment");
@@ -244,7 +254,7 @@ void variable_declaration(TreeNode parent):
     <IDENTIFIER> {  node.addChild(new TreeNode("IDENTIFIER")); }
     (<COLON> {  node.addChild(new TreeNode("COLON")); } type_specifier(node))?
     (<EQ> {  node.addChild(new TreeNode("EQ")); } expression(node))?
-    <SEMI> {  node.addChild(new TreeNode("SEMI")); }
+    end_of_statement(node)
 }
 
 void expression(TreeNode parent):
@@ -265,7 +275,7 @@ void import_statement(TreeNode parent):
     <KW_USE> {  node.addChild(new TreeNode("KW_USE")); }
     module_path(node)
     (<KW_AS> { node.addChild(new TreeNode("KW_AS")); } <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); })?
-    <SEMI> { node.addChild(new TreeNode("SEMI")); }
+    end_of_statement(node)
 }
 
 void module_path(TreeNode parent):
@@ -287,7 +297,7 @@ void assignment_statement(TreeNode parent):
     <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
     assignment_operators(node)
     expression(node)
-    <SEMI> { node.addChild(new TreeNode("SEMI")); }
+    end_of_statement(node)
 }
 
 void assignment_operators(TreeNode parent):
@@ -505,8 +515,8 @@ void function_return_statement(TreeNode parent):
 }
 {
     <KW_RETURN> { node.addChild(new TreeNode("KW_RETURN")); }
-    (expression(node))?
-    <SEMI> { node.addChild(new TreeNode("SEMI")); }
+    (LOOKAHEAD(2) expression(node))?
+    end_of_statement(node)
 }
 
 void function_declaration(TreeNode parent):
@@ -516,7 +526,10 @@ void function_declaration(TreeNode parent):
 }
 {
      <KW_FN> { node.addChild(new TreeNode("KW_FN")); }
-     <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
+     (
+          <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
+        | { throwSyntacticError("Uma função precisa de um nome!"); }
+     )
      <LPAREN> { node.addChild(new TreeNode("LPAREN")); }
      function_params(node)
      <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
@@ -555,7 +568,7 @@ void function_call_statement(TreeNode parent):
     <LPAREN> { node.addChild(new TreeNode("LPAREN")); }
     function_arguments(node)
     <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
-    <SEMI> { node.addChild(new TreeNode("SEMI")); }
+    end_of_statement(node)
 }
 
 void function_arguments(TreeNode parent):

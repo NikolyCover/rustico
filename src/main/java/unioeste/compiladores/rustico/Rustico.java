@@ -6,7 +6,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
 
  public class Rustico implements RusticoConstants {
      final public void throwSyntacticError(String message) throws ParseException  {
-          Token currentToken = getToken(1);
+          Token currentToken = getToken(0);
 
           if (currentToken.kind != RBRACE) {
               throw new ParseException(RusticoUtilities.getErrorMessage(currentToken, message));
@@ -120,6 +120,20 @@ import unioeste.compiladores.utils.RusticoUtilities;
     }
   }
 
+  final public void end_of_statement(TreeNode parent) throws ParseException {
+    TreeNode node = new TreeNode("end_of_statement");
+    parent.addChild(node);
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case SEMI:
+      jj_consume_token(SEMI);
+               node.addChild(new TreeNode("SEMI"));
+      break;
+    default:
+      jj_la1[5] = jj_gen;
+        throwSyntacticError("Declara\u00e7\u00e3o sem ponto e v\u00edrgula!");
+    }
+  }
+
   final public void comment(TreeNode parent) throws ParseException {
     TreeNode node = new TreeNode("comment");
     parent.addChild(node);
@@ -133,7 +147,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
                          node.addChild(new TreeNode("BLOCK_COMMENT"));
       break;
     default:
-      jj_la1[5] = jj_gen;
+      jj_la1[6] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -150,7 +164,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
                  node.addChild(new TreeNode("KW_MUT"));
       break;
     default:
-      jj_la1[6] = jj_gen;
+      jj_la1[7] = jj_gen;
       ;
     }
     jj_consume_token(IDENTIFIER);
@@ -162,7 +176,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
       type_specifier(node);
       break;
     default:
-      jj_la1[7] = jj_gen;
+      jj_la1[8] = jj_gen;
       ;
     }
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -172,11 +186,10 @@ import unioeste.compiladores.utils.RusticoUtilities;
       expression(node);
       break;
     default:
-      jj_la1[8] = jj_gen;
+      jj_la1[9] = jj_gen;
       ;
     }
-    jj_consume_token(SEMI);
-              node.addChild(new TreeNode("SEMI"));
+    end_of_statement(node);
   }
 
   final public void expression(TreeNode parent) throws ParseException {
@@ -199,11 +212,10 @@ import unioeste.compiladores.utils.RusticoUtilities;
                                                                       node.addChild(new TreeNode("IDENTIFIER"));
       break;
     default:
-      jj_la1[9] = jj_gen;
+      jj_la1[10] = jj_gen;
       ;
     }
-    jj_consume_token(SEMI);
-             node.addChild(new TreeNode("SEMI"));
+    end_of_statement(node);
   }
 
   final public void module_path(TreeNode parent) throws ParseException {
@@ -218,7 +230,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
         ;
         break;
       default:
-        jj_la1[10] = jj_gen;
+        jj_la1[11] = jj_gen;
         break label_2;
       }
       jj_consume_token(PATHSEP);
@@ -235,8 +247,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
                    node.addChild(new TreeNode("IDENTIFIER"));
     assignment_operators(node);
     expression(node);
-    jj_consume_token(SEMI);
-             node.addChild(new TreeNode("SEMI"));
+    end_of_statement(node);
   }
 
   final public void assignment_operators(TreeNode parent) throws ParseException {
@@ -288,7 +299,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
                 node.addChild(new TreeNode("SHREQ"));
       break;
     default:
-      jj_la1[11] = jj_gen;
+      jj_la1[12] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -305,7 +316,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
         ;
         break;
       default:
-        jj_la1[12] = jj_gen;
+        jj_la1[13] = jj_gen;
         break label_3;
       }
       jj_consume_token(OROR);
@@ -324,7 +335,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
         ;
         break;
       default:
-        jj_la1[13] = jj_gen;
+        jj_la1[14] = jj_gen;
         break label_4;
       }
       jj_consume_token(ANDAND);
@@ -345,7 +356,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
         ;
         break;
       default:
-        jj_la1[14] = jj_gen;
+        jj_la1[15] = jj_gen;
         break label_5;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -358,7 +369,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
                                                                    node.addChild(new TreeNode("NE"));
         break;
       default:
-        jj_la1[15] = jj_gen;
+        jj_la1[16] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -380,7 +391,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
         ;
         break;
       default:
-        jj_la1[16] = jj_gen;
+        jj_la1[17] = jj_gen;
         break label_6;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -401,7 +412,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
                      node.addChild(new TreeNode("GE"));
         break;
       default:
-        jj_la1[17] = jj_gen;
+        jj_la1[18] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -430,7 +441,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
                                                                       node.addChild(new TreeNode("MINUS"));
         break;
       default:
-        jj_la1[18] = jj_gen;
+        jj_la1[19] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -451,7 +462,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
         ;
         break;
       default:
-        jj_la1[19] = jj_gen;
+        jj_la1[20] = jj_gen;
         break label_8;
       }
       switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
@@ -468,7 +479,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
                           node.addChild(new TreeNode("PERCENT"));
         break;
       default:
-        jj_la1[20] = jj_gen;
+        jj_la1[21] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -497,13 +508,13 @@ import unioeste.compiladores.utils.RusticoUtilities;
                   node.addChild(new TreeNode("NOT"));
         break;
       default:
-        jj_la1[21] = jj_gen;
+        jj_la1[22] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
       break;
     default:
-      jj_la1[22] = jj_gen;
+      jj_la1[23] = jj_gen;
       ;
     }
     primary_expression(node);
@@ -553,7 +564,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
                                                                                       node.addChild(new TreeNode("RPAREN"));
       break;
     default:
-      jj_la1[23] = jj_gen;
+      jj_la1[24] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -601,7 +612,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
         expression(node);
         break;
       default:
-        jj_la1[24] = jj_gen;
+        jj_la1[25] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -628,7 +639,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
                      node.addChild(new TreeNode("RBRACE"));
       break;
     default:
-      jj_la1[25] = jj_gen;
+      jj_la1[26] = jj_gen;
             throwSyntacticError("Bloco n\u00e3o fechado!");
     }
   }
@@ -661,7 +672,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
       assignment_statement(node);
       break;
     default:
-      jj_la1[26] = jj_gen;
+      jj_la1[27] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -689,27 +700,12 @@ import unioeste.compiladores.utils.RusticoUtilities;
     parent.addChild(node);
     jj_consume_token(KW_RETURN);
                   node.addChild(new TreeNode("KW_RETURN"));
-    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
-    case KW_FALSE:
-    case KW_TRUE:
-    case STRING:
-    case DIGIT:
-    case DIGITS:
-    case INTEGER:
-    case REAL:
-    case PLUS:
-    case MINUS:
-    case NOT:
-    case LPAREN:
-    case IDENTIFIER:
+    if (jj_2_10(2)) {
       expression(node);
-      break;
-    default:
-      jj_la1[27] = jj_gen;
+    } else {
       ;
     }
-    jj_consume_token(SEMI);
-             node.addChild(new TreeNode("SEMI"));
+    end_of_statement(node);
   }
 
   final public void function_declaration(TreeNode parent) throws ParseException {
@@ -717,8 +713,15 @@ import unioeste.compiladores.utils.RusticoUtilities;
     parent.addChild(node);
     jj_consume_token(KW_FN);
                node.addChild(new TreeNode("KW_FN"));
-    jj_consume_token(IDENTIFIER);
-                    node.addChild(new TreeNode("IDENTIFIER"));
+    switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
+    case IDENTIFIER:
+      jj_consume_token(IDENTIFIER);
+                         node.addChild(new TreeNode("IDENTIFIER"));
+      break;
+    default:
+      jj_la1[28] = jj_gen;
+            throwSyntacticError("Uma fun\u00e7\u00e3o precisa de um nome!");
+    }
     jj_consume_token(LPAREN);
                 node.addChild(new TreeNode("LPAREN"));
     function_params(node);
@@ -731,7 +734,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
       type_specifier(node);
       break;
     default:
-      jj_la1[28] = jj_gen;
+      jj_la1[29] = jj_gen;
       ;
     }
     block(node);
@@ -750,7 +753,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
           ;
           break;
         default:
-          jj_la1[29] = jj_gen;
+          jj_la1[30] = jj_gen;
           break label_10;
         }
         jj_consume_token(COMMA);
@@ -759,7 +762,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
       }
       break;
     default:
-      jj_la1[30] = jj_gen;
+      jj_la1[31] = jj_gen;
       ;
     }
   }
@@ -785,7 +788,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
              node.addChild(new TreeNode("NOT"));
       break;
     default:
-      jj_la1[31] = jj_gen;
+      jj_la1[32] = jj_gen;
       ;
     }
     jj_consume_token(LPAREN);
@@ -793,8 +796,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
     function_arguments(node);
     jj_consume_token(RPAREN);
                node.addChild(new TreeNode("RPAREN"));
-    jj_consume_token(SEMI);
-             node.addChild(new TreeNode("SEMI"));
+    end_of_statement(node);
   }
 
   final public void function_arguments(TreeNode parent) throws ParseException {
@@ -821,7 +823,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
           ;
           break;
         default:
-          jj_la1[32] = jj_gen;
+          jj_la1[33] = jj_gen;
           break label_11;
         }
         jj_consume_token(COMMA);
@@ -830,7 +832,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
       }
       break;
     default:
-      jj_la1[33] = jj_gen;
+      jj_la1[34] = jj_gen;
       ;
     }
   }
@@ -859,7 +861,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
       match_arm(node);
       label_12:
       while (true) {
-        if (jj_2_10(2)) {
+        if (jj_2_11(2)) {
           ;
         } else {
           break label_12;
@@ -874,12 +876,12 @@ import unioeste.compiladores.utils.RusticoUtilities;
                                                                                                      node.addChild(new TreeNode("COMMA"));
         break;
       default:
-        jj_la1[34] = jj_gen;
+        jj_la1[35] = jj_gen;
         ;
       }
       break;
     default:
-      jj_la1[35] = jj_gen;
+      jj_la1[36] = jj_gen;
       ;
     }
   }
@@ -909,7 +911,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
       block(node);
       break;
     default:
-      jj_la1[36] = jj_gen;
+      jj_la1[37] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -936,7 +938,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
             node.addChild(new TreeNode("_"));
       break;
     default:
-      jj_la1[37] = jj_gen;
+      jj_la1[38] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -945,7 +947,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
   final public void match_expression(TreeNode parent) throws ParseException {
     TreeNode node = new TreeNode("match_expression");
     parent.addChild(node);
-    if (jj_2_11(2)) {
+    if (jj_2_12(2)) {
       jj_consume_token(LPAREN);
                node.addChild(new TreeNode("LPAREN"));
       expression(node);
@@ -968,7 +970,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
         expression(node);
         break;
       default:
-        jj_la1[38] = jj_gen;
+        jj_la1[39] = jj_gen;
         jj_consume_token(-1);
         throw new ParseException();
       }
@@ -1052,7 +1054,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
                      node.addChild(new TreeNode("IDENTIFIER"));
       break;
     default:
-      jj_la1[39] = jj_gen;
+      jj_la1[40] = jj_gen;
       jj_consume_token(-1);
       throw new ParseException();
     }
@@ -1135,49 +1137,20 @@ import unioeste.compiladores.utils.RusticoUtilities;
     finally { jj_save(10, xla); }
   }
 
-  private boolean jj_3_6() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_18()) {
-    jj_scanpos = xsp;
-    if (jj_3R_19()) return true;
-    }
-    if (jj_3R_20()) return true;
-    return false;
+  private boolean jj_2_12(int xla) {
+    jj_la = xla; jj_lastpos = jj_scanpos = token;
+    try { return !jj_3_12(); }
+    catch(LookaheadSuccess ls) { return true; }
+    finally { jj_save(11, xla); }
   }
 
-  private boolean jj_3R_92() {
-    if (jj_3R_20()) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_6()) { jj_scanpos = xsp; break; }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_99() {
-    if (jj_scan_token(GE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_98() {
+  private boolean jj_3R_102() {
     if (jj_scan_token(LE)) return true;
     return false;
   }
 
-  private boolean jj_3R_97() {
+  private boolean jj_3R_101() {
     if (jj_scan_token(GT)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_96() {
-    if (jj_scan_token(LT)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_26() {
-    if (jj_scan_token(NOT)) return true;
     return false;
   }
 
@@ -1185,175 +1158,190 @@ import unioeste.compiladores.utils.RusticoUtilities;
     if (jj_scan_token(IDENTIFIER)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_26()) jj_scanpos = xsp;
+    if (jj_3R_28()) jj_scanpos = xsp;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_93() {
+  private boolean jj_3R_100() {
+    if (jj_scan_token(LT)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_97() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_96()) {
+    if (jj_3R_100()) {
     jj_scanpos = xsp;
-    if (jj_3R_97()) {
+    if (jj_3R_101()) {
     jj_scanpos = xsp;
-    if (jj_3R_98()) {
+    if (jj_3R_102()) {
     jj_scanpos = xsp;
-    if (jj_3R_99()) return true;
+    if (jj_3R_103()) return true;
     }
     }
     }
     return false;
   }
 
-  private boolean jj_3R_88() {
-    if (jj_3R_92()) return true;
+  private boolean jj_3R_90() {
+    if (jj_3R_96()) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_93()) { jj_scanpos = xsp; break; }
+      if (jj_3R_97()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
 
-  private boolean jj_3R_94() {
+  private boolean jj_3R_98() {
     if (jj_scan_token(EQEQ)) return true;
     return false;
   }
 
-  private boolean jj_3R_89() {
+  private boolean jj_3R_91() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_94()) {
+    if (jj_3R_98()) {
     jj_scanpos = xsp;
-    if (jj_3R_95()) return true;
+    if (jj_3R_99()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_66() {
-    if (jj_3R_88()) return true;
+  private boolean jj_3R_68() {
+    if (jj_3R_90()) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_89()) { jj_scanpos = xsp; break; }
+      if (jj_3R_91()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
 
-  private boolean jj_3R_67() {
+  private boolean jj_3R_26() {
+    return false;
+  }
+
+  private boolean jj_3R_25() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_69() {
     if (jj_scan_token(ANDAND)) return true;
     return false;
   }
 
-  private boolean jj_3R_50() {
-    if (jj_3R_66()) return true;
+  private boolean jj_3R_52() {
+    if (jj_3R_68()) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_67()) { jj_scanpos = xsp; break; }
+      if (jj_3R_69()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
 
   private boolean jj_3R_14() {
     if (jj_scan_token(KW_FN)) return true;
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_51() {
-    if (jj_scan_token(OROR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_27() {
-    if (jj_3R_50()) return true;
     Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3R_51()) { jj_scanpos = xsp; break; }
+    xsp = jj_scanpos;
+    if (jj_3R_25()) {
+    jj_scanpos = xsp;
+    if (jj_3R_26()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_87() {
+  private boolean jj_3R_53() {
+    if (jj_scan_token(OROR)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_29() {
+    if (jj_3R_52()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3R_53()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3_10() {
     if (jj_3R_17()) return true;
     return false;
   }
 
-  private boolean jj_3R_61() {
+  private boolean jj_3R_63() {
     if (jj_scan_token(KW_RETURN)) return true;
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_87()) jj_scanpos = xsp;
-    if (jj_scan_token(SEMI)) return true;
+    if (jj_3_10()) jj_scanpos = xsp;
+    if (jj_3R_89()) return true;
     return false;
   }
 
-  private boolean jj_3R_49() {
+  private boolean jj_3R_51() {
     if (jj_scan_token(SHREQ)) return true;
     return false;
   }
 
-  private boolean jj_3R_48() {
+  private boolean jj_3R_50() {
     if (jj_scan_token(SHLEQ)) return true;
     return false;
   }
 
-  private boolean jj_3R_47() {
+  private boolean jj_3R_49() {
     if (jj_scan_token(OREQ)) return true;
     return false;
   }
 
-  private boolean jj_3R_46() {
+  private boolean jj_3R_48() {
     if (jj_scan_token(ANDEQ)) return true;
     return false;
   }
 
-  private boolean jj_3R_59() {
+  private boolean jj_3R_61() {
     if (jj_scan_token(KW_LOOP)) return true;
     if (jj_3R_21()) return true;
     return false;
   }
 
-  private boolean jj_3R_45() {
+  private boolean jj_3R_47() {
     if (jj_scan_token(CARETEQ)) return true;
     return false;
   }
 
-  private boolean jj_3R_44() {
+  private boolean jj_3R_46() {
     if (jj_scan_token(PERCENTEQ)) return true;
     return false;
   }
 
-  private boolean jj_3R_43() {
+  private boolean jj_3R_45() {
     if (jj_scan_token(SLASHEQ)) return true;
     return false;
   }
 
-  private boolean jj_3R_42() {
+  private boolean jj_3R_44() {
     if (jj_scan_token(STAREQ)) return true;
     return false;
   }
 
-  private boolean jj_3R_41() {
+  private boolean jj_3R_43() {
     if (jj_scan_token(MINUSEQ)) return true;
     return false;
   }
 
-  private boolean jj_3R_40() {
+  private boolean jj_3R_42() {
     if (jj_scan_token(PLUSEQ)) return true;
     return false;
   }
 
-  private boolean jj_3R_25() {
+  private boolean jj_3R_27() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_39()) {
-    jj_scanpos = xsp;
-    if (jj_3R_40()) {
-    jj_scanpos = xsp;
     if (jj_3R_41()) {
     jj_scanpos = xsp;
     if (jj_3R_42()) {
@@ -1370,7 +1358,11 @@ import unioeste.compiladores.utils.RusticoUtilities;
     jj_scanpos = xsp;
     if (jj_3R_48()) {
     jj_scanpos = xsp;
-    if (jj_3R_49()) return true;
+    if (jj_3R_49()) {
+    jj_scanpos = xsp;
+    if (jj_3R_50()) {
+    jj_scanpos = xsp;
+    if (jj_3R_51()) return true;
     }
     }
     }
@@ -1384,12 +1376,12 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3R_39() {
+  private boolean jj_3R_41() {
     if (jj_scan_token(EQ)) return true;
     return false;
   }
 
-  private boolean jj_3R_58() {
+  private boolean jj_3R_60() {
     if (jj_scan_token(KW_FOR)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
@@ -1397,26 +1389,26 @@ import unioeste.compiladores.utils.RusticoUtilities;
 
   private boolean jj_3R_15() {
     if (jj_scan_token(IDENTIFIER)) return true;
-    if (jj_3R_25()) return true;
+    if (jj_3R_27()) return true;
     return false;
   }
 
-  private boolean jj_3R_57() {
+  private boolean jj_3R_59() {
     if (jj_scan_token(KW_WHILE)) return true;
     if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
-  private boolean jj_3R_82() {
+  private boolean jj_3R_84() {
     if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
-  private boolean jj_3R_86() {
+  private boolean jj_3R_88() {
     return false;
   }
 
-  private boolean jj_3R_85() {
+  private boolean jj_3R_87() {
     if (jj_scan_token(RBRACE)) return true;
     return false;
   }
@@ -1426,9 +1418,9 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3R_55() {
+  private boolean jj_3R_57() {
     if (jj_scan_token(KW_USE)) return true;
-    if (jj_3R_82()) return true;
+    if (jj_3R_84()) return true;
     return false;
   }
 
@@ -1440,29 +1432,29 @@ import unioeste.compiladores.utils.RusticoUtilities;
       if (jj_3_9()) { jj_scanpos = xsp; break; }
     }
     xsp = jj_scanpos;
-    if (jj_3R_85()) {
+    if (jj_3R_87()) {
     jj_scanpos = xsp;
-    if (jj_3R_86()) return true;
+    if (jj_3R_88()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_90() {
+  private boolean jj_3R_92() {
     if (jj_3R_17()) return true;
     return false;
   }
 
   private boolean jj_3R_17() {
-    if (jj_3R_27()) return true;
+    if (jj_3R_29()) return true;
     return false;
   }
 
-  private boolean jj_3R_83() {
+  private boolean jj_3R_85() {
     Token xsp;
     xsp = jj_scanpos;
     if (jj_3_8()) {
     jj_scanpos = xsp;
-    if (jj_3R_90()) return true;
+    if (jj_3R_92()) return true;
     }
     return false;
   }
@@ -1473,7 +1465,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3R_91() {
+  private boolean jj_3R_93() {
     if (jj_3R_17()) return true;
     return false;
   }
@@ -1489,6 +1481,22 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
+  private boolean jj_3R_86() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_12()) {
+    jj_scanpos = xsp;
+    if (jj_3R_93()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3_12() {
+    if (jj_scan_token(LPAREN)) return true;
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
   private boolean jj_3R_13() {
     if (jj_scan_token(KW_LET)) return true;
     Token xsp;
@@ -1498,25 +1506,9 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3R_56() {
+  private boolean jj_3R_58() {
     if (jj_scan_token(KW_IF)) return true;
-    if (jj_3R_83()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_84() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_11()) {
-    jj_scanpos = xsp;
-    if (jj_3R_91()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3_11() {
-    if (jj_scan_token(LPAREN)) return true;
-    if (jj_3R_17()) return true;
+    if (jj_3R_85()) return true;
     return false;
   }
 
@@ -1525,115 +1517,115 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3R_81() {
+  private boolean jj_3R_67() {
+    if (jj_scan_token(UNDERSCORE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_83() {
     if (jj_scan_token(BLOCK_COMMENT)) return true;
     return false;
   }
 
-  private boolean jj_3R_80() {
+  private boolean jj_3R_66() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_82() {
     if (jj_scan_token(LINE_COMMENT)) return true;
     return false;
   }
 
-  private boolean jj_3R_54() {
+  private boolean jj_3R_56() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_80()) {
+    if (jj_3R_82()) {
     jj_scanpos = xsp;
-    if (jj_3R_81()) return true;
+    if (jj_3R_83()) return true;
     }
     return false;
   }
 
-  private boolean jj_3R_79() {
+  private boolean jj_3R_65() {
+    if (jj_scan_token(STRING)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_81() {
     if (jj_scan_token(LPAREN)) return true;
     if (jj_3R_17()) return true;
     return false;
   }
 
-  private boolean jj_3R_65() {
-    if (jj_scan_token(UNDERSCORE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_78() {
+  private boolean jj_3R_80() {
     if (jj_scan_token(KW_FALSE)) return true;
     return false;
   }
 
+  private boolean jj_3R_79() {
+    if (jj_scan_token(KW_TRUE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_40() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_64()) {
+    jj_scanpos = xsp;
+    if (jj_3R_65()) {
+    jj_scanpos = xsp;
+    if (jj_3R_66()) {
+    jj_scanpos = xsp;
+    if (jj_3R_67()) return true;
+    }
+    }
+    }
+    return false;
+  }
+
   private boolean jj_3R_64() {
+    if (jj_scan_token(INTEGER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_78() {
     if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
   private boolean jj_3R_77() {
-    if (jj_scan_token(KW_TRUE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_63() {
     if (jj_scan_token(STRING)) return true;
     return false;
   }
 
   private boolean jj_3R_76() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_75() {
-    if (jj_scan_token(STRING)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_74() {
     if (jj_scan_token(DIGIT)) return true;
     return false;
   }
 
-  private boolean jj_3R_38() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_62()) {
-    jj_scanpos = xsp;
-    if (jj_3R_63()) {
-    jj_scanpos = xsp;
-    if (jj_3R_64()) {
-    jj_scanpos = xsp;
-    if (jj_3R_65()) return true;
-    }
-    }
-    }
-    return false;
-  }
-
-  private boolean jj_3R_62() {
-    if (jj_scan_token(INTEGER)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_73() {
+  private boolean jj_3R_75() {
     if (jj_scan_token(DIGITS)) return true;
     return false;
   }
 
-  private boolean jj_3R_72() {
+  private boolean jj_3R_74() {
     if (jj_scan_token(REAL)) return true;
     return false;
   }
 
-  private boolean jj_3_5() {
-    if (jj_3R_17()) return true;
+  private boolean jj_3R_95() {
     return false;
   }
 
-  private boolean jj_3R_53() {
+  private boolean jj_3R_73() {
+    if (jj_scan_token(INTEGER)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_55() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_71()) {
-    jj_scanpos = xsp;
-    if (jj_3R_72()) {
-    jj_scanpos = xsp;
     if (jj_3R_73()) {
     jj_scanpos = xsp;
     if (jj_3R_74()) {
@@ -1646,7 +1638,11 @@ import unioeste.compiladores.utils.RusticoUtilities;
     jj_scanpos = xsp;
     if (jj_3R_78()) {
     jj_scanpos = xsp;
-    if (jj_3R_79()) return true;
+    if (jj_3R_79()) {
+    jj_scanpos = xsp;
+    if (jj_3R_80()) {
+    jj_scanpos = xsp;
+    if (jj_3R_81()) return true;
     }
     }
     }
@@ -1655,16 +1651,70 @@ import unioeste.compiladores.utils.RusticoUtilities;
     }
     }
     }
+    return false;
+  }
+
+  private boolean jj_3R_94() {
+    if (jj_scan_token(SEMI)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_89() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_94()) {
+    jj_scanpos = xsp;
+    if (jj_3R_95()) return true;
+    }
+    return false;
+  }
+
+  private boolean jj_3R_23() {
+    if (jj_3R_40()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_72() {
+    if (jj_scan_token(NOT)) return true;
     return false;
   }
 
   private boolean jj_3R_71() {
-    if (jj_scan_token(INTEGER)) return true;
+    if (jj_scan_token(MINUS)) return true;
     return false;
   }
 
-  private boolean jj_3R_37() {
-    if (jj_3R_61()) return true;
+  private boolean jj_3_11() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_23()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_54() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_70()) {
+    jj_scanpos = xsp;
+    if (jj_3R_71()) {
+    jj_scanpos = xsp;
+    if (jj_3R_72()) return true;
+    }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_70() {
+    if (jj_scan_token(PLUS)) return true;
+    return false;
+  }
+
+  private boolean jj_3_5() {
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_39() {
+    if (jj_3R_63()) return true;
     return false;
   }
 
@@ -1673,8 +1723,18 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3R_36() {
+  private boolean jj_3R_38() {
     if (jj_3R_21()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_37() {
+    if (jj_3R_62()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_36() {
+    if (jj_3R_61()) return true;
     return false;
   }
 
@@ -1683,28 +1743,21 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
+  private boolean jj_3R_30() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_54()) jj_scanpos = xsp;
+    if (jj_3R_55()) return true;
+    return false;
+  }
+
   private boolean jj_3R_34() {
     if (jj_3R_59()) return true;
     return false;
   }
 
-  private boolean jj_3R_33() {
-    if (jj_3R_58()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_23() {
-    if (jj_3R_38()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_32() {
-    if (jj_3R_57()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_70() {
-    if (jj_scan_token(NOT)) return true;
+  private boolean jj_3R_107() {
+    if (jj_scan_token(PERCENT)) return true;
     return false;
   }
 
@@ -1713,8 +1766,8 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3R_69() {
-    if (jj_scan_token(MINUS)) return true;
+  private boolean jj_3R_106() {
+    if (jj_scan_token(SLASH)) return true;
     return false;
   }
 
@@ -1723,26 +1776,18 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3R_52() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_68()) {
-    jj_scanpos = xsp;
-    if (jj_3R_69()) {
-    jj_scanpos = xsp;
-    if (jj_3R_70()) return true;
-    }
-    }
+  private boolean jj_3R_105() {
+    if (jj_scan_token(STAR)) return true;
     return false;
   }
 
-  private boolean jj_3R_68() {
-    if (jj_scan_token(PLUS)) return true;
+  private boolean jj_3R_99() {
+    if (jj_scan_token(NE)) return true;
     return false;
   }
 
-  private boolean jj_3R_31() {
-    if (jj_3R_56()) return true;
+  private boolean jj_3R_33() {
+    if (jj_3R_58()) return true;
     return false;
   }
 
@@ -1751,40 +1796,30 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3_10() {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_23()) return true;
+  private boolean jj_3R_32() {
+    if (jj_3R_57()) return true;
     return false;
   }
 
-  private boolean jj_3R_30() {
-    if (jj_3R_55()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_29() {
-    if (jj_3R_54()) return true;
+  private boolean jj_3R_31() {
+    if (jj_3R_56()) return true;
     return false;
   }
 
   private boolean jj_3R_22() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_29()) {
+    if (jj_3R_31()) {
     jj_scanpos = xsp;
-    if (jj_3R_30()) {
+    if (jj_3R_32()) {
     jj_scanpos = xsp;
     if (jj_3_1()) {
     jj_scanpos = xsp;
-    if (jj_3R_31()) {
+    if (jj_3R_33()) {
     jj_scanpos = xsp;
     if (jj_3_2()) {
     jj_scanpos = xsp;
     if (jj_3_3()) {
-    jj_scanpos = xsp;
-    if (jj_3R_32()) {
-    jj_scanpos = xsp;
-    if (jj_3R_33()) {
     jj_scanpos = xsp;
     if (jj_3R_34()) {
     jj_scanpos = xsp;
@@ -1792,9 +1827,13 @@ import unioeste.compiladores.utils.RusticoUtilities;
     jj_scanpos = xsp;
     if (jj_3R_36()) {
     jj_scanpos = xsp;
+    if (jj_3R_37()) {
+    jj_scanpos = xsp;
+    if (jj_3R_38()) {
+    jj_scanpos = xsp;
     if (jj_3_4()) {
     jj_scanpos = xsp;
-    if (jj_3R_37()) {
+    if (jj_3R_39()) {
     jj_scanpos = xsp;
     if (jj_3_5()) return true;
     }
@@ -1813,65 +1852,68 @@ import unioeste.compiladores.utils.RusticoUtilities;
     return false;
   }
 
-  private boolean jj_3R_28() {
+  private boolean jj_3R_104() {
     Token xsp;
     xsp = jj_scanpos;
-    if (jj_3R_52()) jj_scanpos = xsp;
-    if (jj_3R_53()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_103() {
-    if (jj_scan_token(PERCENT)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_102() {
-    if (jj_scan_token(SLASH)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_101() {
-    if (jj_scan_token(STAR)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_95() {
-    if (jj_scan_token(NE)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_100() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_101()) {
+    if (jj_3R_105()) {
     jj_scanpos = xsp;
-    if (jj_3R_102()) {
+    if (jj_3R_106()) {
     jj_scanpos = xsp;
-    if (jj_3R_103()) return true;
+    if (jj_3R_107()) return true;
     }
     }
     return false;
   }
 
-  private boolean jj_3R_60() {
+  private boolean jj_3R_62() {
     if (jj_scan_token(KW_MATCH)) return true;
-    if (jj_3R_84()) return true;
+    if (jj_3R_86()) return true;
     return false;
   }
 
   private boolean jj_3R_20() {
-    if (jj_3R_28()) return true;
+    if (jj_3R_30()) return true;
     Token xsp;
     while (true) {
       xsp = jj_scanpos;
-      if (jj_3R_100()) { jj_scanpos = xsp; break; }
+      if (jj_3R_104()) { jj_scanpos = xsp; break; }
     }
     return false;
   }
 
   private boolean jj_3R_18() {
     if (jj_scan_token(PLUS)) return true;
+    return false;
+  }
+
+  private boolean jj_3_6() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_18()) {
+    jj_scanpos = xsp;
+    if (jj_3R_19()) return true;
+    }
+    if (jj_3R_20()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_96() {
+    if (jj_3R_20()) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_6()) { jj_scanpos = xsp; break; }
+    }
+    return false;
+  }
+
+  private boolean jj_3R_103() {
+    if (jj_scan_token(GE)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_28() {
+    if (jj_scan_token(NOT)) return true;
     return false;
   }
 
@@ -1886,7 +1928,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
   private Token jj_scanpos, jj_lastpos;
   private int jj_la;
   private int jj_gen;
-  final private int[] jj_la1 = new int[40];
+  final private int[] jj_la1 = new int[41];
   static private int[] jj_la1_0;
   static private int[] jj_la1_1;
   static private int[] jj_la1_2;
@@ -1900,21 +1942,21 @@ import unioeste.compiladores.utils.RusticoUtilities;
       jj_la1_init_4();
    }
    private static void jj_la1_init_0() {
-      jj_la1_0 = new int[] {0x839e000,0x0,0x10000,0x308000,0x8000000,0x0,0x1000000,0x0,0x0,0x20,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2000,0x2000,0x0,0x80000,0x2000,0x0,0x0,0x0,0x0,0x0,0x2000,0x0,0x0,0x2000,0x0,0x2000,0x0,};
+      jj_la1_0 = new int[] {0x839e000,0x0,0x10000,0x308000,0x8000000,0x0,0x0,0x1000000,0x0,0x0,0x20,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x2000,0x2000,0x0,0x80000,0x0,0x0,0x0,0x0,0x0,0x0,0x2000,0x0,0x0,0x2000,0x0,0x2000,0x0,};
    }
    private static void jj_la1_init_1() {
-      jj_la1_1 = new int[] {0x7f0000a4,0x20,0x0,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x60000000,0x80000000,0x80000000,0x60000000,0x60000000,0x1f000004,0x7f000004,0x0,0x0,0x7f000004,0x0,0x0,0x0,0x0,0x0,0x7f000004,0x0,0x9000000,0x7f000004,0x9000000,0x7f000004,0x0,};
+      jj_la1_1 = new int[] {0x7f0000a4,0x20,0x0,0x80,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x60000000,0x80000000,0x80000000,0x60000000,0x60000000,0x1f000004,0x7f000004,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x7f000004,0x0,0x9000000,0x7f000004,0x9000000,0x7f000004,0x0,};
    }
    private static void jj_la1_init_2() {
-      jj_la1_2 = new int[] {0x8,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x100000,0x0,0x0,0x1ffc00,0x80,0x40,0x600000,0x600000,0x7800000,0x7800000,0x0,0x3,0x3,0x8,0x8,0x0,0x8,0x0,0x0,0x8,0x0,0x0,0x0,0x8,0x0,0x8,0x0,0x10000000,0x8,0x10000000,0x8,0x0,};
+      jj_la1_2 = new int[] {0x8,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x100000,0x0,0x0,0x1ffc00,0x80,0x40,0x600000,0x600000,0x7800000,0x7800000,0x0,0x3,0x3,0x8,0x8,0x0,0x8,0x0,0x0,0x0,0x0,0x0,0x0,0x8,0x0,0x8,0x0,0x10000000,0x8,0x10000000,0x8,0x0,};
    }
    private static void jj_la1_init_3() {
-      jj_la1_3 = new int[] {0x11000,0x0,0x0,0x1000,0x0,0x0,0x0,0x8,0x0,0x0,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x10000,0x2000,0x0,0x10000,0x20,0x2,0x0,0x0,0x2,0x10000,0x2,0x0,0x11000,0x0,0x10000,0xfffc0000,};
+      jj_la1_3 = new int[] {0x11000,0x0,0x0,0x1000,0x0,0x4,0x0,0x0,0x8,0x0,0x0,0x10,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x10000,0x10000,0x2000,0x0,0x0,0x20,0x2,0x0,0x0,0x2,0x10000,0x2,0x0,0x11000,0x0,0x10000,0xfffc0000,};
    }
    private static void jj_la1_init_4() {
-      jj_la1_4 = new int[] {0x38,0x18,0x0,0x0,0x0,0x18,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20,0x20,0x0,0x20,0x20,0x0,0x0,0x20,0x0,0x0,0x20,0x0,0x20,0x20,0x20,0x20,0x27,};
+      jj_la1_4 = new int[] {0x38,0x18,0x0,0x0,0x0,0x0,0x18,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x20,0x20,0x0,0x20,0x20,0x0,0x0,0x20,0x0,0x0,0x20,0x0,0x20,0x20,0x20,0x20,0x27,};
    }
-  final private JJCalls[] jj_2_rtns = new JJCalls[11];
+  final private JJCalls[] jj_2_rtns = new JJCalls[12];
   private boolean jj_rescan = false;
   private int jj_gc = 0;
 
@@ -1929,7 +1971,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 41; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1944,7 +1986,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 41; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1955,7 +1997,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 41; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1966,7 +2008,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 41; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1976,7 +2018,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 41; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -1986,7 +2028,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
     token = new Token();
     jj_ntk = -1;
     jj_gen = 0;
-    for (int i = 0; i < 40; i++) jj_la1[i] = -1;
+    for (int i = 0; i < 41; i++) jj_la1[i] = -1;
     for (int i = 0; i < jj_2_rtns.length; i++) jj_2_rtns[i] = new JJCalls();
   }
 
@@ -2106,7 +2148,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
       la1tokens[jj_kind] = true;
       jj_kind = -1;
     }
-    for (int i = 0; i < 40; i++) {
+    for (int i = 0; i < 41; i++) {
       if (jj_la1[i] == jj_gen) {
         for (int j = 0; j < 32; j++) {
           if ((jj_la1_0[i] & (1<<j)) != 0) {
@@ -2154,7 +2196,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
 
   private void jj_rescan_token() {
     jj_rescan = true;
-    for (int i = 0; i < 11; i++) {
+    for (int i = 0; i < 12; i++) {
     try {
       JJCalls p = jj_2_rtns[i];
       do {
@@ -2172,6 +2214,7 @@ import unioeste.compiladores.utils.RusticoUtilities;
             case 8: jj_3_9(); break;
             case 9: jj_3_10(); break;
             case 10: jj_3_11(); break;
+            case 11: jj_3_12(); break;
           }
         }
         p = p.next;
