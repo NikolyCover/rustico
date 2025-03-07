@@ -9,16 +9,28 @@ import java.util.LinkedList;
 import java.util.Map;
 
 public class SymbolTable {
-    private final Hashtable<String, Token> hashTable = new Hashtable<>();
+    private final Hashtable<String, SymbolInfo> hashTable = new Hashtable<>();
 
-    public void add(String identifier, Token symbol) {
-        if(!hashTable.containsKey(identifier)) {
+    public void add(String identifier, SymbolInfo symbol) {
+        if (!hashTable.containsKey(identifier)) {
             hashTable.put(identifier, symbol);
         }
     }
 
-    public Token getSymbol(String identifier) {
+    public void update(String identifier, SymbolInfo newSymbol) {
+        if (hashTable.containsKey(identifier)) {
+            hashTable.put(identifier, newSymbol);
+        } else {
+            System.out.println("Erro: Identificador " + identifier + " não encontrado na tabela de símbolos.");
+        }
+    }
+
+    public SymbolInfo getSymbol(String identifier) {
         return hashTable.get(identifier);
+    }
+
+    public boolean contains(String identifier) {
+        return hashTable.containsKey(identifier);
     }
 
     public void remove(String identifier) {
@@ -33,10 +45,10 @@ public class SymbolTable {
         return hashTable.size();
     }
 
-    private static LinkedList<Map.Entry<String, Token>> getEntriesAtIndex(int index, Hashtable<String, Token> hashtable) {
-        LinkedList<Map.Entry<String, Token>> entries = new LinkedList<>();
+    private static LinkedList<Map.Entry<String, SymbolInfo>> getEntriesAtIndex(int index, Hashtable<String, SymbolInfo> hashtable) {
+        LinkedList<Map.Entry<String, SymbolInfo>> entries = new LinkedList<>();
 
-        for (Map.Entry<String, Token> entry : hashtable.entrySet()) {
+        for (Map.Entry<String, SymbolInfo> entry : hashtable.entrySet()) {
             if (Math.abs(entry.getKey().hashCode()) % hashtable.size() == index) {
                 entries.add(entry);
             }
@@ -54,19 +66,33 @@ public class SymbolTable {
         titleTable.addRule();
 
         table.addRule();
-        table.addRow("Índice", "Chave", "Token");
+        table.addRow("Índice", "Chave", "Tipo", "Mutável", "Inicializado");
         table.addRule();
 
         for (int index = 0; index < hashTable.size(); index++) {
-            LinkedList<Map.Entry<String, Token>> entries = getEntriesAtIndex(index, hashTable);
+            LinkedList<Map.Entry<String, SymbolInfo>> entries = getEntriesAtIndex(index, hashTable);
             boolean firstEntry = true;
 
-            for (Map.Entry<String, Token> entry : entries) {
+            for (Map.Entry<String, SymbolInfo> entry : entries) {
+                SymbolInfo symbol = entry.getValue();
+
                 if (firstEntry) {
-                    table.addRow(index, entry.getKey(), entry.getValue().toString());
+                    table.addRow(
+                            index,
+                            entry.getKey(),
+                            symbol.getType() != null ? symbol.getType() : "-",
+                            symbol.isMutable() != null ? (symbol.isMutable() ? "Sim" : "Não") : "-",
+                            symbol.isInitialized() != null ? (symbol.isInitialized() ? "Sim" : "Não") : "-"
+                    );
                     firstEntry = false;
                 } else {
-                    table.addRow("", entry.getKey(), entry.getValue().toString());
+                    table.addRow(
+                            "",
+                            entry.getKey(),
+                            symbol.getType() != null ? symbol.getType() : "-",
+                            symbol.isMutable() != null ? (symbol.isMutable() ? "Sim" : "Não") : "-",
+                            symbol.isInitialized() != null ? (symbol.isInitialized() ? "Sim" : "Não") : "-"
+                    );
                 }
                 table.addRule();
             }

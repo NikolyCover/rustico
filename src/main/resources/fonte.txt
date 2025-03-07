@@ -1,0 +1,32 @@
+use std::io;
+
+let mut number_var: i32 = 10;
+let inferred_var = 20;
+
+if number_var > 5 {
+    number_var = 15;
+} else {
+    println!("Número pequeno");
+}
+
+fn soma(x: i32, y: i32) -> i32 {
+    return x + y;
+}
+
+fn imprime_mensagem(mensagem: str) {
+    println!("{}", mensagem);
+}
+
+fn retorna_booleano() -> bool {
+    return 10 > 5;
+}
+
+fn main() {
+    //let resultado = soma(3, 4);
+    imprime_mensagem("Olá, mundo!");
+
+    //let mut bool_var: bool = retorna_booleano();
+    bool_var = false;
+
+    println!("Resultado da soma: {}", resultado);
+}

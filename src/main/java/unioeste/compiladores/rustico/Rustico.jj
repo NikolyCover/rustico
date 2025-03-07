@@ -6,9 +6,24 @@ PARSER_BEGIN(Rustico)
 package unioeste.compiladores.rustico;
 
 import unioeste.compiladores.symbols.TreeNode;
+import unioeste.compiladores.symbols.SymbolTable;
+import unioeste.compiladores.symbols.SymbolInfo;
 import unioeste.compiladores.utils.RusticoUtilities;
+import unioeste.compiladores.rustico.TokenWrapper;
+import java.io.InputStream;
 
  public class Rustico {
+     private SymbolTable symbolTable;
+
+    public Rustico(SymbolTable symbolTable,  InputStream stream) {
+        this(stream);
+        this.symbolTable = symbolTable;
+    }
+
+     public SymbolTable getSymbolTable() {
+         return symbolTable;
+     }
+
      final public void throwSyntacticError(String message) throws ParseException  {
           Token currentToken = getToken(0);
 
@@ -247,13 +262,18 @@ void variable_declaration(TreeNode parent):
 {
     TreeNode node = new TreeNode("variable_declaration");
     parent.addChild(node);
+    Token id;
+    TokenWrapper typeWrapper = new TokenWrapper(null);
 }
 {
     <KW_LET> {  node.addChild(new TreeNode("KW_LET")); }
     (<KW_MUT> {  node.addChild(new TreeNode("KW_MUT")); })?
-    <IDENTIFIER> {  node.addChild(new TreeNode("IDENTIFIER")); }
-    (<COLON> {  node.addChild(new TreeNode("COLON")); } type_specifier(node))?
+    id=<IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
+    (<COLON> {  node.addChild(new TreeNode("COLON")); } type_specifier(node, typeWrapper))?
     (<EQ> {  node.addChild(new TreeNode("EQ")); } expression(node))?
+    {
+        symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : "inferido", null, null));
+    }
     end_of_statement(node)
 }
 
@@ -523,17 +543,22 @@ void function_declaration(TreeNode parent):
 {
     TreeNode node = new TreeNode("function_declaration");
     parent.addChild(node);
+    Token id = null;
+    TokenWrapper typeWrapper = new TokenWrapper(null);
 }
 {
      <KW_FN> { node.addChild(new TreeNode("KW_FN")); }
      (
-          <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
+          id=<IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
         | { throwSyntacticError("Uma função precisa de um nome!"); }
      )
      <LPAREN> { node.addChild(new TreeNode("LPAREN")); }
      function_params(node)
      <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
-     (<RARROW> { node.addChild(new TreeNode("RARROW")); } type_specifier(node))?
+     (<RARROW> { node.addChild(new TreeNode("RARROW")); } type_specifier(node, typeWrapper))
+     {
+         symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : "inferido", null, null));
+     }
      block(node)
 }
 
@@ -550,11 +575,16 @@ void parameter(TreeNode parent):
 {
     TreeNode node = new TreeNode("parameter");
     parent.addChild(node);
+    Token id;
+    TokenWrapper typeWrapper = new TokenWrapper(null);
 }
 {
-    <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
+    id=<IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
     <COLON> { node.addChild(new TreeNode("COLON")); }
-    type_specifier(node)
+    type_specifier(node, typeWrapper)
+    {
+        symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : "inferido", null, null));
+    }
 }
 
 void function_call_statement(TreeNode parent):
@@ -639,28 +669,64 @@ void match_expression(TreeNode parent):
     | expression(node)
 }
 
-void type_specifier(TreeNode parent):
+void type_specifier(TreeNode parent, TokenWrapper typeWrapper):
 {
-     TreeNode node = new TreeNode("type_specifier");
-     parent.addChild(node);
+    TreeNode node = new TreeNode("type_specifier");
+    parent.addChild(node);
 }
 {
-    <TY_BOOL> { node.addChild(new TreeNode("TY_BOOL")); }
-    | <TY_CHAR> { node.addChild(new TreeNode("TY_CHAR")); }
-    | <TY_STR> { node.addChild(new TreeNode("TY_STR")); }
-    | <TY_U8>  { node.addChild(new TreeNode("TY_U8")); }
-    | <TY_U16> { node.addChild(new TreeNode("TY_U16")); }
-    | <TY_U32> { node.addChild(new TreeNode("TY_U32")); }
-    | <TY_U64> { node.addChild(new TreeNode("TY_U64")); }
-    | <TY_U128> { node.addChild(new TreeNode("TY_U128")); }
-    | <TY_USIZE> { node.addChild(new TreeNode("TY_USIZE")); }
-    | <TY_I8> { node.addChild(new TreeNode("TY_I8")); }
-    | <TY_I16> { node.addChild(new TreeNode("TY_I16")); }
-    | <TY_I32> { node.addChild(new TreeNode("TY_I32")); }
-    | <TY_I64> { node.addChild(new TreeNode("TY_I64")); }
-    | <TY_I128> { node.addChild(new TreeNode("TY_I128")); }
-    | <TY_ISIZE> { node.addChild(new TreeNode("TY_ISIZE")); }
-    | <TY_F32> { node.addChild(new TreeNode("TY_F32")); }
-    | <TY_F64> { node.addChild(new TreeNode("TY_F64")); }
-    | <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
+    typeWrapper.token = <TY_BOOL> {
+        node.addChild(new TreeNode("TY_BOOL"));
+    }
+    | typeWrapper.token = <TY_CHAR> {
+        node.addChild(new TreeNode("TY_CHAR"));
+    }
+    | typeWrapper.token = <TY_STR> {
+        node.addChild(new TreeNode("TY_STR"));
+    }
+    | typeWrapper.token = <TY_U8>  {
+        node.addChild(new TreeNode("TY_U8"));
+    }
+    | typeWrapper.token = <TY_U16> {
+        node.addChild(new TreeNode("TY_U16"));
+    }
+    | typeWrapper.token = <TY_U32> {
+        node.addChild(new TreeNode("TY_U32"));
+    }
+    | typeWrapper.token = <TY_U64> {
+        node.addChild(new TreeNode("TY_U64"));
+    }
+    | typeWrapper.token = <TY_U128> {
+        node.addChild(new TreeNode("TY_U128"));
+    }
+    | typeWrapper.token = <TY_USIZE> {
+        node.addChild(new TreeNode("TY_USIZE"));
+    }
+    | typeWrapper.token = <TY_I8> {
+        node.addChild(new TreeNode("TY_I8"));
+    }
+    | typeWrapper.token = <TY_I16> {
+        node.addChild(new TreeNode("TY_I16"));
+    }
+    | typeWrapper.token = <TY_I32> {
+        node.addChild(new TreeNode("TY_I32"));
+    }
+    | typeWrapper.token = <TY_I64> {
+        node.addChild(new TreeNode("TY_I64"));
+    }
+    | typeWrapper.token = <TY_I128> {
+        node.addChild(new TreeNode("TY_I128"));
+    }
+    | typeWrapper.token = <TY_ISIZE> {
+        node.addChild(new TreeNode("TY_ISIZE"));
+    }
+    | typeWrapper.token = <TY_F32> {
+        node.addChild(new TreeNode("TY_F32"));
+    }
+    | typeWrapper.token = <TY_F64> {
+        node.addChild(new TreeNode("TY_F64"));
+    }
+    | typeWrapper.token = <IDENTIFIER> {
+        node.addChild(new TreeNode("IDENTIFIER"));
+    }
 }

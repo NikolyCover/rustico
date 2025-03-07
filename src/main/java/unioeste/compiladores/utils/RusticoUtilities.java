@@ -3,6 +3,7 @@ package unioeste.compiladores.utils;
 import unioeste.compiladores.Main;
 import unioeste.compiladores.rustico.Rustico;
 import unioeste.compiladores.rustico.Token;
+import unioeste.compiladores.symbols.SymbolTable;
 
 import java.io.InputStream;
 
@@ -13,8 +14,8 @@ public class RusticoUtilities {
         return classLoader.getResourceAsStream(filename);
     }
 
-    public static Rustico createRustico(String filename) {
-        return new Rustico(readFile(filename));
+    public static Rustico createRustico(String filename, SymbolTable symbolTable) {
+        return new Rustico(symbolTable, readFile(filename));
     }
 
     public static String getErrorMessage(Token token, String message) {

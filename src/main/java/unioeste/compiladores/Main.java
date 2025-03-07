@@ -3,6 +3,7 @@ package unioeste.compiladores;
 import unioeste.compiladores.analyser.LexicalAnalyzer;
 import unioeste.compiladores.analyser.SyntacticAnalyser;
 import unioeste.compiladores.rustico.Rustico;
+import unioeste.compiladores.symbols.SymbolTable;
 import unioeste.compiladores.utils.RusticoUtilities;
 
 import java.io.IOException;
@@ -14,27 +15,28 @@ public class Main {
         System.out.print("Digite o nome do arquivo a ser analisado: ");
         String filename = scanner.nextLine();
 
-        Rustico rustico = RusticoUtilities.createRustico(filename);
+        SymbolTable symbolTable = new SymbolTable();
+
+        Rustico rustico = RusticoUtilities.createRustico(filename, symbolTable);
 
         LexicalAnalyzer lexicalAnalyzer = new LexicalAnalyzer(rustico);
-
         lexicalAnalyzer.startAnalysis();
+
+        rustico = RusticoUtilities.createRustico(filename, symbolTable);
+
+        SyntacticAnalyser syntacticAnalyser = new SyntacticAnalyser(rustico);
+        syntacticAnalyser.startAnalysis();
 
         System.out.println("Arquivo fonte: " + filename);
 
-        lexicalAnalyzer.getReservedKeysTable().show("Tabela de palavras reservadas");
-        lexicalAnalyzer.getSymbolTable().show("Tabela de símbolos");
+        //lexicalAnalyzer.getReservedKeysTable().show("Tabela de palavras reservadas");
+        rustico.getSymbolTable().show("Tabela de símbolos");
 
-        rustico = RusticoUtilities.createRustico(filename);
+        //syntacticAnalyser.getTree().print();
+        //String outputFilename = "arvore_" + filename;
+        //syntacticAnalyser.getTree().writeToFile(outputFilename);
 
-        SyntacticAnalyser syntacticAnalyser = new SyntacticAnalyser(rustico);
+        //System.out.println("\n\nAnálise léxica e sintática concluídas com sucesso!. Arvore sintática escrita no arquivo: '" + outputFilename + "'.");
 
-        syntacticAnalyser.startAnalysis();
-
-        syntacticAnalyser.getTree().print();
-        String outputFilename = "arvore_" + filename;
-        syntacticAnalyser.getTree().writeToFile(outputFilename);
-
-        System.out.println("\n\nAnálise léxica e sintática concluídas com sucesso!. Arvore sintática escrita no arquivo: '" + outputFilename + "'.");
     }
 }

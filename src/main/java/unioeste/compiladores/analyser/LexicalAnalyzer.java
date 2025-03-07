@@ -5,18 +5,17 @@ import unioeste.compiladores.rustico.Rustico;
 import unioeste.compiladores.rustico.RusticoConstants;
 import unioeste.compiladores.rustico.Token;
 import unioeste.compiladores.rustico.TokenMgrError;
+import unioeste.compiladores.symbols.SymbolInfo;
 import unioeste.compiladores.symbols.SymbolTable;
 
 public class LexicalAnalyzer {
     private final Rustico rustico;
 
     private final SymbolTable reservedKeysTable;
-    private final SymbolTable symbolTable;
 
     public LexicalAnalyzer(Rustico rustico) {
         this.rustico = rustico;
         this.reservedKeysTable = new SymbolTable();
-        this.symbolTable = new SymbolTable();
     }
 
     public void startAnalysis() {
@@ -44,7 +43,7 @@ public class LexicalAnalyzer {
         }
         
         if(token.kind >= RusticoConstants.KW_AS && token.kind <= RusticoConstants.KW_TRY){
-            reservedKeysTable.add(token.image, token);
+            reservedKeysTable.add(token.image, new SymbolInfo(token, null, null, null));
             return;
         }
 
@@ -52,11 +51,7 @@ public class LexicalAnalyzer {
             throw new LexicalException(token);
         }
 
-        symbolTable.add(token.image, token);
-    }
-
-    public SymbolTable getSymbolTable() {
-        return symbolTable;
+        rustico.getSymbolTable().add(token.image, new SymbolInfo(token, null, null, null));
     }
 
     public SymbolTable getReservedKeysTable() {
