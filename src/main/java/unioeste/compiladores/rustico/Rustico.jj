@@ -10,6 +10,10 @@ import unioeste.compiladores.symbols.SymbolTable;
 import unioeste.compiladores.symbols.SymbolInfo;
 import unioeste.compiladores.utils.RusticoUtilities;
 import unioeste.compiladores.rustico.TokenWrapper;
+import unioeste.compiladores.analyser.SemanticAnalyzer;
+import unioeste.compiladores.exception.SemanticException;
+import unioeste.compiladores.exception.SyntacticException;
+
 import java.io.InputStream;
 
  public class Rustico {
@@ -28,9 +32,18 @@ import java.io.InputStream;
           Token currentToken = getToken(0);
 
           if (currentToken.kind != RBRACE) {
-              throw new ParseException(RusticoUtilities.getErrorMessage(currentToken, message));
+              throw new ParseException("Erro sintático: " + RusticoUtilities.getErrorMessage(currentToken, message));
           }
-      }
+    }
+
+     public void throwSemanticError(SemanticException e) throws ParseException {
+          Token currentToken = getToken(0);
+
+          if (currentToken.kind != RBRACE) {
+              throw new ParseException("Erro semântico: " + RusticoUtilities.getErrorMessage(currentToken, e.getMessage()));
+          }
+     }
+
  }
 
 PARSER_END(Rustico)
@@ -99,7 +112,8 @@ TOKEN: {
 
 // strings
 TOKEN: {
-    < STRING: "\'" (~["\'"])* "\'" | ("\"" (~["\""])* "\"") >
+    < CHAR: "\'" (~["\'"]) "\'" >
+    | < STRING: "\'" (~["\'"])* "\'" | ("\"" (~["\""])* "\"") >
 }
 
 // numbers
@@ -220,6 +234,8 @@ void statement(TreeNode parent):
 {
     TreeNode node = new TreeNode("statement");
     parent.addChild(node);
+
+    TokenWrapper expressionTypeWrapper = new TokenWrapper(null);
 }
 {
       comment(node)
@@ -235,7 +251,7 @@ void statement(TreeNode parent):
     | block(node)
     | LOOKAHEAD(2) function_call_statement(node)
     | function_return_statement(node)
-    | LOOKAHEAD(2) expression(node)
+    | LOOKAHEAD(2) expression(node, expressionTypeWrapper)
 }
 
 void end_of_statement(TreeNode parent):
@@ -264,26 +280,31 @@ void variable_declaration(TreeNode parent):
     parent.addChild(node);
     Token id;
     TokenWrapper typeWrapper = new TokenWrapper(null);
+    TokenWrapper expressionTypeWrapper = new TokenWrapper(null);
 }
 {
     <KW_LET> {  node.addChild(new TreeNode("KW_LET")); }
     (<KW_MUT> {  node.addChild(new TreeNode("KW_MUT")); })?
     id=<IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
     (<COLON> {  node.addChild(new TreeNode("COLON")); } type_specifier(node, typeWrapper))?
-    (<EQ> {  node.addChild(new TreeNode("EQ")); } expression(node))?
+    (<EQ> {  node.addChild(new TreeNode("EQ")); } expression(node, expressionTypeWrapper))?
     {
-        symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : "inferido", null, null));
+        try {
+            SemanticAnalyzer.updateSymbolTable(symbolTable, id, typeWrapper, expressionTypeWrapper);
+        } catch (SemanticException e) {
+            throwSemanticError(e);
+        }
     }
     end_of_statement(node)
 }
 
-void expression(TreeNode parent):
+void expression(TreeNode parent, TokenWrapper typeWrapper):
 {
     TreeNode node = new TreeNode("expression");
     parent.addChild(node);
 }
 {
-    logical_or_expression(node)
+    logical_or_expression(node, typeWrapper)
 }
 
 void import_statement(TreeNode parent):
@@ -312,11 +333,12 @@ void assignment_statement(TreeNode parent):
 {
     TreeNode node = new TreeNode("assignment_statement");
     parent.addChild(node);
+    TokenWrapper expressionTypeWrapper = new TokenWrapper(null);
 }
 {
     <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
     assignment_operators(node)
-    expression(node)
+    expression(node, expressionTypeWrapper)
     end_of_statement(node)
 }
 
@@ -339,46 +361,46 @@ void assignment_operators(TreeNode parent):
     | <SHREQ> { node.addChild(new TreeNode("SHREQ")); }
 }
 
-void logical_or_expression(TreeNode parent):
+void logical_or_expression(TreeNode parent, TokenWrapper typeWrapper):
 {
     TreeNode node = new TreeNode("logical_or_expression");
     parent.addChild(node);
 }
 {
-     logical_and_expression(node)
-     ( <OROR>   logical_and_expression(node))*
+     logical_and_expression(node, typeWrapper)
+     ( <OROR>   logical_and_expression(node, typeWrapper))*
 }
 
-void logical_and_expression(TreeNode parent):
+void logical_and_expression(TreeNode parent, TokenWrapper typeWrapper):
 {
     TreeNode node = new TreeNode("logical_and_expression");
     parent.addChild(node);
 }
 {
-    equality_expression(node)
-    ( <ANDAND> { node.addChild(new TreeNode("ANDAND")); } equality_expression(node) )*
+    equality_expression(node, typeWrapper)
+    ( <ANDAND> { node.addChild(new TreeNode("ANDAND")); } equality_expression(node, typeWrapper) )*
 }
 
-void equality_expression(TreeNode parent):
+void equality_expression(TreeNode parent, TokenWrapper typeWrapper):
 {
     TreeNode node = new TreeNode("equality_expression");
     parent.addChild(node);
 }
 {
-    relational_expression(node)
+    relational_expression(node, typeWrapper)
     (
         ( <EQEQ> { node.addChild(new TreeNode("EQEQ")); } | <NE> { node.addChild(new TreeNode("NE")); } )
-        relational_expression(node)
+        relational_expression(node, typeWrapper)
     )*
 }
 
-void relational_expression(TreeNode parent):
+void relational_expression(TreeNode parent, TokenWrapper typeWrapper):
 {
     TreeNode node = new TreeNode("relational_expression");
     parent.addChild(node);
 }
 {
-    additive_expression(node)
+    additive_expression(node, typeWrapper)
     (
         (
               <LT> { node.addChild(new TreeNode("LT")); }
@@ -386,42 +408,42 @@ void relational_expression(TreeNode parent):
             | <LE> { node.addChild(new TreeNode("LE")); }
             | <GE> { node.addChild(new TreeNode("GE")); }
         )
-        additive_expression(node)
+        additive_expression(node, typeWrapper)
     )*
 }
 
-void additive_expression(TreeNode parent):
+void additive_expression(TreeNode parent, TokenWrapper typeWrapper):
 {
     TreeNode node = new TreeNode("additive_expression");
     parent.addChild(node);
 }
 {
-    multiplicative_expression(node)
+    multiplicative_expression(node, typeWrapper)
     (
         LOOKAHEAD(2)
         ( <PLUS> { node.addChild(new TreeNode("PLUS")); } | <MINUS> { node.addChild(new TreeNode("MINUS")); } )
-        multiplicative_expression(node)
+        multiplicative_expression(node, typeWrapper)
     )*
 }
 
-void multiplicative_expression(TreeNode parent):
+void multiplicative_expression(TreeNode parent, TokenWrapper typeWrapper):
 {
     TreeNode node = new TreeNode("multiplicative_expression");
     parent.addChild(node);
 }
 {
-    unary_expression(node)
+    unary_expression(node, typeWrapper)
     (
         (
               <STAR> { node.addChild(new TreeNode("STAR")); }
             | <SLASH> { node.addChild(new TreeNode("SLASH")); }
             | <PERCENT> { node.addChild(new TreeNode("PERCENT")); }
         )
-        unary_expression(node)
+        unary_expression(node, typeWrapper)
     )*
 }
 
-void unary_expression(TreeNode parent):
+void unary_expression(TreeNode parent, TokenWrapper typeWrapper):
 {
     TreeNode node = new TreeNode("unary_expression");
     parent.addChild(node);
@@ -432,24 +454,57 @@ void unary_expression(TreeNode parent):
         | <MINUS> { node.addChild(new TreeNode("MINUS")); }
         | <NOT> { node.addChild(new TreeNode("NOT")); }
     )?
-    primary_expression(node)
+    primary_expression(node, typeWrapper)
 }
 
-void primary_expression(TreeNode parent):
+void primary_expression(TreeNode parent, TokenWrapper typeWrapper):
 {
     TreeNode node = new TreeNode("primary_expression");
     parent.addChild(node);
+    Token t;
 }
 {
-      <INTEGER> { node.addChild(new TreeNode("INTEGER")); }
-    | <REAL> { node.addChild(new TreeNode("REAL")); }
-    | <DIGITS> { node.addChild(new TreeNode("DIGITS")); }
-    | <DIGIT> { node.addChild(new TreeNode("DIGIT")); }
-    | <STRING> { node.addChild(new TreeNode("STRING")); }
-    | <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
-    | <KW_TRUE> { node.addChild(new TreeNode("KW_TRUE")); }
-    | <KW_FALSE> { node.addChild(new TreeNode("KW_FALSE")); }
-    | <LPAREN> { node.addChild(new TreeNode("LPAREN")); } expression(node) <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
+      <INTEGER> {
+          node.addChild(new TreeNode("INTEGER"));
+          typeWrapper.token = new Token(TY_I32, "i32");
+      }
+    | <REAL> {
+          node.addChild(new TreeNode("REAL"));
+          typeWrapper.token = new Token(TY_F64, "f64");
+      }
+    | <DIGITS> {
+          node.addChild(new TreeNode("DIGITS"));
+          typeWrapper.token = new Token(TY_I32, "i32");
+      }
+    | <DIGIT> {
+          node.addChild(new TreeNode("DIGIT"));
+          typeWrapper.token = new Token(TY_I8, "i8");
+      }
+    | <STRING> {
+          node.addChild(new TreeNode("STRING"));
+          typeWrapper.token = new Token(TY_STR, "str");
+      }
+    | <CHAR> {
+          node.addChild(new TreeNode("CHAR"));
+          typeWrapper.token = new Token(TY_CHAR, "char");
+      }
+    | <IDENTIFIER> {
+          node.addChild(new TreeNode("IDENTIFIER"));
+          typeWrapper.token = null;
+      }
+    | <KW_TRUE> {
+          node.addChild(new TreeNode("KW_TRUE"));
+          typeWrapper.token = new Token(TY_BOOL, "bool");
+      }
+    | <KW_FALSE> {
+          node.addChild(new TreeNode("KW_FALSE"));
+          typeWrapper.token = new Token(TY_BOOL, "bool");
+      }
+    | <LPAREN> {
+          node.addChild(new TreeNode("LPAREN"));
+      } expression(node, typeWrapper) <RPAREN> {
+          node.addChild(new TreeNode("RPAREN"));
+      }
 }
 
 void conditional_statement(TreeNode parent):
@@ -468,11 +523,12 @@ void conditional_expression(TreeNode parent):
 {
     TreeNode node = new TreeNode("conditional_expression");
     parent.addChild(node);
+    TokenWrapper expressionTypeWrapper = new TokenWrapper(null);
 }
 {
     LOOKAHEAD(2)
-      <LPAREN> { node.addChild(new TreeNode("LPAREN")); } expression(node) <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
-    | expression(node)
+      <LPAREN> { node.addChild(new TreeNode("LPAREN")); } expression(node, expressionTypeWrapper) <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
+    | expression(node, expressionTypeWrapper)
 }
 
 void block(TreeNode parent):
@@ -493,11 +549,12 @@ void while_statement(TreeNode parent):
 {
     TreeNode node = new TreeNode("while_statement");
     parent.addChild(node);
+    TokenWrapper expressionTypeWrapper = new TokenWrapper(null);
 }
 {
      <KW_WHILE> { node.addChild(new TreeNode("KW_WHILE")); }
      <LPAREN> { node.addChild(new TreeNode("LPAREN")); }
-     expression(node)
+     expression(node, expressionTypeWrapper)
      <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
      block(node)
 }
@@ -506,15 +563,16 @@ void for_statement(TreeNode parent):
 {
     TreeNode node = new TreeNode("for_statement");
     parent.addChild(node);
+    TokenWrapper expressionTypeWrapper = new TokenWrapper(null);
 }
 {
      <KW_FOR>  { node.addChild(new TreeNode("KW_FOR")); }
      <LPAREN> { node.addChild(new TreeNode("LPAREN")); }
      (variable_declaration(node) | assignment_statement(node))
      <SEMI> { node.addChild(new TreeNode("SEMI")); }
-     expression(node)
+     expression(node, expressionTypeWrapper)
      <SEMI> { node.addChild(new TreeNode("SEMI")); }
-     expression(node)
+     expression(node, expressionTypeWrapper)
      <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
      block(node)
 }
@@ -532,10 +590,11 @@ void function_return_statement(TreeNode parent):
 {
     TreeNode node = new TreeNode("function_return_statement");
     parent.addChild(node);
+    TokenWrapper expressionTypeWrapper = new TokenWrapper(null);
 }
 {
     <KW_RETURN> { node.addChild(new TreeNode("KW_RETURN")); }
-    (LOOKAHEAD(2) expression(node))?
+    (LOOKAHEAD(2) expression(node, expressionTypeWrapper))?
     end_of_statement(node)
 }
 
@@ -555,7 +614,7 @@ void function_declaration(TreeNode parent):
      <LPAREN> { node.addChild(new TreeNode("LPAREN")); }
      function_params(node)
      <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
-     (<RARROW> { node.addChild(new TreeNode("RARROW")); } type_specifier(node, typeWrapper))
+     (<RARROW> { node.addChild(new TreeNode("RARROW")); } type_specifier(node, typeWrapper))?
      {
          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : "inferido", null, null));
      }
@@ -605,9 +664,10 @@ void function_arguments(TreeNode parent):
 {
     TreeNode node = new TreeNode("function_arguments");
     parent.addChild(node);
+    TokenWrapper expressionTypeWrapper = new TokenWrapper(null);
 }
 {
-    (expression(node) (<COMMA> { node.addChild(new TreeNode("COMMA")); } expression(node))*)?
+    (expression(node, expressionTypeWrapper) (<COMMA> { node.addChild(new TreeNode("COMMA")); } expression(node, expressionTypeWrapper))*)?
 }
 
 void match_statement(TreeNode parent):
@@ -639,9 +699,10 @@ void match_arm(TreeNode parent):
 {
     TreeNode node = new TreeNode("match_arm");
     parent.addChild(node);
+    TokenWrapper expressionTypeWrapper = new TokenWrapper(null);
 }
 {
-    pattern(node) <RARROW> { node.addChild(new TreeNode("RARROW")); } (expression(node) | block(node))
+    pattern(node) <RARROW> { node.addChild(new TreeNode("RARROW")); } (expression(node, expressionTypeWrapper) | block(node))
 }
 
 void pattern(TreeNode parent):
@@ -660,13 +721,14 @@ void match_expression(TreeNode parent):
 {
     TreeNode node = new TreeNode("match_expression");
     parent.addChild(node);
+    TokenWrapper expressionTypeWrapper = new TokenWrapper(null);
 }
 {
     LOOKAHEAD(2)
     <LPAREN> { node.addChild(new TreeNode("LPAREN")); }
-    expression(node)
+    expression(node, expressionTypeWrapper)
     <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
-    | expression(node)
+    | expression(node, expressionTypeWrapper)
 }
 
 void type_specifier(TreeNode parent, TokenWrapper typeWrapper):

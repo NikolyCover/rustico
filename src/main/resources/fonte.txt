@@ -1,7 +1,11 @@
 use std::io;
 
-let mut number_var: i32 = 10;
+let mut number_var: i8 = '10';
 let inferred_var = 20;
+let fistName = "John";
+let lastName = "Doe";
+let gender: char = 'M';
+let aux: i32;
 
 if number_var > 5 {
     number_var = 15;
@@ -22,8 +26,8 @@ fn retorna_booleano() -> bool {
 }
 
 fn main() {
-    //let resultado = soma(3, 4);
     imprime_mensagem("Olá, mundo!");
+    //println!("{}", soma(3, 4));
 
     //let mut bool_var: bool = retorna_booleano();
     bool_var = false;

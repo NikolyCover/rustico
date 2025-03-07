@@ -1,5 +1,6 @@
 package unioeste.compiladores.analyser;
 
+import unioeste.compiladores.exception.SemanticException;
 import unioeste.compiladores.exception.SyntacticException;
 import unioeste.compiladores.rustico.Rustico;
 import unioeste.compiladores.rustico.ParseException;
@@ -17,18 +18,22 @@ public class SyntacticAnalyser {
     public void startAnalysis(){
         try {
             parseStart();
-        } catch (SyntacticException e) {
+        } catch (SyntacticException | ParseException e) {
             System.err.println(e.getMessage());
             System.exit(1);
         }
     }
 
-    private void parseStart() throws SyntacticException {
+    private void parseStart() throws SyntacticException, ParseException {
         try{
             rustico.start(tree);
         }
         catch (ParseException e){
-            throw new SyntacticException(e.currentToken, e.expectedTokenSequences, e.tokenImage, e.getMessage());
+            if (e.getMessage().contains("Erro semântico") | e.getMessage().contains("Erro sintático")) {
+                throw e;
+            } else {
+                throw new SyntacticException(e.currentToken, e.expectedTokenSequences, e.tokenImage, e.getMessage());
+            }
         }
     }
 

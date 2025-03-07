@@ -113,169 +113,171 @@ public interface RusticoConstants {
   /** RegularExpression Id. */
   int KW_TRY = 55;
   /** RegularExpression Id. */
-  int STRING = 56;
+  int CHAR = 56;
   /** RegularExpression Id. */
-  int DIGIT = 57;
+  int STRING = 57;
   /** RegularExpression Id. */
-  int DIGITS = 58;
+  int DIGIT = 58;
   /** RegularExpression Id. */
-  int INTEGER = 59;
+  int DIGITS = 59;
   /** RegularExpression Id. */
-  int REAL = 60;
+  int INTEGER = 60;
   /** RegularExpression Id. */
-  int PLUS = 61;
+  int REAL = 61;
   /** RegularExpression Id. */
-  int MINUS = 62;
+  int PLUS = 62;
   /** RegularExpression Id. */
-  int STAR = 63;
+  int MINUS = 63;
   /** RegularExpression Id. */
-  int SLASH = 64;
+  int STAR = 64;
   /** RegularExpression Id. */
-  int PERCENT = 65;
+  int SLASH = 65;
   /** RegularExpression Id. */
-  int CARET = 66;
+  int PERCENT = 66;
   /** RegularExpression Id. */
-  int NOT = 67;
+  int CARET = 67;
   /** RegularExpression Id. */
-  int AND = 68;
+  int NOT = 68;
   /** RegularExpression Id. */
-  int OR = 69;
+  int AND = 69;
   /** RegularExpression Id. */
-  int ANDAND = 70;
+  int OR = 70;
   /** RegularExpression Id. */
-  int OROR = 71;
+  int ANDAND = 71;
   /** RegularExpression Id. */
-  int SHL = 72;
+  int OROR = 72;
   /** RegularExpression Id. */
-  int SHR = 73;
+  int SHL = 73;
   /** RegularExpression Id. */
-  int PLUSEQ = 74;
+  int SHR = 74;
   /** RegularExpression Id. */
-  int MINUSEQ = 75;
+  int PLUSEQ = 75;
   /** RegularExpression Id. */
-  int STAREQ = 76;
+  int MINUSEQ = 76;
   /** RegularExpression Id. */
-  int SLASHEQ = 77;
+  int STAREQ = 77;
   /** RegularExpression Id. */
-  int PERCENTEQ = 78;
+  int SLASHEQ = 78;
   /** RegularExpression Id. */
-  int CARETEQ = 79;
+  int PERCENTEQ = 79;
   /** RegularExpression Id. */
-  int ANDEQ = 80;
+  int CARETEQ = 80;
   /** RegularExpression Id. */
-  int OREQ = 81;
+  int ANDEQ = 81;
   /** RegularExpression Id. */
-  int SHLEQ = 82;
+  int OREQ = 82;
   /** RegularExpression Id. */
-  int SHREQ = 83;
+  int SHLEQ = 83;
   /** RegularExpression Id. */
-  int EQ = 84;
+  int SHREQ = 84;
   /** RegularExpression Id. */
-  int EQEQ = 85;
+  int EQ = 85;
   /** RegularExpression Id. */
-  int NE = 86;
+  int EQEQ = 86;
   /** RegularExpression Id. */
-  int GT = 87;
+  int NE = 87;
   /** RegularExpression Id. */
-  int LT = 88;
+  int GT = 88;
   /** RegularExpression Id. */
-  int GE = 89;
+  int LT = 89;
   /** RegularExpression Id. */
-  int LE = 90;
+  int GE = 90;
   /** RegularExpression Id. */
-  int AT = 91;
+  int LE = 91;
   /** RegularExpression Id. */
-  int UNDERSCORE = 92;
+  int AT = 92;
   /** RegularExpression Id. */
-  int DOT = 93;
+  int UNDERSCORE = 93;
   /** RegularExpression Id. */
-  int DOTDOT = 94;
+  int DOT = 94;
   /** RegularExpression Id. */
-  int DOTDOTDOT = 95;
+  int DOTDOT = 95;
   /** RegularExpression Id. */
-  int DOTDOTEQ = 96;
+  int DOTDOTDOT = 96;
   /** RegularExpression Id. */
-  int COMMA = 97;
+  int DOTDOTEQ = 97;
   /** RegularExpression Id. */
-  int SEMI = 98;
+  int COMMA = 98;
   /** RegularExpression Id. */
-  int COLON = 99;
+  int SEMI = 99;
   /** RegularExpression Id. */
-  int PATHSEP = 100;
+  int COLON = 100;
   /** RegularExpression Id. */
-  int RARROW = 101;
+  int PATHSEP = 101;
   /** RegularExpression Id. */
-  int FATARROW = 102;
+  int RARROW = 102;
   /** RegularExpression Id. */
-  int LARROW = 103;
+  int FATARROW = 103;
   /** RegularExpression Id. */
-  int POUND = 104;
+  int LARROW = 104;
   /** RegularExpression Id. */
-  int DOLLAR = 105;
+  int POUND = 105;
   /** RegularExpression Id. */
-  int QUESTION = 106;
+  int DOLLAR = 106;
   /** RegularExpression Id. */
-  int TILDE = 107;
+  int QUESTION = 107;
   /** RegularExpression Id. */
-  int LBRACE = 108;
+  int TILDE = 108;
   /** RegularExpression Id. */
-  int RBRACE = 109;
+  int LBRACE = 109;
   /** RegularExpression Id. */
-  int LBRACKET = 110;
+  int RBRACE = 110;
   /** RegularExpression Id. */
-  int RBRACKET = 111;
+  int LBRACKET = 111;
   /** RegularExpression Id. */
-  int LPAREN = 112;
+  int RBRACKET = 112;
   /** RegularExpression Id. */
-  int RPAREN = 113;
+  int LPAREN = 113;
   /** RegularExpression Id. */
-  int TY_BOOL = 114;
+  int RPAREN = 114;
   /** RegularExpression Id. */
-  int TY_CHAR = 115;
+  int TY_BOOL = 115;
   /** RegularExpression Id. */
-  int TY_STR = 116;
+  int TY_CHAR = 116;
   /** RegularExpression Id. */
-  int TY_U8 = 117;
+  int TY_STR = 117;
   /** RegularExpression Id. */
-  int TY_U16 = 118;
+  int TY_U8 = 118;
   /** RegularExpression Id. */
-  int TY_U32 = 119;
+  int TY_U16 = 119;
   /** RegularExpression Id. */
-  int TY_U64 = 120;
+  int TY_U32 = 120;
   /** RegularExpression Id. */
-  int TY_U128 = 121;
+  int TY_U64 = 121;
   /** RegularExpression Id. */
-  int TY_USIZE = 122;
+  int TY_U128 = 122;
   /** RegularExpression Id. */
-  int TY_I8 = 123;
+  int TY_USIZE = 123;
   /** RegularExpression Id. */
-  int TY_I16 = 124;
+  int TY_I8 = 124;
   /** RegularExpression Id. */
-  int TY_I32 = 125;
+  int TY_I16 = 125;
   /** RegularExpression Id. */
-  int TY_I64 = 126;
+  int TY_I32 = 126;
   /** RegularExpression Id. */
-  int TY_I128 = 127;
+  int TY_I64 = 127;
   /** RegularExpression Id. */
-  int TY_ISIZE = 128;
+  int TY_I128 = 128;
   /** RegularExpression Id. */
-  int TY_F32 = 129;
+  int TY_ISIZE = 129;
   /** RegularExpression Id. */
-  int TY_F64 = 130;
+  int TY_F32 = 130;
   /** RegularExpression Id. */
-  int LINE_COMMENT = 131;
+  int TY_F64 = 131;
   /** RegularExpression Id. */
-  int BLOCK_COMMENT = 132;
+  int LINE_COMMENT = 132;
   /** RegularExpression Id. */
-  int IDENTIFIER = 133;
+  int BLOCK_COMMENT = 133;
   /** RegularExpression Id. */
-  int IDENTIFIER_ERROR_START = 134;
+  int IDENTIFIER = 134;
   /** RegularExpression Id. */
-  int REAL_NUMBER_ERROR_MALFORMED = 135;
+  int IDENTIFIER_ERROR_START = 135;
   /** RegularExpression Id. */
-  int STRING_ERROR_UNTERMINATED = 136;
+  int REAL_NUMBER_ERROR_MALFORMED = 136;
   /** RegularExpression Id. */
-  int PUNCTUATION_ERROR_INVALID = 137;
+  int STRING_ERROR_UNTERMINATED = 137;
+  /** RegularExpression Id. */
+  int PUNCTUATION_ERROR_INVALID = 138;
 
   /** Lexical state. */
   int DEFAULT = 0;
@@ -338,6 +340,7 @@ public interface RusticoConstants {
     "\"virtual\"",
     "\"yield\"",
     "\"try\"",
+    "<CHAR>",
     "<STRING>",
     "<DIGIT>",
     "<DIGITS>",

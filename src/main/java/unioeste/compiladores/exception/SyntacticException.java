@@ -4,14 +4,14 @@ import unioeste.compiladores.rustico.Token;
 
 public class SyntacticException extends Exception {
     public SyntacticException(Token token, int[][] expectedTokenSequences, String[] tokenImage, String parseExceptionMessage) {
-        super(buildExceptionMessage(token, expectedTokenSequences, tokenImage, parseExceptionMessage));
+        super(buildSyntacticExceptionMessage(token, expectedTokenSequences, tokenImage, parseExceptionMessage));
     }
 
-    private static String buildExceptionMessage(Token token, int[][] expectedTokenSequences, String[] tokenImage, String parseExceptionMessage) {
+    private static String buildSyntacticExceptionMessage(Token token, int[][] expectedTokenSequences, String[] tokenImage, String parseExceptionMessage) {
         StringBuilder builder = new StringBuilder();
 
         if (token == null) {
-            builder.append("Erro sintático: ").append(parseExceptionMessage).append("\n");
+            builder.append(parseExceptionMessage).append("\n");
         } else {
             String location = " (linha: " + token.beginLine + ", coluna: " + token.beginColumn + ").";
             builder.append("Erro sintático: Ocorreu um erro de sintaxe perto do token \"")
