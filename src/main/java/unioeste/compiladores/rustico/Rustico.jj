@@ -461,44 +461,52 @@ void primary_expression(TreeNode parent, TokenWrapper typeWrapper):
 {
     TreeNode node = new TreeNode("primary_expression");
     parent.addChild(node);
-    Token t;
+    Token id;
 }
 {
-      <INTEGER> {
+      id = <INTEGER> {
           node.addChild(new TreeNode("INTEGER"));
           typeWrapper.token = new Token(TY_I32, "i32");
+          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
       }
-    | <REAL> {
+    | id = <REAL> {
           node.addChild(new TreeNode("REAL"));
           typeWrapper.token = new Token(TY_F64, "f64");
+          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
       }
-    | <DIGITS> {
+    | id = <DIGITS> {
           node.addChild(new TreeNode("DIGITS"));
           typeWrapper.token = new Token(TY_I32, "i32");
+          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
       }
-    | <DIGIT> {
+    | id = <DIGIT> {
           node.addChild(new TreeNode("DIGIT"));
           typeWrapper.token = new Token(TY_I8, "i8");
+          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
       }
-    | <STRING> {
+    | id = <STRING> {
           node.addChild(new TreeNode("STRING"));
           typeWrapper.token = new Token(TY_STR, "str");
+          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
       }
-    | <CHAR> {
+    | id = <CHAR> {
           node.addChild(new TreeNode("CHAR"));
           typeWrapper.token = new Token(TY_CHAR, "char");
+          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
       }
-    | <IDENTIFIER> {
+    | id = <IDENTIFIER> {
           node.addChild(new TreeNode("IDENTIFIER"));
           typeWrapper.token = null;
       }
-    | <KW_TRUE> {
+    | id = <KW_TRUE> {
           node.addChild(new TreeNode("KW_TRUE"));
           typeWrapper.token = new Token(TY_BOOL, "bool");
+          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
       }
-    | <KW_FALSE> {
+    | id = <KW_FALSE> {
           node.addChild(new TreeNode("KW_FALSE"));
           typeWrapper.token = new Token(TY_BOOL, "bool");
+          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
       }
     | <LPAREN> {
           node.addChild(new TreeNode("LPAREN"));
@@ -616,7 +624,7 @@ void function_declaration(TreeNode parent):
      <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
      (<RARROW> { node.addChild(new TreeNode("RARROW")); } type_specifier(node, typeWrapper))?
      {
-         symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : "inferido", null, null));
+         symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : "void", null, null));
      }
      block(node)
 }
@@ -642,7 +650,7 @@ void parameter(TreeNode parent):
     <COLON> { node.addChild(new TreeNode("COLON")); }
     type_specifier(node, typeWrapper)
     {
-        symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : "inferido", null, null));
+        symbolTable.update(id.image, new SymbolInfo(id, (typeWrapper.token != null ? typeWrapper.token.image : null), null, null));
     }
 }
 

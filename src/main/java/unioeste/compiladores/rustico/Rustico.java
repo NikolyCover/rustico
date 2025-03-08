@@ -562,52 +562,60 @@ import java.io.InputStream;
   final public void primary_expression(TreeNode parent, TokenWrapper typeWrapper) throws ParseException {
     TreeNode node = new TreeNode("primary_expression");
     parent.addChild(node);
-    Token t;
+    Token id;
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case INTEGER:
-      jj_consume_token(INTEGER);
+      id = jj_consume_token(INTEGER);
           node.addChild(new TreeNode("INTEGER"));
           typeWrapper.token = new Token(TY_I32, "i32");
+          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
       break;
     case REAL:
-      jj_consume_token(REAL);
+      id = jj_consume_token(REAL);
           node.addChild(new TreeNode("REAL"));
           typeWrapper.token = new Token(TY_F64, "f64");
+          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
       break;
     case DIGITS:
-      jj_consume_token(DIGITS);
+      id = jj_consume_token(DIGITS);
           node.addChild(new TreeNode("DIGITS"));
           typeWrapper.token = new Token(TY_I32, "i32");
+          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
       break;
     case DIGIT:
-      jj_consume_token(DIGIT);
+      id = jj_consume_token(DIGIT);
           node.addChild(new TreeNode("DIGIT"));
           typeWrapper.token = new Token(TY_I8, "i8");
+          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
       break;
     case STRING:
-      jj_consume_token(STRING);
+      id = jj_consume_token(STRING);
           node.addChild(new TreeNode("STRING"));
           typeWrapper.token = new Token(TY_STR, "str");
+          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
       break;
     case CHAR:
-      jj_consume_token(CHAR);
+      id = jj_consume_token(CHAR);
           node.addChild(new TreeNode("CHAR"));
           typeWrapper.token = new Token(TY_CHAR, "char");
+          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
       break;
     case IDENTIFIER:
-      jj_consume_token(IDENTIFIER);
+      id = jj_consume_token(IDENTIFIER);
           node.addChild(new TreeNode("IDENTIFIER"));
           typeWrapper.token = null;
       break;
     case KW_TRUE:
-      jj_consume_token(KW_TRUE);
+      id = jj_consume_token(KW_TRUE);
           node.addChild(new TreeNode("KW_TRUE"));
           typeWrapper.token = new Token(TY_BOOL, "bool");
+          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
       break;
     case KW_FALSE:
-      jj_consume_token(KW_FALSE);
+      id = jj_consume_token(KW_FALSE);
           node.addChild(new TreeNode("KW_FALSE"));
           typeWrapper.token = new Token(TY_BOOL, "bool");
+          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
       break;
     case LPAREN:
       jj_consume_token(LPAREN);
@@ -797,7 +805,7 @@ import java.io.InputStream;
       jj_la1[29] = jj_gen;
       ;
     }
-         symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : "inferido", null, null));
+         symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : "void", null, null));
     block(node);
   }
 
@@ -838,7 +846,7 @@ import java.io.InputStream;
     jj_consume_token(COLON);
               node.addChild(new TreeNode("COLON"));
     type_specifier(node, typeWrapper);
-        symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : "inferido", null, null));
+        symbolTable.update(id.image, new SymbolInfo(id, (typeWrapper.token != null ? typeWrapper.token.image : null), null, null));
   }
 
   final public void function_call_statement(TreeNode parent) throws ParseException {
@@ -1219,6 +1227,12 @@ import java.io.InputStream;
     return false;
   }
 
+  private boolean jj_3R_59() {
+    if (jj_scan_token(KW_WHILE)) return true;
+    if (jj_scan_token(LPAREN)) return true;
+    return false;
+  }
+
   private boolean jj_3R_29() {
     if (jj_3R_52()) return true;
     Token xsp;
@@ -1229,9 +1243,12 @@ import java.io.InputStream;
     return false;
   }
 
-  private boolean jj_3R_59() {
-    if (jj_scan_token(KW_WHILE)) return true;
-    if (jj_scan_token(LPAREN)) return true;
+  private boolean jj_3R_89() {
+    return false;
+  }
+
+  private boolean jj_3R_88() {
+    if (jj_scan_token(RBRACE)) return true;
     return false;
   }
 
@@ -1255,17 +1272,18 @@ import java.io.InputStream;
     return false;
   }
 
-  private boolean jj_3R_89() {
+  private boolean jj_3_9() {
+    if (jj_3R_22()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_94() {
+    if (jj_3R_17()) return true;
     return false;
   }
 
   private boolean jj_3R_47() {
     if (jj_scan_token(CARETEQ)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_88() {
-    if (jj_scan_token(RBRACE)) return true;
     return false;
   }
 
@@ -1276,6 +1294,21 @@ import java.io.InputStream;
 
   private boolean jj_3R_45() {
     if (jj_scan_token(SLASHEQ)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_21() {
+    if (jj_scan_token(LBRACE)) return true;
+    Token xsp;
+    while (true) {
+      xsp = jj_scanpos;
+      if (jj_3_9()) { jj_scanpos = xsp; break; }
+    }
+    xsp = jj_scanpos;
+    if (jj_3R_88()) {
+    jj_scanpos = xsp;
+    if (jj_3R_89()) return true;
+    }
     return false;
   }
 
@@ -1291,6 +1324,16 @@ import java.io.InputStream;
 
   private boolean jj_3R_42() {
     if (jj_scan_token(PLUSEQ)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_87() {
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_12()) {
+    jj_scanpos = xsp;
+    if (jj_3R_94()) return true;
+    }
     return false;
   }
 
@@ -1336,41 +1379,6 @@ import java.io.InputStream;
     return false;
   }
 
-  private boolean jj_3_9() {
-    if (jj_3R_22()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_94() {
-    if (jj_3R_17()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_21() {
-    if (jj_scan_token(LBRACE)) return true;
-    Token xsp;
-    while (true) {
-      xsp = jj_scanpos;
-      if (jj_3_9()) { jj_scanpos = xsp; break; }
-    }
-    xsp = jj_scanpos;
-    if (jj_3R_88()) {
-    jj_scanpos = xsp;
-    if (jj_3R_89()) return true;
-    }
-    return false;
-  }
-
-  private boolean jj_3R_87() {
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_12()) {
-    jj_scanpos = xsp;
-    if (jj_3R_94()) return true;
-    }
-    return false;
-  }
-
   private boolean jj_3_12() {
     if (jj_scan_token(LPAREN)) return true;
     if (jj_3R_17()) return true;
@@ -1379,12 +1387,6 @@ import java.io.InputStream;
 
   private boolean jj_3R_93() {
     if (jj_3R_17()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_15() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    if (jj_3R_27()) return true;
     return false;
   }
 
@@ -1440,14 +1442,15 @@ import java.io.InputStream;
     return false;
   }
 
-  private boolean jj_3_7() {
-    if (jj_scan_token(KW_ELSE)) return true;
-    if (jj_3R_21()) return true;
+  private boolean jj_3R_15() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    if (jj_3R_27()) return true;
     return false;
   }
 
-  private boolean jj_3R_85() {
-    if (jj_scan_token(IDENTIFIER)) return true;
+  private boolean jj_3_7() {
+    if (jj_scan_token(KW_ELSE)) return true;
+    if (jj_3R_21()) return true;
     return false;
   }
 
@@ -1462,15 +1465,14 @@ import java.io.InputStream;
     return false;
   }
 
-  private boolean jj_3_11() {
-    if (jj_scan_token(COMMA)) return true;
-    if (jj_3R_23()) return true;
+  private boolean jj_3R_85() {
+    if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
-  private boolean jj_3R_57() {
-    if (jj_scan_token(KW_USE)) return true;
-    if (jj_3R_85()) return true;
+  private boolean jj_3_11() {
+    if (jj_scan_token(COMMA)) return true;
+    if (jj_3R_23()) return true;
     return false;
   }
 
@@ -1485,8 +1487,9 @@ import java.io.InputStream;
     return false;
   }
 
-  private boolean jj_3R_17() {
-    if (jj_3R_29()) return true;
+  private boolean jj_3R_57() {
+    if (jj_scan_token(KW_USE)) return true;
+    if (jj_3R_85()) return true;
     return false;
   }
 
@@ -1500,14 +1503,19 @@ import java.io.InputStream;
     return false;
   }
 
-  private boolean jj_3R_78() {
-    if (jj_scan_token(CHAR)) return true;
+  private boolean jj_3R_17() {
+    if (jj_3R_29()) return true;
     return false;
   }
 
   private boolean jj_3R_62() {
     if (jj_scan_token(KW_MATCH)) return true;
     if (jj_3R_87()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_78() {
+    if (jj_scan_token(CHAR)) return true;
     return false;
   }
 
@@ -1526,13 +1534,13 @@ import java.io.InputStream;
     return false;
   }
 
-  private boolean jj_3R_24() {
-    if (jj_scan_token(KW_MUT)) return true;
+  private boolean jj_3R_75() {
+    if (jj_scan_token(DIGITS)) return true;
     return false;
   }
 
-  private boolean jj_3R_75() {
-    if (jj_scan_token(DIGITS)) return true;
+  private boolean jj_3R_24() {
+    if (jj_scan_token(KW_MUT)) return true;
     return false;
   }
 
@@ -1547,6 +1555,20 @@ import java.io.InputStream;
 
   private boolean jj_3R_74() {
     if (jj_scan_token(REAL)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_28() {
+    if (jj_scan_token(NOT)) return true;
+    return false;
+  }
+
+  private boolean jj_3R_16() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_28()) jj_scanpos = xsp;
+    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
@@ -1606,20 +1628,6 @@ import java.io.InputStream;
     jj_scanpos = xsp;
     if (jj_3R_84()) return true;
     }
-    return false;
-  }
-
-  private boolean jj_3R_28() {
-    if (jj_scan_token(NOT)) return true;
-    return false;
-  }
-
-  private boolean jj_3R_16() {
-    if (jj_scan_token(IDENTIFIER)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_28()) jj_scanpos = xsp;
-    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
@@ -1786,6 +1794,10 @@ import java.io.InputStream;
     return false;
   }
 
+  private boolean jj_3R_26() {
+    return false;
+  }
+
   private boolean jj_3R_31() {
     if (jj_3R_56()) return true;
     return false;
@@ -1837,6 +1849,11 @@ import java.io.InputStream;
     return false;
   }
 
+  private boolean jj_3R_25() {
+    if (jj_scan_token(IDENTIFIER)) return true;
+    return false;
+  }
+
   private boolean jj_3R_18() {
     if (jj_scan_token(PLUS)) return true;
     return false;
@@ -1853,12 +1870,14 @@ import java.io.InputStream;
     return false;
   }
 
-  private boolean jj_3R_26() {
-    return false;
-  }
-
-  private boolean jj_3R_25() {
-    if (jj_scan_token(IDENTIFIER)) return true;
+  private boolean jj_3R_14() {
+    if (jj_scan_token(KW_FN)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3R_25()) {
+    jj_scanpos = xsp;
+    if (jj_3R_26()) return true;
+    }
     return false;
   }
 
@@ -1877,17 +1896,6 @@ import java.io.InputStream;
     return false;
   }
 
-  private boolean jj_3R_14() {
-    if (jj_scan_token(KW_FN)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3R_25()) {
-    jj_scanpos = xsp;
-    if (jj_3R_26()) return true;
-    }
-    return false;
-  }
-
   private boolean jj_3R_103() {
     if (jj_scan_token(LE)) return true;
     return false;
@@ -1900,6 +1908,20 @@ import java.io.InputStream;
 
   private boolean jj_3R_101() {
     if (jj_scan_token(LT)) return true;
+    return false;
+  }
+
+  private boolean jj_3_10() {
+    if (jj_3R_17()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_63() {
+    if (jj_scan_token(KW_RETURN)) return true;
+    Token xsp;
+    xsp = jj_scanpos;
+    if (jj_3_10()) jj_scanpos = xsp;
+    if (jj_3R_90()) return true;
     return false;
   }
 
@@ -1919,17 +1941,9 @@ import java.io.InputStream;
     return false;
   }
 
-  private boolean jj_3_10() {
-    if (jj_3R_17()) return true;
-    return false;
-  }
-
-  private boolean jj_3R_63() {
-    if (jj_scan_token(KW_RETURN)) return true;
-    Token xsp;
-    xsp = jj_scanpos;
-    if (jj_3_10()) jj_scanpos = xsp;
-    if (jj_3R_90()) return true;
+  private boolean jj_3R_61() {
+    if (jj_scan_token(KW_LOOP)) return true;
+    if (jj_3R_21()) return true;
     return false;
   }
 
@@ -1958,12 +1972,6 @@ import java.io.InputStream;
     return false;
   }
 
-  private boolean jj_3R_61() {
-    if (jj_scan_token(KW_LOOP)) return true;
-    if (jj_3R_21()) return true;
-    return false;
-  }
-
   private boolean jj_3R_68() {
     if (jj_3R_91()) return true;
     Token xsp;
@@ -1971,6 +1979,12 @@ import java.io.InputStream;
       xsp = jj_scanpos;
       if (jj_3R_92()) { jj_scanpos = xsp; break; }
     }
+    return false;
+  }
+
+  private boolean jj_3R_60() {
+    if (jj_scan_token(KW_FOR)) return true;
+    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
@@ -1986,12 +2000,6 @@ import java.io.InputStream;
       xsp = jj_scanpos;
       if (jj_3R_69()) { jj_scanpos = xsp; break; }
     }
-    return false;
-  }
-
-  private boolean jj_3R_60() {
-    if (jj_scan_token(KW_FOR)) return true;
-    if (jj_scan_token(LPAREN)) return true;
     return false;
   }
 
