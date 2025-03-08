@@ -177,13 +177,14 @@ import java.io.InputStream;
     Token id;
     TokenWrapper typeWrapper = new TokenWrapper(null); //tipo declarado
     TokenWrapper expressionTypeWrapper = new TokenWrapper(null); //tipo inferido
-    boolean isMutable = false;
+    boolean mutable = false;
+    boolean declared = true;
     jj_consume_token(KW_LET);
                 node.addChild(new TreeNode("KW_LET"));
     switch ((jj_ntk==-1)?jj_ntk():jj_ntk) {
     case KW_MUT:
       jj_consume_token(KW_MUT);
-                 node.addChild(new TreeNode("KW_MUT")); isMutable = true;
+                 node.addChild(new TreeNode("KW_MUT")); mutable = true;
       break;
     default:
       jj_la1[6] = jj_gen;
@@ -211,13 +212,13 @@ import java.io.InputStream;
       jj_la1[8] = jj_gen;
       ;
     }
-        try {
-            SemanticAnalyzer.checkVariableDeclaration(id, typeWrapper, expressionTypeWrapper);
-            String finalType = (typeWrapper.token != null) ? typeWrapper.token.image : expressionTypeWrapper.token.image;
-            symbolTable.update(id.image, new SymbolInfo(id, finalType, isMutable, true));
-        } catch (SemanticException e) {
-            throwSemanticError(e);
-        }
+    try {
+        SemanticAnalyzer.checkVariableDeclaration(id, typeWrapper, expressionTypeWrapper);
+        String finalType = (typeWrapper.token != null) ? typeWrapper.token.image : expressionTypeWrapper.token.image;
+        symbolTable.update(id.image, finalType, mutable, declared);
+    } catch (SemanticException e) {
+        throwSemanticError(e);
+    }
     end_of_statement(node);
   }
 
@@ -565,37 +566,37 @@ import java.io.InputStream;
       id = jj_consume_token(INTEGER);
           node.addChild(new TreeNode("INTEGER"));
           typeWrapper.token = new Token(TY_I32, "i32");
-          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
+          symbolTable.update(id.image, typeWrapper.token != null ? typeWrapper.token.image : null, null, null);
       break;
     case REAL:
       id = jj_consume_token(REAL);
           node.addChild(new TreeNode("REAL"));
           typeWrapper.token = new Token(TY_F64, "f64");
-          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
+          symbolTable.update(id.image, typeWrapper.token != null ? typeWrapper.token.image : null, null, null);
       break;
     case DIGITS:
       id = jj_consume_token(DIGITS);
           node.addChild(new TreeNode("DIGITS"));
           typeWrapper.token = new Token(TY_I32, "i32");
-          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
+          symbolTable.update(id.image, typeWrapper.token != null ? typeWrapper.token.image : null, null, null);
       break;
     case DIGIT:
       id = jj_consume_token(DIGIT);
           node.addChild(new TreeNode("DIGIT"));
           typeWrapper.token = new Token(TY_I8, "i8");
-          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
+          symbolTable.update(id.image, typeWrapper.token != null ? typeWrapper.token.image : null, null, null);
       break;
     case STRING:
       id = jj_consume_token(STRING);
           node.addChild(new TreeNode("STRING"));
           typeWrapper.token = new Token(TY_STR, "str");
-          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
+          symbolTable.update(id.image, typeWrapper.token != null ? typeWrapper.token.image : null, null, null);
       break;
     case CHAR:
       id = jj_consume_token(CHAR);
           node.addChild(new TreeNode("CHAR"));
           typeWrapper.token = new Token(TY_CHAR, "char");
-          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
+          symbolTable.update(id.image, typeWrapper.token != null ? typeWrapper.token.image : null, null, null);
       break;
     case IDENTIFIER:
       id = jj_consume_token(IDENTIFIER);
@@ -610,13 +611,13 @@ import java.io.InputStream;
       id = jj_consume_token(KW_TRUE);
           node.addChild(new TreeNode("KW_TRUE"));
           typeWrapper.token = new Token(TY_BOOL, "bool");
-          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
+          symbolTable.update(id.image, typeWrapper.token != null ? typeWrapper.token.image : null, null, null);
       break;
     case KW_FALSE:
       id = jj_consume_token(KW_FALSE);
           node.addChild(new TreeNode("KW_FALSE"));
           typeWrapper.token = new Token(TY_BOOL, "bool");
-          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
+          symbolTable.update(id.image, typeWrapper.token != null ? typeWrapper.token.image : null, null, null);
       break;
     case LPAREN:
       jj_consume_token(LPAREN);
@@ -841,7 +842,7 @@ import java.io.InputStream;
     }
     function_block(node, returnTypeWrapper);
          try {
-             symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : "void", null, true));
+             symbolTable.update(id.image, typeWrapper.token != null ? typeWrapper.token.image : "void", null, true);
              SemanticAnalyzer.checkFunctionReturnType(id, typeWrapper, returnTypeWrapper);
          } catch (SemanticException e) {
              throwSemanticError(e);
@@ -885,7 +886,7 @@ import java.io.InputStream;
     jj_consume_token(COLON);
               node.addChild(new TreeNode("COLON"));
     type_specifier(node, typeWrapper);
-        symbolTable.update(id.image, new SymbolInfo(id, (typeWrapper.token != null ? typeWrapper.token.image : null), null, true));
+        symbolTable.update(id.image,(typeWrapper.token != null ? typeWrapper.token.image : null), null, true);
   }
 
   final public void function_call_statement(TreeNode parent) throws ParseException {
@@ -1604,12 +1605,17 @@ import java.io.InputStream;
     return false;
   }
 
+  private boolean jj_3R_27() {
+    return false;
+  }
+
   private boolean jj_3R_83() {
     if (jj_scan_token(BLOCK_COMMENT)) return true;
     return false;
   }
 
-  private boolean jj_3R_27() {
+  private boolean jj_3R_26() {
+    if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
@@ -1625,11 +1631,6 @@ import java.io.InputStream;
     jj_scanpos = xsp;
     if (jj_3R_83()) return true;
     }
-    return false;
-  }
-
-  private boolean jj_3R_26() {
-    if (jj_scan_token(IDENTIFIER)) return true;
     return false;
   }
 
@@ -1690,11 +1691,6 @@ import java.io.InputStream;
     return false;
   }
 
-  private boolean jj_3_4() {
-    if (jj_3R_17()) return true;
-    return false;
-  }
-
   private boolean jj_3R_21() {
     if (jj_3R_31()) return true;
     Token xsp;
@@ -1702,6 +1698,11 @@ import java.io.InputStream;
       xsp = jj_scanpos;
       if (jj_3R_101()) { jj_scanpos = xsp; break; }
     }
+    return false;
+  }
+
+  private boolean jj_3_4() {
+    if (jj_3R_17()) return true;
     return false;
   }
 
@@ -1725,11 +1726,6 @@ import java.io.InputStream;
     return false;
   }
 
-  private boolean jj_3R_35() {
-    if (jj_3R_59()) return true;
-    return false;
-  }
-
   private boolean jj_3R_19() {
     if (jj_scan_token(PLUS)) return true;
     return false;
@@ -1737,6 +1733,11 @@ import java.io.InputStream;
 
   private boolean jj_3_11() {
     if (jj_3R_23()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_35() {
+    if (jj_3R_59()) return true;
     return false;
   }
 
@@ -1750,11 +1751,6 @@ import java.io.InputStream;
     return false;
   }
 
-  private boolean jj_3R_34() {
-    if (jj_3R_58()) return true;
-    return false;
-  }
-
   private boolean jj_3_6() {
     Token xsp;
     xsp = jj_scanpos;
@@ -1763,6 +1759,11 @@ import java.io.InputStream;
     if (jj_3R_20()) return true;
     }
     if (jj_3R_21()) return true;
+    return false;
+  }
+
+  private boolean jj_3R_34() {
+    if (jj_3R_58()) return true;
     return false;
   }
 

@@ -16,32 +16,24 @@ public class SymbolTable {
         }
     }
 
-    public void update(String identifier, SymbolInfo newSymbol) {
+    public void update(String identifier, String type, Boolean mutable, Boolean declared) {
         if (hashTable.containsKey(identifier)) {
-            hashTable.put(identifier, newSymbol);
-        } else {
-            //System.out.println("Erro: Identificador " + identifier + " não encontrado na tabela de símbolos.");
+            SymbolInfo existingSymbol = hashTable.get(identifier);
+
+            SymbolInfo updatedSymbol = new SymbolInfo(
+                    existingSymbol.getToken(),
+                    type != null ? type : existingSymbol.getType(),
+                    mutable != null ? mutable : existingSymbol.isMutable(),
+                    declared != null ? declared : existingSymbol.isDeclared()
+            );
+
+            hashTable.put(identifier, updatedSymbol);
         }
     }
 
+
     public SymbolInfo getSymbol(String identifier) {
         return hashTable.get(identifier);
-    }
-
-    public boolean contains(String identifier) {
-        return hashTable.containsKey(identifier);
-    }
-
-    public void remove(String identifier) {
-        hashTable.remove(identifier);
-    }
-
-    public boolean isEmpty() {
-        return hashTable.isEmpty();
-    }
-
-    public int getSize() {
-        return hashTable.size();
     }
 
     private static LinkedList<Map.Entry<String, SymbolInfo>> getEntriesAtIndex(int index, Hashtable<String, SymbolInfo> hashtable) {

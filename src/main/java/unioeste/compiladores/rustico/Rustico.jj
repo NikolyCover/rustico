@@ -278,23 +278,24 @@ void variable_declaration(TreeNode parent):
     Token id;
     TokenWrapper typeWrapper = new TokenWrapper(null); //tipo declarado
     TokenWrapper expressionTypeWrapper = new TokenWrapper(null); //tipo inferido
-    boolean isMutable = false;
+    boolean mutable = false;
+    boolean declared = true;
 }
 {
     <KW_LET> {  node.addChild(new TreeNode("KW_LET")); }
-    (<KW_MUT> {  node.addChild(new TreeNode("KW_MUT")); isMutable = true; })?
+    (<KW_MUT> {  node.addChild(new TreeNode("KW_MUT")); mutable = true; })?
     id=<IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
     (<COLON> {  node.addChild(new TreeNode("COLON")); } type_specifier(node, typeWrapper))?
     (<EQ> {  node.addChild(new TreeNode("EQ")); } expression(node, expressionTypeWrapper))?
     {
-        try {
-            SemanticAnalyzer.checkVariableDeclaration(id, typeWrapper, expressionTypeWrapper);
-            String finalType = (typeWrapper.token != null) ? typeWrapper.token.image : expressionTypeWrapper.token.image;
-            symbolTable.update(id.image, new SymbolInfo(id, finalType, isMutable, true));
-        } catch (SemanticException e) {
-            throwSemanticError(e);
-        }
+    try {
+        SemanticAnalyzer.checkVariableDeclaration(id, typeWrapper, expressionTypeWrapper);
+        String finalType = (typeWrapper.token != null) ? typeWrapper.token.image : expressionTypeWrapper.token.image;
+        symbolTable.update(id.image, finalType, mutable, declared);
+    } catch (SemanticException e) {
+        throwSemanticError(e);
     }
+}
     end_of_statement(node)
 }
 
@@ -475,32 +476,32 @@ void primary_expression(TreeNode parent, TokenWrapper typeWrapper):
       id = <INTEGER> {
           node.addChild(new TreeNode("INTEGER"));
           typeWrapper.token = new Token(TY_I32, "i32");
-          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
+          symbolTable.update(id.image, typeWrapper.token != null ? typeWrapper.token.image : null, null, null);
       }
     | id = <REAL> {
           node.addChild(new TreeNode("REAL"));
           typeWrapper.token = new Token(TY_F64, "f64");
-          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
+          symbolTable.update(id.image, typeWrapper.token != null ? typeWrapper.token.image : null, null, null);
       }
     | id = <DIGITS> {
           node.addChild(new TreeNode("DIGITS"));
           typeWrapper.token = new Token(TY_I32, "i32");
-          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
+          symbolTable.update(id.image, typeWrapper.token != null ? typeWrapper.token.image : null, null, null);
       }
     | id = <DIGIT> {
           node.addChild(new TreeNode("DIGIT"));
           typeWrapper.token = new Token(TY_I8, "i8");
-          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
+          symbolTable.update(id.image, typeWrapper.token != null ? typeWrapper.token.image : null, null, null);
       }
     | id = <STRING> {
           node.addChild(new TreeNode("STRING"));
           typeWrapper.token = new Token(TY_STR, "str");
-          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
+          symbolTable.update(id.image, typeWrapper.token != null ? typeWrapper.token.image : null, null, null);
       }
     | id = <CHAR> {
           node.addChild(new TreeNode("CHAR"));
           typeWrapper.token = new Token(TY_CHAR, "char");
-          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
+          symbolTable.update(id.image, typeWrapper.token != null ? typeWrapper.token.image : null, null, null);
       }
     | id = <IDENTIFIER> {
         node.addChild(new TreeNode("IDENTIFIER"));
@@ -513,12 +514,12 @@ void primary_expression(TreeNode parent, TokenWrapper typeWrapper):
     | id = <KW_TRUE> {
           node.addChild(new TreeNode("KW_TRUE"));
           typeWrapper.token = new Token(TY_BOOL, "bool");
-          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
+          symbolTable.update(id.image, typeWrapper.token != null ? typeWrapper.token.image : null, null, null);
       }
     | id = <KW_FALSE> {
           node.addChild(new TreeNode("KW_FALSE"));
           typeWrapper.token = new Token(TY_BOOL, "bool");
-          symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
+          symbolTable.update(id.image, typeWrapper.token != null ? typeWrapper.token.image : null, null, null);
       }
     | <LPAREN> {
           node.addChild(new TreeNode("LPAREN"));
@@ -655,7 +656,7 @@ void function_declaration(TreeNode parent):
      function_block(node, returnTypeWrapper)
      {
          try {
-             symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : "void", null, true));
+             symbolTable.update(id.image, typeWrapper.token != null ? typeWrapper.token.image : "void", null, true);
              SemanticAnalyzer.checkFunctionReturnType(id, typeWrapper, returnTypeWrapper);
          } catch (SemanticException e) {
              throwSemanticError(e);
@@ -684,7 +685,7 @@ void parameter(TreeNode parent):
     <COLON> { node.addChild(new TreeNode("COLON")); }
     type_specifier(node, typeWrapper)
     {
-        symbolTable.update(id.image, new SymbolInfo(id, (typeWrapper.token != null ? typeWrapper.token.image : null), null, true));
+        symbolTable.update(id.image,(typeWrapper.token != null ? typeWrapper.token.image : null), null, true);
     }
 }
 
