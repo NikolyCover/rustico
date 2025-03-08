@@ -28,7 +28,7 @@ public class SemanticAnalyzer {
         NUMERIC_TYPES.add("f64");
     }
 
-    public static void updateSymbolTable(SymbolTable symbolTable, Token id, TokenWrapper typeWrapper, TokenWrapper expressionTypeWrapper) throws SemanticException {
+    public static void updateSymbolTable(SymbolTable symbolTable, Token id, TokenWrapper typeWrapper, TokenWrapper expressionTypeWrapper, boolean isMutable) throws SemanticException {
         String declaredType = (typeWrapper.token != null) ? typeWrapper.token.image : null;
         String inferredType = (expressionTypeWrapper.token != null) ? expressionTypeWrapper.token.image : null;
 
@@ -42,8 +42,9 @@ public class SemanticAnalyzer {
         }
 
         String finalType = (declaredType != null) ? declaredType : inferredType;
-        symbolTable.update(id.image, new SymbolInfo(id, finalType, null, null));
+        symbolTable.update(id.image, new SymbolInfo(id, finalType, isMutable, null));
     }
+
 
     private static boolean areCompatibleTypes(String declaredType, String inferredType) {
         if (declaredType == null || inferredType == null) {
@@ -65,5 +66,16 @@ public class SemanticAnalyzer {
         return false;
     }
 
+    public static void checkMutability(SymbolTable symbolTable, Token id) throws SemanticException {
+        SymbolInfo symbolInfo = symbolTable.getSymbol(id.image);
+
+        if (symbolInfo == null) {
+            throw new SemanticException(id, "A variável '" + id.image + "' não foi declarada.");
+        }
+
+        if (Boolean.FALSE.equals(symbolInfo.isMutable())) {
+            throw new SemanticException(id, "A variável '" + id.image + "' não pode ser modificada porque não foi declarada como mutável.");
+        }
+    }
 
 }

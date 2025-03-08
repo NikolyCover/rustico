@@ -28,6 +28,6 @@ fn main() {
         println!("Número pequeno");
     }
 
-    let mut bool_var: bool = true;
+    //let bool_var: bool = true;
     bool_var = false;
 }

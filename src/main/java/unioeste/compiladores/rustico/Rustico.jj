@@ -279,18 +279,19 @@ void variable_declaration(TreeNode parent):
     TreeNode node = new TreeNode("variable_declaration");
     parent.addChild(node);
     Token id;
-    TokenWrapper typeWrapper = new TokenWrapper(null);
-    TokenWrapper expressionTypeWrapper = new TokenWrapper(null);
+    TokenWrapper typeWrapper = new TokenWrapper(null); //tipo declarado
+    TokenWrapper expressionTypeWrapper = new TokenWrapper(null); //tipo inferido
+    boolean isMutable = false;
 }
 {
     <KW_LET> {  node.addChild(new TreeNode("KW_LET")); }
-    (<KW_MUT> {  node.addChild(new TreeNode("KW_MUT")); })?
+    (<KW_MUT> {  node.addChild(new TreeNode("KW_MUT")); isMutable = true; })?
     id=<IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
     (<COLON> {  node.addChild(new TreeNode("COLON")); } type_specifier(node, typeWrapper))?
     (<EQ> {  node.addChild(new TreeNode("EQ")); } expression(node, expressionTypeWrapper))?
     {
         try {
-            SemanticAnalyzer.updateSymbolTable(symbolTable, id, typeWrapper, expressionTypeWrapper);
+            SemanticAnalyzer.updateSymbolTable(symbolTable, id, typeWrapper, expressionTypeWrapper, isMutable);
         } catch (SemanticException e) {
             throwSemanticError(e);
         }
@@ -333,13 +334,21 @@ void assignment_statement(TreeNode parent):
 {
     TreeNode node = new TreeNode("assignment_statement");
     parent.addChild(node);
+    Token id;
     TokenWrapper expressionTypeWrapper = new TokenWrapper(null);
 }
 {
-    <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
+    id = <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
     assignment_operators(node)
     expression(node, expressionTypeWrapper)
     end_of_statement(node)
+    {
+        try {
+            SemanticAnalyzer.checkMutability(symbolTable, id);
+        } catch (SemanticException e) {
+            throwSemanticError(e);
+        }
+    }
 }
 
 void assignment_operators(TreeNode parent):

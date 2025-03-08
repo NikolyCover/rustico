@@ -2,7 +2,6 @@ package unioeste.compiladores.symbols;
 
 import de.vandermeer.asciitable.AsciiTable;
 import de.vandermeer.skb.interfaces.transformers.textformat.TextAlignment;
-import unioeste.compiladores.rustico.Token;
 
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -21,7 +20,7 @@ public class SymbolTable {
         if (hashTable.containsKey(identifier)) {
             hashTable.put(identifier, newSymbol);
         } else {
-            System.out.println("Erro: Identificador " + identifier + " não encontrado na tabela de símbolos.");
+            //System.out.println("Erro: Identificador " + identifier + " não encontrado na tabela de símbolos.");
         }
     }
 
