@@ -4,10 +4,8 @@ import unioeste.compiladores.symbols.TreeNode;
 import unioeste.compiladores.symbols.SymbolTable;
 import unioeste.compiladores.symbols.SymbolInfo;
 import unioeste.compiladores.utils.RusticoUtilities;
-import unioeste.compiladores.rustico.TokenWrapper;
 import unioeste.compiladores.analyser.SemanticAnalyzer;
 import unioeste.compiladores.exception.SemanticException;
-import unioeste.compiladores.exception.SyntacticException;
 import java.io.InputStream;
 
 /** Token Manager. */

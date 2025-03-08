@@ -28,7 +28,7 @@ public class SemanticAnalyzer {
         NUMERIC_TYPES.add("f64");
     }
 
-    public static void updateSymbolTable(SymbolTable symbolTable, Token id, TokenWrapper typeWrapper, TokenWrapper expressionTypeWrapper, boolean isMutable) throws SemanticException {
+    public static void checkVariableDeclaration(Token id, TokenWrapper typeWrapper, TokenWrapper expressionTypeWrapper) throws SemanticException {
         String declaredType = (typeWrapper.token != null) ? typeWrapper.token.image : null;
         String inferredType = (expressionTypeWrapper.token != null) ? expressionTypeWrapper.token.image : null;
 
@@ -36,46 +36,74 @@ public class SemanticAnalyzer {
             throw new SemanticException(id, "A variável '" + id.image + "' precisa ter um tipo declarado ou um valor atribuído.");
         }
 
-        if (declaredType != null && inferredType != null && !areCompatibleTypes(declaredType, inferredType)) {
+        if (declaredType != null && inferredType != null && areIncompatibleTypes(declaredType, inferredType)) {
             throw new SemanticException(id, "Tipos incompatíveis na declaração da variável '" + id.image + "'. "
                     + "Esperado '" + declaredType + "', mas foi atribuído um valor do tipo '" + inferredType + "'.");
         }
-
-        String finalType = (declaredType != null) ? declaredType : inferredType;
-        symbolTable.update(id.image, new SymbolInfo(id, finalType, isMutable, null));
     }
 
-
-    private static boolean areCompatibleTypes(String declaredType, String inferredType) {
+    private static boolean areIncompatibleTypes(String declaredType, String inferredType) {
         if (declaredType == null || inferredType == null) {
-            return false;
-        }
-
-        if (declaredType.equals(inferredType)) {
             return true;
         }
 
-        if (NUMERIC_TYPES.contains(declaredType) && NUMERIC_TYPES.contains(inferredType)) {
-            if ((declaredType.startsWith("i") && inferredType.startsWith("i")) ||
-                    (declaredType.startsWith("u") && inferredType.startsWith("u")) ||
-                    (declaredType.startsWith("f") && inferredType.startsWith("f"))) {
-                return true;
-            }
+        if (declaredType.equals(inferredType)) {
+            return false;
         }
 
-        return false;
+        if (NUMERIC_TYPES.contains(declaredType) && NUMERIC_TYPES.contains(inferredType)) {
+            return (!declaredType.startsWith("i") || !inferredType.startsWith("i")) &&
+                    (!declaredType.startsWith("u") || !inferredType.startsWith("u")) &&
+                    (!declaredType.startsWith("f") || !inferredType.startsWith("f"));
+        }
+
+        return true;
     }
 
-    public static void checkMutability(SymbolTable symbolTable, Token id) throws SemanticException {
+    public static void checkAssignmentStatement(SymbolTable symbolTable, Token id, TokenWrapper expressionTypeWrapper) throws SemanticException {
         SymbolInfo symbolInfo = symbolTable.getSymbol(id.image);
 
         if (symbolInfo == null) {
-            throw new SemanticException(id, "A variável '" + id.image + "' não foi declarada.");
+            throw new SemanticException(id, "A variável '" + id.image + "' não foi declarada, portanto não pode ser usada.");
         }
 
         if (Boolean.FALSE.equals(symbolInfo.isMutable())) {
             throw new SemanticException(id, "A variável '" + id.image + "' não pode ser modificada porque não foi declarada como mutável.");
         }
+
+        String declaredType = symbolInfo.getType();
+        String assignedType = (expressionTypeWrapper.token != null) ? expressionTypeWrapper.token.image : null;
+
+        if (declaredType != null && assignedType != null && areIncompatibleTypes(declaredType, assignedType)) {
+            throw new SemanticException(id, "Tipos incompatíveis na atribuição para a variável '" + id.image + "'. "
+                    + "Esperado '" + declaredType + "', mas foi atribuído um valor do tipo '" + assignedType + "'.");
+        }
     }
 
+
+    public static void checkFunctionCallStatement(SymbolTable symbolTable, Token id) throws SemanticException {
+        SymbolInfo symbolInfo = symbolTable.getSymbol(id.image);
+
+        if (symbolInfo.isDeclared() == null || !symbolInfo.isDeclared()) {
+            throw new SemanticException(id, "A função '" + id.image + "' não foi declarada, portanto não pode ser usada.");
+        }
+    }
+
+    public static void checkIdentifierDeclared(SymbolTable symbolTable, Token id) throws SemanticException {
+        SymbolInfo symbolInfo = symbolTable.getSymbol(id.image);
+
+        if (symbolInfo.isDeclared() == null || !symbolInfo.isDeclared()) {
+            throw new SemanticException(id, "A variável '" + id.image + "' não foi declarada, portanto não pode ser usada.");
+        }
+    }
+
+    public static void checkFunctionReturnType(Token id, TokenWrapper declaredReturnType, TokenWrapper actualReturnType) throws SemanticException {
+        String declaredType = (declaredReturnType.token != null) ? declaredReturnType.token.image : "void";
+        String actualType = (actualReturnType.token != null) ? actualReturnType.token.image : "void";
+
+        if (areIncompatibleTypes(declaredType, actualType)) {
+            throw new SemanticException(id, "O tipo de retorno da função '" + id.image + "' é incompatível. "
+                    + "Esperado: '" + declaredType + "', mas retornado: '" + actualType + "'.");
+        }
+    }
 }

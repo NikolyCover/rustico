@@ -1,33 +1,28 @@
-use std::io;
-
-let mut number_var: i8 = 10;
-let inferred_var = 20;
-let fistName = "John";
-let lastName = "Doe";
-let gender: char = 'M';
-let aux: i32;
-
-fn soma(x: i32, y: i32) -> i32 {
-    return x + y;
-}
+use std::io; // erro
 
 fn imprime_mensagem(mensagem: str) {
-    println!("{}", mensagem);
+    //lógica da impressão
 }
 
-fn retorna_booleano() -> bool {
-    return 10 > 5;
+fn retorna_soma(x: i32, y: i32) -> i32 {
+    return x + y;
 }
 
 fn main() {
     imprime_mensagem("Olá, mundo!");
 
+    let mut number_var: i8 = 10; // erro
+    let inferred_var = 20;
+    let name = "John";
+    let gender: char = 'M';
+
     if number_var > 5 {
-        number_var = 15;
+        number_var = 15; // erro
     } else {
-        println!("Número pequeno");
+        imprime_mensagem("Maior que 5");
     }
 
-    //let bool_var: bool = true;
-    bool_var = false;
+    while (number_var < 5) {
+        number_var = number_var - 1;
+    }
 }

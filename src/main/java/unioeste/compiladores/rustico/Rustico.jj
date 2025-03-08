@@ -9,10 +9,8 @@ import unioeste.compiladores.symbols.TreeNode;
 import unioeste.compiladores.symbols.SymbolTable;
 import unioeste.compiladores.symbols.SymbolInfo;
 import unioeste.compiladores.utils.RusticoUtilities;
-import unioeste.compiladores.rustico.TokenWrapper;
 import unioeste.compiladores.analyser.SemanticAnalyzer;
 import unioeste.compiladores.exception.SemanticException;
-import unioeste.compiladores.exception.SyntacticException;
 
 import java.io.InputStream;
 
@@ -250,7 +248,6 @@ void statement(TreeNode parent):
     | match_statement(node)
     | block(node)
     | LOOKAHEAD(2) function_call_statement(node)
-    | function_return_statement(node)
     | LOOKAHEAD(2) expression(node, expressionTypeWrapper)
 }
 
@@ -291,7 +288,9 @@ void variable_declaration(TreeNode parent):
     (<EQ> {  node.addChild(new TreeNode("EQ")); } expression(node, expressionTypeWrapper))?
     {
         try {
-            SemanticAnalyzer.updateSymbolTable(symbolTable, id, typeWrapper, expressionTypeWrapper, isMutable);
+            SemanticAnalyzer.checkVariableDeclaration(id, typeWrapper, expressionTypeWrapper);
+            String finalType = (typeWrapper.token != null) ? typeWrapper.token.image : expressionTypeWrapper.token.image;
+            symbolTable.update(id.image, new SymbolInfo(id, finalType, isMutable, true));
         } catch (SemanticException e) {
             throwSemanticError(e);
         }
@@ -344,7 +343,7 @@ void assignment_statement(TreeNode parent):
     end_of_statement(node)
     {
         try {
-            SemanticAnalyzer.checkMutability(symbolTable, id);
+            SemanticAnalyzer.checkAssignmentStatement(symbolTable, id, expressionTypeWrapper);
         } catch (SemanticException e) {
             throwSemanticError(e);
         }
@@ -504,8 +503,12 @@ void primary_expression(TreeNode parent, TokenWrapper typeWrapper):
           symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : null, null, null));
       }
     | id = <IDENTIFIER> {
-          node.addChild(new TreeNode("IDENTIFIER"));
-          typeWrapper.token = null;
+        node.addChild(new TreeNode("IDENTIFIER"));
+        try {
+            SemanticAnalyzer.checkIdentifierDeclared(symbolTable, id);
+        } catch (SemanticException e) {
+            throwSemanticError(e);
+        }
       }
     | id = <KW_TRUE> {
           node.addChild(new TreeNode("KW_TRUE"));
@@ -603,16 +606,32 @@ void loop_statement(TreeNode parent):
      <KW_LOOP> { node.addChild(new TreeNode("KW_LOOP")); } block(node)
 }
 
-void function_return_statement(TreeNode parent):
+void function_return_statement(TreeNode parent, TokenWrapper returnTypeWrapper):
 {
     TreeNode node = new TreeNode("function_return_statement");
     parent.addChild(node);
-    TokenWrapper expressionTypeWrapper = new TokenWrapper(null);
 }
 {
     <KW_RETURN> { node.addChild(new TreeNode("KW_RETURN")); }
-    (LOOKAHEAD(2) expression(node, expressionTypeWrapper))?
+    (LOOKAHEAD(2) expression(node, returnTypeWrapper))?
     end_of_statement(node)
+}
+
+void function_block(TreeNode parent, TokenWrapper returnTypeWrapper):
+{
+    TreeNode node = new TreeNode("function_block");
+    parent.addChild(node);
+}
+{
+    <LBRACE> { node.addChild(new TreeNode("LBRACE")); }
+    ( LOOKAHEAD(2) statement(node))*
+    (
+        function_return_statement(node, returnTypeWrapper) | {}
+    )
+    (
+          <RBRACE> { node.addChild(new TreeNode("RBRACE")); }
+        | { throwSyntacticError("Bloco de função não fechado!"); }
+    )
 }
 
 void function_declaration(TreeNode parent):
@@ -621,6 +640,7 @@ void function_declaration(TreeNode parent):
     parent.addChild(node);
     Token id = null;
     TokenWrapper typeWrapper = new TokenWrapper(null);
+    TokenWrapper returnTypeWrapper = new TokenWrapper(null);
 }
 {
      <KW_FN> { node.addChild(new TreeNode("KW_FN")); }
@@ -632,10 +652,15 @@ void function_declaration(TreeNode parent):
      function_params(node)
      <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
      (<RARROW> { node.addChild(new TreeNode("RARROW")); } type_specifier(node, typeWrapper))?
+     function_block(node, returnTypeWrapper)
      {
-         symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : "void", null, null));
+         try {
+             symbolTable.update(id.image, new SymbolInfo(id, typeWrapper.token != null ? typeWrapper.token.image : "void", null, true));
+             SemanticAnalyzer.checkFunctionReturnType(id, typeWrapper, returnTypeWrapper);
+         } catch (SemanticException e) {
+             throwSemanticError(e);
+         }
      }
-     block(node)
 }
 
 void function_params(TreeNode parent):
@@ -659,7 +684,7 @@ void parameter(TreeNode parent):
     <COLON> { node.addChild(new TreeNode("COLON")); }
     type_specifier(node, typeWrapper)
     {
-        symbolTable.update(id.image, new SymbolInfo(id, (typeWrapper.token != null ? typeWrapper.token.image : null), null, null));
+        symbolTable.update(id.image, new SymbolInfo(id, (typeWrapper.token != null ? typeWrapper.token.image : null), null, true));
     }
 }
 
@@ -667,14 +692,22 @@ void function_call_statement(TreeNode parent):
 {
     TreeNode node = new TreeNode("function_call_statement");
     parent.addChild(node);
+    Token id;
 }
 {
-    <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
+    id = <IDENTIFIER> { node.addChild(new TreeNode("IDENTIFIER")); }
     (<NOT> { node.addChild(new TreeNode("NOT")); } )?
     <LPAREN> { node.addChild(new TreeNode("LPAREN")); }
     function_arguments(node)
     <RPAREN> { node.addChild(new TreeNode("RPAREN")); }
     end_of_statement(node)
+    {
+        try {
+            SemanticAnalyzer.checkFunctionCallStatement(symbolTable, id);
+        } catch (SemanticException e) {
+            throwSemanticError(e);
+        }
+    }
 }
 
 void function_arguments(TreeNode parent):

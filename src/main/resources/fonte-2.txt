@@ -1,50 +1,32 @@
-use std::io::prelude::*;
-use std::net::{TcpListener, TcpStream};
-use std::fs;
-use std::sync::mpsc;
-use std::sync::{Arc, Mutex};
-use std::thread;
-use threadpool::ThreadPool;
+use std::io; // erro sintático
 
-const THREAD_POOL_SIZE: usize = 4;
-
-fn main() {
-    let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
-    let pool = ThreadPool::new(THREAD_POOL_SIZE);
-    pool + = 0;
-
-    for stream in listener.incoming() {
-        let stream = stream.unwrap();
-
-        pool.execute(|| {
-            handle_connection(stream);
-        });
-    }
-
-    let 1a = 1.0.0;
-
-    println!("Shutting down.");
+fn imprime_mensagem(mensagem: str) { // erro léxico
+    //lógica da impressão
 }
 
-fn handle_connection(mut stream: TcpStream) {
-    let mut buffer = [0; 1024];
-    stream.read(&mut buffer).unwrap();
+fn retorna_soma(x: i32, y: i32) -> i32 {
+    //x++; // erro léxico
+    return x + y;
+}
 
-    let get = b"GET / HTTP/1.1\r\n";
-    let sleep = b"GET /sleep HTTP/1.1\r\n";
+fn a () { // erro sintático
+}
 
-    let (status_line, filename) = if buffer.starts_with(get) {
-        ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
-    } else if buffer.starts_with(sleep) {
-        thread::sleep(std::time::Duration::from_secs(5));
-        ("HTTP/1.1 200 OK\r\n\r\n", "hello.html")
+fn main() {
+    imprime_mensagem("Olá, mundo!");
+
+    let mut number_var: i8 = 10; // erro
+    let inferred_var = 20;
+    let name = "John";
+    let gender: char = 'M';
+
+    if number_var > 5 {
+        number_var = 15; // erro
     } else {
-        ("HTTP/1.1 404 NOT FOUND\r\n\r\n", "404.html)
-    };
+        imprime_mensagem("Maior que 5");
+    }
 
-    let contents = fs::read_to_string(filename).unwrap();
-    let response = format!("{}{}", status_line, contents);
-
-    /*stream.write(response.as_bytes()).unwrap();*/
-    stream.flush().unwrap();
+    while (number_var < 5) {
+        number_var = number_var - 1;
+    }
 }

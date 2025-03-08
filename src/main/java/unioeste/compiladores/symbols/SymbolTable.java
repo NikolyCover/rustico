@@ -65,7 +65,7 @@ public class SymbolTable {
         titleTable.addRule();
 
         table.addRule();
-        table.addRow("Índice", "Chave", "Tipo", "Mutável", "Inicializado");
+        table.addRow("Índice", "Chave", "Tipo", "Mutável", "Declarado");
         table.addRule();
 
         for (int index = 0; index < hashTable.size(); index++) {
@@ -81,7 +81,7 @@ public class SymbolTable {
                             entry.getKey(),
                             symbol.getType() != null ? symbol.getType() : "-",
                             symbol.isMutable() != null ? (symbol.isMutable() ? "Sim" : "Não") : "-",
-                            symbol.isInitialized() != null ? (symbol.isInitialized() ? "Sim" : "Não") : "-"
+                            symbol.isDeclared() != null ? (symbol.isDeclared() ? "Sim" : "Não") : "-"
                     );
                     firstEntry = false;
                 } else {
@@ -90,7 +90,7 @@ public class SymbolTable {
                             entry.getKey(),
                             symbol.getType() != null ? symbol.getType() : "-",
                             symbol.isMutable() != null ? (symbol.isMutable() ? "Sim" : "Não") : "-",
-                            symbol.isInitialized() != null ? (symbol.isInitialized() ? "Sim" : "Não") : "-"
+                            symbol.isDeclared() != null ? (symbol.isDeclared() ? "Sim" : "Não") : "-"
                     );
                 }
                 table.addRule();

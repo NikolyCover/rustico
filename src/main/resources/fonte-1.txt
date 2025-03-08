@@ -1,16 +1,28 @@
 use std::io;
 
-let mut number: i32 = 10;
-
-main();
-
-if x > 5 {
-    number = 10;
-} else {
-print!("OIII");
-    return 1 + 2;
+fn imprime_mensagem(mensagem: str) {
+    //lógica da impressão
 }
 
-fn main (){
-    return 1;
+fn retorna_soma(x: i32, y: i32) -> i32 {
+    return x + y;
+}
+
+fn main() {
+    imprime_mensagem("Olá, mundo!");
+
+    let mut number_var: i8 = 10;
+    let inferred_var = 20;
+    let name = "John";
+    let gender: char = 'M';
+
+    if number_var > 5 {
+        number_var = 15;
+    } else {
+        imprime_mensagem("Maior que 5");
+    }
+
+    while (number_var < 5) {
+        number_var = number_var - 1;
+    }
 }

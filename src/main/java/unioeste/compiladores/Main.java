@@ -29,14 +29,13 @@ public class Main {
 
         System.out.println("Arquivo fonte: " + filename);
 
-        //lexicalAnalyzer.getReservedKeysTable().show("Tabela de palavras reservadas");
+        lexicalAnalyzer.getReservedKeysTable().show("Tabela de palavras reservadas");
         rustico.getSymbolTable().show("Tabela de símbolos");
 
-        //syntacticAnalyser.getTree().print();
-        //String outputFilename = "arvore_" + filename;
-        //syntacticAnalyser.getTree().writeToFile(outputFilename);
+        String outputFilename = "arvore_" + filename;
+        syntacticAnalyser.getTree().writeToFile(outputFilename);
 
-        //System.out.println("\n\nAnálise léxica e sintática concluídas com sucesso!. Arvore sintática escrita no arquivo: '" + outputFilename + "'.");
+        System.out.println("\n\nAnálise léxica, sintática e semântica concluídas com sucesso!. Arvore sintática escrita no arquivo: '" + outputFilename + "'.");
 
     }
 }
